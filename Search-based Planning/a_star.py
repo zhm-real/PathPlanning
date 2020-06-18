@@ -5,17 +5,19 @@
 """
 
 import queue
-import env
 import tools
 import env
+import motion_model
 
 class Astar:
     def __init__(self, x_start, x_goal, x_range, y_range, heuristic_type):
-        self.u_set = env.motions  # feasible input set
+        self.u_set = motion_model.motions                   # feasible input set
         self.xI, self.xG = x_start, x_goal
         self.x_range, self.y_range = x_range, y_range
-        self.obs = env.obs_map(self.xI, self.xG, "a_star searching")  # position of obstacles
+        self.obs = env.obs_map()                            # position of obstacles
         self.heuristic_type = heuristic_type
+
+        env.show_map(self.xI, self.xG, self.obs, "a_star searching")
 
     def searching(self):
         """
@@ -27,7 +29,7 @@ class Astar:
         q_astar = queue.QueuePrior()                            # priority queue
         q_astar.put(self.xI, 0)
         parent = {self.xI: self.xI}                             # record parents of nodes
-        action = {self.xI: (0, 0)}                             # record actions of nodes
+        action = {self.xI: (0, 0)}                              # record actions of nodes
         cost = {self.xI: 0}
 
         while not q_astar.empty():
@@ -43,7 +45,7 @@ class Astar:
                     if x_next not in cost or new_cost < cost[x_next]:           # conditions for updating cost
                         cost[x_next] = new_cost
                         priority = new_cost + self.Heuristic(x_next, self.xG, self.heuristic_type)
-                        q_astar.put(x_next, priority)       # put node into queue using priority "f+h"
+                        q_astar.put(x_next, priority)           # put node into queue using priority "f+h"
                         parent[x_next] = x_current
                         action[x_next] = u_next
         [path_astar, actions_astar] = tools.extract_path(self.xI, self.xG, parent, action)

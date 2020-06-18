@@ -7,6 +7,7 @@
 import queue
 import tools
 import env
+import motion_model
 
 class DFS:
     """
@@ -14,10 +15,12 @@ class DFS:
     """
 
     def __init__(self, x_start, x_goal, x_range, y_range):
-        self.u_set = env.motions                                            # feasible input set
+        self.u_set = motion_model.motions                       # feasible input set
         self.xI, self.xG = x_start, x_goal
         self.x_range, self.y_range = x_range, y_range
-        self.obs = env.obs_map(self.xI, self.xG, "depth-first searching")   # position of obstacles
+        self.obs = env.obs_map()                                # position of obstacles
+
+        env.show_map(self.xI, self.xG, self.obs, "depth-first searching")
 
     def searching(self):
         """

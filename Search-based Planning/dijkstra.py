@@ -5,17 +5,15 @@
 """
 
 import queue
-import environment
+import env
 import tools
 
 class Dijkstra:
-    def __init__(self, Start_State, Goal_State, n, m):
-        self.xI = Start_State
-        self.xG = Goal_State
-        self.u_set = environment.motions                       # feasible input set
-        self.obs_map = environment.map_obs()                   # position of obstacles
-        self.n = n
-        self.m = m
+    def __init__(self, x_start, x_goal, x_range, y_range):
+        self.u_set = env.motions                                                # feasible input set
+        self.xI, self.xG = x_start, x_goal
+        self.x_range, self.y_range = x_range, y_range
+        self.obs = env.obs_map(self.xI, self.xG, "dijkstra searching")     # position of obstacles
 
     def searching(self):
         """
@@ -27,29 +25,27 @@ class Dijkstra:
         q_dijk = queue.QueuePrior()                            # priority queue
         q_dijk.put(self.xI, 0)
         parent = {self.xI: self.xI}                            # record parents of nodes
-        actions = {self.xI: (0, 0)}                            # record actions of nodes
+        action = {self.xI: (0, 0)}                            # record actions of nodes
         cost = {self.xI: 0}
-        visited = []
 
         while not q_dijk.empty():
             x_current = q_dijk.get()
-            visited.append(x_current)                          # record visited nodes
             if x_current == self.xG:                           # stop condition
                 break
+            if x_current != self.xI:
+                tools.plot_dots(x_current, len(parent))
             for u_next in self.u_set:                          # explore neighborhoods of current node
                 x_next = tuple([x_current[i] + u_next[i] for i in range(len(x_current))])
-                # if neighbor node is not in obstacles -> ...
-                if 0 <= x_next[0] < self.n and 0 <= x_next[1] < self.m \
-                        and not tools.obs_detect(x_current, u_next, self.obs_map):
-                    new_cost = cost[x_current] + int(self.get_cost(x_current, u_next))
+                if x_next not in self.obs:   # node not visited and not in obstacles
+                    new_cost = cost[x_current] + self.get_cost(x_current, u_next)
                     if x_next not in cost or new_cost < cost[x_next]:
                         cost[x_next] = new_cost
                         priority = new_cost
                         q_dijk.put(x_next, priority)           # put node into queue using cost to come as priority
                         parent[x_next] = x_current
-                        actions[x_next] = u_next
-        [path_dijk, actions_dijk] = tools.extract_path(self.xI, self.xG, parent, actions)
-        return path_dijk, actions_dijk, visited
+                        action[x_next] = u_next
+        [path_dijk, action_dijk] = tools.extract_path(self.xI, self.xG, parent, action)
+        return path_dijk, action_dijk
 
     def get_cost(self, x, u):
         """
@@ -65,8 +61,8 @@ class Dijkstra:
 
 
 if __name__ == '__main__':
-    x_Start = (15, 10)              # Starting node
-    x_Goal = (48, 15)               # Goal node
-    dijkstra = Dijkstra(x_Start, x_Goal, environment.col, environment.row)
-    [path_dijk, actions_dijk, visited_dijk] = dijkstra.searching()
-    tools.showPath(x_Start, x_Goal, path_dijk, visited_dijk, 'dijkstra_searching')
+    x_Start = (5, 5)                # Starting node
+    x_Goal = (49, 5)                # Goal node
+    dijkstra = Dijkstra(x_Start, x_Goal, env.x_range, env.y_range)
+    [path_dijk, actions_dijk] = dijkstra.searching()
+    tools.showPath(x_Start, x_Goal, path_dijk)

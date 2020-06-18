@@ -5,21 +5,19 @@
 """
 
 import queue
-import environment
 import tools
+import env
 
 class DFS:
     """
     DFS -> Depth-first Searching
     """
 
-    def __init__(self, Start_State, Goal_State, n, m):
-        self.xI = Start_State
-        self.xG = Goal_State
-        self.u_set = environment.motions                              # feasible input set
-        self.obs_map = environment.map_obs()                          # position of obstacles
-        self.n = n
-        self.m = m
+    def __init__(self, x_start, x_goal, x_range, y_range):
+        self.u_set = env.motions                                            # feasible input set
+        self.xI, self.xG = x_start, x_goal
+        self.x_range, self.y_range = x_range, y_range
+        self.obs = env.obs_map(self.xI, self.xG, "depth-first searching")   # position of obstacles
 
     def searching(self):
         """
@@ -31,30 +29,27 @@ class DFS:
         q_dfs = queue.QueueLIFO()                               # last-in-first-out queue
         q_dfs.put(self.xI)
         parent = {self.xI: self.xI}                             # record parents of nodes
-        actions = {self.xI: (0, 0)}                             # record actions of nodes
-        visited = []
+        action = {self.xI: (0, 0)}                              # record actions of nodes
 
         while not q_dfs.empty():
             x_current = q_dfs.get()
-            visited.append(x_current)                           # record visited nodes
-            if x_current == self.xG:                            # stop condition
+            if x_current == self.xG:
                 break
-            for u_next in self.u_set:                           # explore neighborhoods of current node
-                x_next = tuple([x_current[i] + u_next[i] for i in range(len(x_current))])   # neighbor node
-                # if neighbor node is not in obstacles and has not been visited -> ...
-                if 0 <= x_next[0] < self.n and 0 <= x_next[1] < self.m \
-                        and x_next not in parent \
-                        and not tools.obs_detect(x_current, u_next, self.obs_map):
+            if x_current != self.xI:
+                tools.plot_dots(x_current, len(parent))
+            for u_next in self.u_set:                                   # explore neighborhoods of current node
+                x_next = tuple([x_current[i] + u_next[i] for i in range(len(x_current))])
+                if x_next not in parent and x_next not in self.obs:     # node not visited and not in obstacles
                     q_dfs.put(x_next)
                     parent[x_next] = x_current
-                    actions[x_next] = u_next
-        [path_dfs, actions_dfs] = tools.extract_path(self.xI, self.xG, parent, actions)
-        return path_dfs, actions_dfs, visited
+                    action[x_next] = u_next
+        [path_dfs, action_dfs] = tools.extract_path(self.xI, self.xG, parent, action)
+        return path_dfs, action_dfs
 
 
 if __name__ == '__main__':
-    x_Start = (15, 10)       # Starting node
-    x_Goal = (48, 15)        # Goal node
-    dfs = DFS(x_Start, x_Goal, environment.col, environment.row)
-    [path_dfs, actions_dfs, visited_dfs] = dfs.searching()
-    tools.showPath(x_Start, x_Goal, path_dfs, visited_dfs, 'depth_first_searching')    # Plot path and visited nodes
+    x_Start = (5, 5)                # Starting node
+    x_Goal = (49, 5)                # Goal node
+    dfs = DFS(x_Start, x_Goal, env.x_range, env.y_range)
+    [path_dfs, action_dfs] = dfs.searching()
+    tools.showPath(x_Start, x_Goal, path_dfs)

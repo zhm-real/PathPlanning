@@ -9,6 +9,7 @@ import tools
 import env
 import motion_model
 
+
 class Astar:
     def __init__(self, x_start, x_goal, heuristic_type):
         self.u_set = motion_model.motions                   # feasible input set
@@ -16,7 +17,8 @@ class Astar:
         self.obs = env.obs_map()                            # position of obstacles
         self.heuristic_type = heuristic_type
 
-        env.show_map(self.xI, self.xG, self.obs, "a_star searching")
+        tools.show_map(self.xI, self.xG, self.obs, "a_star searching")
+
 
     def searching(self):
         """
@@ -48,7 +50,9 @@ class Astar:
                         parent[x_next] = x_current
                         action[x_next] = u_next
         [path_astar, actions_astar] = tools.extract_path(self.xI, self.xG, parent, action)
+
         return path_astar, actions_astar
+
 
     def get_cost(self, x, u):
         """
@@ -61,6 +65,7 @@ class Astar:
         """
 
         return 1
+
 
     def Heuristic(self, state, goal, heuristic_type):
         """
@@ -85,4 +90,4 @@ if __name__ == '__main__':
     x_Goal = (49, 5)                # Goal node
     astar = Astar(x_Start, x_Goal, "manhattan")
     [path_astar, actions_astar] = astar.searching()
-    tools.showPath(x_Start, x_Goal, path_astar)      # Plot path and visited nodes
+    tools.showPath(x_Start, x_Goal, path_astar)

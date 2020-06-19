@@ -9,17 +9,15 @@ import tools
 import env
 import motion_model
 
-class DFS:
-    """
-    DFS -> Depth-first Searching
-    """
 
+class DFS:
     def __init__(self, x_start, x_goal):
         self.u_set = motion_model.motions                       # feasible input set
         self.xI, self.xG = x_start, x_goal
         self.obs = env.obs_map()                                # position of obstacles
 
-        env.show_map(self.xI, self.xG, self.obs, "depth-first searching")
+        tools.show_map(self.xI, self.xG, self.obs, "depth-first searching")
+
 
     def searching(self):
         """
@@ -46,6 +44,7 @@ class DFS:
                     parent[x_next] = x_current
                     action[x_next] = u_next
         [path_dfs, action_dfs] = tools.extract_path(self.xI, self.xG, parent, action)
+
         return path_dfs, action_dfs
 
 

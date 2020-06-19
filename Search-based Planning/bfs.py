@@ -9,17 +9,15 @@ import tools
 import env
 import motion_model
 
-class BFS:
-    """
-    BFS -> Breadth-first Searching
-    """
 
+class BFS:
     def __init__(self, x_start, x_goal):
         self.u_set = motion_model.motions                             # feasible input set
         self.xI, self.xG = x_start, x_goal
         self.obs = env.obs_map()                                      # position of obstacles
 
-        env.show_map(self.xI, self.xG, self.obs, "breadth-first searching")
+        tools.show_map(self.xI, self.xG, self.obs, "breadth-first searching")
+
 
     def searching(self):
         """
@@ -46,6 +44,7 @@ class BFS:
                     parent[x_next] = x_current
                     action[x_next] = u_next
         [path_bfs, action_bfs] = tools.extract_path(self.xI, self.xG, parent, action)     # extract path
+
         return path_bfs, action_bfs
 
 

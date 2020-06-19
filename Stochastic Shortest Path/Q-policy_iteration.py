@@ -16,13 +16,13 @@ import sys
 
 class Q_policy_iteration:
     def __init__(self, x_start, x_goal):
-        self.u_set = motion_model.motions  # feasible input set
+        self.u_set = motion_model.motions                       # feasible input set
         self.xI, self.xG = x_start, x_goal
-        self.e = 0.001
-        self.gamma = 0.9
-        self.obs = env.obs_map()  # position of obstacles
-        self.lose = env.lose_map()
-        self.name1 = "policy_iteration, e=" + str(self.e) + ", gamma=" + str(self.gamma)
+        self.e = 0.001                                          # threshold for convergence
+        self.gamma = 0.9                                        # discount factor
+        self.obs = env.obs_map()                                # position of obstacles
+        self.lose = env.lose_map()                              # position of lose states
+        self.name1 = "Q-policy_iteration, e=" + str(self.e) + ", gamma=" + str(self.gamma)
         self.name2 = "convergence of error"
 
 

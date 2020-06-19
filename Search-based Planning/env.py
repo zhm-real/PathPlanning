@@ -4,8 +4,6 @@
 @author: huiming zhou
 """
 
-import matplotlib.pyplot as plt
-
 x_range, y_range = 51, 31     # size of background
 
 def obs_map():
@@ -37,16 +35,3 @@ def obs_map():
         obs.append((40, i))
 
     return obs
-
-
-def show_map(xI, xG, obs_map, name):
-    obs_x = [obs_map[i][0] for i in range(len(obs_map))]
-    obs_y = [obs_map[i][1] for i in range(len(obs_map))]
-
-    plt.plot(xI[0], xI[1], "bs")
-    plt.plot(xG[0], xG[1], "gs")
-    plt.plot(obs_x, obs_y, "sk")
-    plt.title(name, fontdict=None)
-    plt.grid(True)
-    plt.axis("equal")
-

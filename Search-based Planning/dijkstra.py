@@ -9,13 +9,15 @@ import env
 import tools
 import motion_model
 
+
 class Dijkstra:
     def __init__(self, x_start, x_goal):
         self.u_set = motion_model.motions                      # feasible input set
         self.xI, self.xG = x_start, x_goal
         self.obs = env.obs_map()                               # position of obstacles
 
-        env.show_map(self.xI, self.xG, self.obs, "dijkstra searching")
+        tools.show_map(self.xI, self.xG, self.obs, "dijkstra searching")
+
 
     def searching(self):
         """
@@ -47,7 +49,9 @@ class Dijkstra:
                         parent[x_next] = x_current
                         action[x_next] = u_next
         [path_dijk, action_dijk] = tools.extract_path(self.xI, self.xG, parent, action)
+
         return path_dijk, action_dijk
+
 
     def get_cost(self, x, u):
         """

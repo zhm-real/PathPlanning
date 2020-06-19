@@ -6,6 +6,7 @@
 
 import matplotlib.pyplot as plt
 
+
 def extract_path(xI, xG, parent, actions):
     """
     Extract the path based on the relationship of nodes.
@@ -25,7 +26,19 @@ def extract_path(xI, xG, parent, actions):
         path_back.append(x_current)
         acts_back.append(actions[x_current])
         if x_current == xI: break
+
     return list(reversed(path_back)), list(reversed(acts_back))
+
+
+def show_map(xI, xG, obs_map, name):
+    obs_x = [obs_map[i][0] for i in range(len(obs_map))]
+    obs_y = [obs_map[i][1] for i in range(len(obs_map))]
+
+    plt.plot(xI[0], xI[1], "bs")
+    plt.plot(xG[0], xG[1], "gs")
+    plt.plot(obs_x, obs_y, "sk")
+    plt.title(name, fontdict=None)
+    plt.axis("equal")
 
 
 def showPath(xI, xG, path):
@@ -37,6 +50,7 @@ def showPath(xI, xG, path):
     :param path: Planning path
     :return: A plot
     """
+
     path.remove(xI)
     path.remove(xG)
     path_x = [path[i][0] for i in range(len(path))]
@@ -50,6 +64,5 @@ def plot_dots(x, length):
     plt.plot(x[0], x[1], linewidth='3', color='#808080', marker='o')
     plt.gcf().canvas.mpl_connect('key_release_event',
                                  lambda event: [exit(0) if event.key == 'escape' else None])
-    if length % 15 == 0:
-        plt.pause(0.001)
+    if length % 15 == 0: plt.pause(0.001)
 

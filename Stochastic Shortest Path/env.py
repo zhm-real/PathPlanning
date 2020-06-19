@@ -4,9 +4,8 @@
 @author: huiming zhou
 """
 
-import matplotlib.pyplot as plt
-
 x_range, y_range = 51, 31     # size of background
+
 
 def obs_map():
     """
@@ -40,9 +39,32 @@ def obs_map():
 
 
 def lose_map():
+    """
+    Initialize losing states' positions
+    :return: losing states
+    """
+
     lose = []
     for i in range(25, 36):
         lose.append((i, 13))
     return lose
 
 
+def get_reward(x_next, xG, lose):
+    """
+    calculate reward of next state
+
+    :param x_next: next state
+    :return: reward
+    """
+
+    reward = []
+    for x in x_next:
+        if x in xG:
+            reward.append(10)           # reward : 10, for goal states
+        elif x in lose:
+            reward.append(-10)          # reward : -10, for lose states
+        else:
+            reward.append(0)            # reward : 0, for other states
+
+    return reward

@@ -23,7 +23,7 @@ class Value_iteration:
         self.lose = env.lose_map()                             # position of lose states
         self.name1 = "value_iteration, e=" + str(self.e) \
                      + ", gamma=" + str(self.gamma)
-        self.name2 = "convergence of error, e=0.001"
+        self.name2 = "convergence of error, e=" + str(self.e)
 
 
     def iteration(self):
@@ -60,7 +60,7 @@ class Value_iteration:
                         x_value = max(x_value, v_diff)
             delta = x_value                                                                 # update delta
             diff.append(delta)
-        self.message(count)
+        self.message(count)                                                                 # print key parameters
 
         return value_table, policy, diff
 
@@ -76,31 +76,11 @@ class Value_iteration:
         """
 
         value = 0
-        reward = self.get_reward(x)                                     # get reward of next state
+        reward = env.get_reward(x, self.xG, self.lose)                  # get reward of next state
         for i in range(len(x)):
             value += p[i] * (reward[i] + self.gamma * table[x[i]])      # cal Q-value
 
         return value
-
-
-    def get_reward(self, x_next):
-        """
-        calculate reward of next state
-
-        :param x_next: next state
-        :return: reward
-        """
-
-        reward = []
-        for x in x_next:
-            if x in self.xG:
-                reward.append(10)           # reward : 10, for goal states
-            elif x in self.lose:
-                reward.append(-10)          # reward : -10, for lose states
-            else:
-                reward.append(0)            # reward : 0, for other states
-
-        return reward
 
 
     def simulation(self, xI, xG, policy, diff):
@@ -128,6 +108,7 @@ class Value_iteration:
                 else:
                     tools.plot_dots(x)                              # each state in optimal path
                     path.append(x)
+        plt.pause(1)
 
         plt.figure(2)                                               # difference between two successive iteration
         plt.plot(diff, color='#808080', marker='o')
@@ -148,8 +129,8 @@ class Value_iteration:
 
 
 if __name__ == '__main__':
-    x_Start = (5, 5)
-    x_Goal = [(49, 5), (49, 25)]
+    x_Start = (5, 5)                    # starting state
+    x_Goal = [(49, 5), (49, 25)]        # goal states
 
     VI = Value_iteration(x_Start, x_Goal)
     [value_VI, policy_VI, diff_VI] = VI.iteration()

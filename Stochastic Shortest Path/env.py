@@ -47,6 +47,7 @@ def lose_map():
     lose = []
     for i in range(25, 36):
         lose.append((i, 13))
+        
     return lose
 
 

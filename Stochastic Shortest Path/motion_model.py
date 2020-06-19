@@ -34,4 +34,5 @@ def move_prob(x, u, obs, eta = 0.2):
             x_next.append(x)
         else:
             x_next.append((x[0] + act[0], x[1] + act[1]))
+
     return x_next, p_next

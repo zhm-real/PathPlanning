@@ -112,6 +112,7 @@ class Q_policy_iteration:
         reward = env.get_reward(x, self.xG, self.lose)                  # get reward of next state
         for i in range(len(x)):
             value += p[i] * (reward[i] + self.gamma * table[x[i]][policy[x[i]]])
+
         return value
 
 

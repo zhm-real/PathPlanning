@@ -5,6 +5,7 @@
 """
 
 import matplotlib.pyplot as plt
+import env
 
 def extract_path(xI, xG, parent, actions):
     """
@@ -44,10 +45,29 @@ def showPath(xI, xG, path):
     plt.show()
 
 
-def plot_dots(x, length):
+def show_map(xI, xG, obs_map, lose_map, name):
+    obs_x = [obs_map[i][0] for i in range(len(obs_map))]
+    obs_y = [obs_map[i][1] for i in range(len(obs_map))]
+
+    lose_x = [lose_map[i][0] for i in range(len(lose_map))]
+    lose_y = [lose_map[i][1] for i in range(len(lose_map))]
+
+    plt.plot(xI[0], xI[1], "bs")
+
+    for x in xG:
+        plt.plot(x[0], x[1], "gs")
+
+    plt.plot(obs_x, obs_y, "sk")
+    plt.plot(lose_x, lose_y, marker = 's', color = '#A52A2A')
+    plt.title(name, fontdict=None)
+    plt.grid(True)
+    plt.axis("equal")
+
+
+def plot_dots(x):
     plt.plot(x[0], x[1], linewidth='3', color='#808080', marker='o')
     plt.gcf().canvas.mpl_connect('key_release_event',
                                  lambda event: [exit(0) if event.key == 'escape' else None])
-    if length % 15 == 0:
-        plt.pause(0.001)
+    plt.pause(0.001)
+
 

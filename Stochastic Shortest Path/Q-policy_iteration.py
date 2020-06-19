@@ -14,7 +14,7 @@ import copy
 import sys
 
 
-class Policy_iteration:
+class Q_policy_iteration:
     def __init__(self, x_start, x_goal):
         self.u_set = motion_model.motions  # feasible input set
         self.xI, self.xG = x_start, x_goal
@@ -32,53 +32,48 @@ class Policy_iteration:
         while delta > self.e:
             x_value = 0
             for x in value:
-                if x in self.xG: continue
-                else:
-                    [x_next, p_next] = motion_model.move_prob(x, policy[x], self.obs)
-                    v_Q = self.cal_Q_value(x_next, p_next, value)
-                    v_diff = abs(value[x] - v_Q)
-                    value[x] = v_Q
-                    if v_diff > 0:
-                        x_value = max(x_value, v_diff)
+                if x not in self.xG:
+                    for k in range(len(self.u_set)):
+                        [x_next, p_next] = motion_model.move_prob(x, self.u_set[k], self.obs)
+                        v_Q = self.cal_Q_value(x_next, p_next, policy, value)
+                        v_diff = abs(value[x][k] - v_Q)
+                        value[x][k] = v_Q
+                        if v_diff > 0:
+                            x_value = max(x_value, v_diff)
             delta = x_value
         return value
 
 
     def policy_improvement(self, policy, value):
         for x in value:
-            if x in self.xG: continue
-            else:
-                value_list = []
-                for u in self.u_set:
-                    [x_next, p_next] = motion_model.move_prob(x, u, self.obs)
-                    value_list.append(self.cal_Q_value(x_next, p_next, value))
-                policy[x] = self.u_set[int(np.argmax(value_list))]
+            if x not in self.xG:
+                policy[x] = int(np.argmax(value[x]))
         return policy
 
 
     def iteration(self):
-        value_table = {}
+        Q_table = {}
         policy = {}
 
         for i in range(env.x_range):
             for j in range(env.y_range):
                 if (i, j) not in self.obs:
-                    value_table[(i, j)] = 0
-                    policy[(i, j)] = self.u_set[0]
+                    Q_table[(i, j)] = [0, 0, 0, 0]
+                    policy[(i, j)] = 0
 
         while True:
             policy_back = copy.deepcopy(policy)
-            value_table = self.policy_evaluation(policy, value_table)
-            policy = self.policy_improvement(policy, value_table)
+            Q_table = self.policy_evaluation(policy, Q_table)
+            policy = self.policy_improvement(policy, Q_table)
             if policy_back == policy: break
-        return value_table, policy
+        return Q_table, policy
 
 
     def simulation(self, xI, xG, policy):
         path = []
         x = xI
         while x not in xG:
-            u = policy[x]
+            u = self.u_set[policy[x]]
             x_next = (x[0] + u[0], x[1] + u[1])
             if x_next not in self.obs:
                 x = x_next
@@ -95,11 +90,11 @@ class Policy_iteration:
         plt.show()
 
 
-    def cal_Q_value(self, x, p, table):
+    def cal_Q_value(self, x, p, policy, table):
         value = 0
         reward = self.get_reward(x)
         for i in range(len(x)):
-            value += p[i] * (reward[i] + self.gamma * table[x[i]])
+            value += p[i] * (reward[i] + self.gamma * table[x[i]][policy[x[i]]])
         return value
 
 
@@ -119,8 +114,8 @@ if __name__ == '__main__':
     x_Start = (5, 5)
     x_Goal = [(49, 5), (49, 25)]
 
-    PI = Policy_iteration(x_Start, x_Goal)
-    [value_PI, policy_PI] = PI.iteration()
-    path_PI = PI.simulation(x_Start, x_Goal, policy_PI)
+    QPI = Q_policy_iteration(x_Start, x_Goal)
+    [value_QPI, policy_QPI] = QPI.iteration()
+    path_QPI = QPI.simulation(x_Start, x_Goal, policy_QPI)
 
-    PI.animation(path_PI)
+    QPI.animation(path_QPI)

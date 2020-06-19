@@ -6,7 +6,7 @@
 
 import matplotlib.pyplot as plt
 
-x_range, y_range = 51, 31                                   # size of background
+x_range, y_range = 51, 31     # size of background
 
 def obs_map():
     """
@@ -15,37 +15,50 @@ def obs_map():
     :return: map of obstacles
     """
 
-    obs_map = []
+    obs = []
     for i in range(x_range):
-        obs_map.append((i, 0))
+        obs.append((i, 0))
     for i in range(x_range):
-        obs_map.append((i, y_range-1))
+        obs.append((i, y_range - 1))
 
     for i in range(y_range):
-        obs_map.append((0, i))
+        obs.append((0, i))
     for i in range(y_range):
-        obs_map.append((x_range-1, i))
+        obs.append((x_range - 1, i))
 
     for i in range(10, 21):
-        obs_map.append((i, 15))
+        obs.append((i, 15))
     for i in range(15):
-        obs_map.append((20, i))
+        obs.append((20, i))
 
     for i in range(15, 30):
-        obs_map.append((30, i))
+        obs.append((30, i))
     for i in range(16):
-        obs_map.append((40, i))
+        obs.append((40, i))
 
-    return obs_map
+    return obs
 
 
-def show_map(xI, xG, obs_map, name):
+def lose_map():
+    lose = []
+    for i in range(27, 34):
+        lose.append((i, 13))
+    return lose
+
+
+def show_map(xI, xG, obs_map, lose_map, name):
     obs_x = [obs_map[i][0] for i in range(len(obs_map))]
     obs_y = [obs_map[i][1] for i in range(len(obs_map))]
+
+    lose_x = [lose_map[i][0] for i in range(len(lose_map))]
+    lose_y = [lose_map[i][1] for i in range(len(lose_map))]
 
     plt.plot(xI[0], xI[1], "bs")
     plt.plot(xG[0], xG[1], "gs")
     plt.plot(obs_x, obs_y, "sk")
+    plt.plot(lose_x, lose_y, marker = 's', color = '#A52A2A')
     plt.title(name, fontdict=None)
     plt.grid(True)
     plt.axis("equal")
+    plt.show()
+

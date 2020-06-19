@@ -10,10 +10,9 @@ import tools
 import motion_model
 
 class Dijkstra:
-    def __init__(self, x_start, x_goal, x_range, y_range):
+    def __init__(self, x_start, x_goal):
         self.u_set = motion_model.motions                      # feasible input set
         self.xI, self.xG = x_start, x_goal
-        self.x_range, self.y_range = x_range, y_range
         self.obs = env.obs_map()                               # position of obstacles
 
         env.show_map(self.xI, self.xG, self.obs, "dijkstra searching")
@@ -66,6 +65,6 @@ class Dijkstra:
 if __name__ == '__main__':
     x_Start = (5, 5)                # Starting node
     x_Goal = (49, 5)                # Goal node
-    dijkstra = Dijkstra(x_Start, x_Goal, env.x_range, env.y_range)
+    dijkstra = Dijkstra(x_Start, x_Goal)
     [path_dijk, actions_dijk] = dijkstra.searching()
     tools.showPath(x_Start, x_Goal, path_dijk)

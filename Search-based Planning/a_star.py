@@ -10,10 +10,9 @@ import env
 import motion_model
 
 class Astar:
-    def __init__(self, x_start, x_goal, x_range, y_range, heuristic_type):
+    def __init__(self, x_start, x_goal, heuristic_type):
         self.u_set = motion_model.motions                   # feasible input set
         self.xI, self.xG = x_start, x_goal
-        self.x_range, self.y_range = x_range, y_range
         self.obs = env.obs_map()                            # position of obstacles
         self.heuristic_type = heuristic_type
 
@@ -84,6 +83,6 @@ class Astar:
 if __name__ == '__main__':
     x_Start = (5, 5)                # Starting node
     x_Goal = (49, 5)                # Goal node
-    astar = Astar(x_Start, x_Goal, env.x_range, env.y_range, "manhattan")
+    astar = Astar(x_Start, x_Goal, "manhattan")
     [path_astar, actions_astar] = astar.searching()
     tools.showPath(x_Start, x_Goal, path_astar)      # Plot path and visited nodes

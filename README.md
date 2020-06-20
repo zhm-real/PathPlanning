@@ -44,6 +44,16 @@ Directory Structure
 </table>
 </div>
 
+### SARSA(on-policy) & Q-learning(off-policy)
+* Brown: losing states
+<div align=right>
+<table>
+  <tr>
+    <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Model-free%20Control/gif/SARSA.gif" alt="value iteration" width="400"/></a></td>
+    <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Model-free%20Control/gif/Qlearning.gif" alt="value iteration" width="400"/></a></td>
+  </tr>
+</table>
+</div>
 
 ## License
 MIT License

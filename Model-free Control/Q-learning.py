@@ -132,21 +132,21 @@ class QLEARNING:
         :return: simulation path
         """
 
-        plt.figure(1)  # path animation
-        tools.show_map(xI, xG, self.obs, self.lose, self.name1)  # show background
+        plt.figure(1)                                                   # path animation
+        tools.show_map(xI, xG, self.obs, self.lose, self.name1)         # show background
 
         x, path = xI, []
         while True:
             u = self.u_set[policy[x]]
             x_next = (x[0] + u[0], x[1] + u[1])
             if x_next in self.obs:
-                print("Collision!")  # collision: simulation failed
+                print("Collision!")                                     # collision: simulation failed
             else:
                 x = x_next
                 if x_next == xG:
                     break
                 else:
-                    tools.plot_dots(x)  # each state in optimal path
+                    tools.plot_dots(x)                                  # each state in optimal path
                     path.append(x)
         plt.show()
         self.message()

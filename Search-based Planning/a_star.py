@@ -5,22 +5,26 @@
 """
 
 import queue
-import tools
+import plotting
 import env
-import motion_model
 
 
 class Astar:
     def __init__(self, x_start, x_goal, heuristic_type):
-        self.u_set = motion_model.motions                   # feasible input set
         self.xI, self.xG = x_start, x_goal
-        self.obs = env.obs_map()                            # position of obstacles
-        self.heuristic_type = heuristic_type
 
-        tools.show_map(self.xI, self.xG, self.obs, "a_star searching")
+        self.Env = env.Env()
+        self.u_set = self.Env.motions                               # feasible input set
+        self.obs = self.Env.obs                                     # position of obstacles
+
+        [self.path, self.policy, self.visited] = self.searching(self.xI, self.xG, heuristic_type)
+
+        self.fig_name = "A* Algorithm"
+        plotting.animation(self.xI, self.xG, self.obs,
+                           self.path, self.visited, self.fig_name)  # animation generate
 
 
-    def searching(self):
+    def searching(self, xI, xG, heuristic_type):
         """
         Searching using A_star.
 
@@ -28,30 +32,53 @@ class Astar:
         """
 
         q_astar = queue.QueuePrior()                            # priority queue
-        q_astar.put(self.xI, 0)
-        parent = {self.xI: self.xI}                             # record parents of nodes
-        action = {self.xI: (0, 0)}                              # record actions of nodes
-        cost = {self.xI: 0}
+        q_astar.put(xI, 0)
+        parent = {xI: xI}                                       # record parents of nodes
+        action = {xI: (0, 0)}                                   # record actions of nodes
+        visited = []
+        cost = {xI: 0}
 
         while not q_astar.empty():
             x_current = q_astar.get()
-            if x_current == self.xG:                            # stop condition
+            if x_current == xG:                                 # stop condition
                 break
-            if x_current != self.xI:
-                tools.plot_dots(x_current, len(parent))
+            visited.append(x_current)
             for u_next in self.u_set:                           # explore neighborhoods of current node
                 x_next = tuple([x_current[i] + u_next[i] for i in range(len(x_current))])
                 if x_next not in self.obs:
                     new_cost = cost[x_current] + self.get_cost(x_current, u_next)
                     if x_next not in cost or new_cost < cost[x_next]:           # conditions for updating cost
                         cost[x_next] = new_cost
-                        priority = new_cost + self.Heuristic(x_next, self.xG, self.heuristic_type)
+                        priority = new_cost + self.Heuristic(x_next, xG, heuristic_type)
                         q_astar.put(x_next, priority)           # put node into queue using priority "f+h"
-                        parent[x_next] = x_current
-                        action[x_next] = u_next
-        [path_astar, actions_astar] = tools.extract_path(self.xI, self.xG, parent, action)
+                        parent[x_next], action[x_next] = x_current, u_next
 
-        return path_astar, actions_astar
+        [path, policy] = self.extract_path(xI, xG, parent, action)
+
+        return path, policy, visited
+
+
+    def extract_path(self, xI, xG, parent, policy):
+        """
+        Extract the path based on the relationship of nodes.
+
+        :param xI: Starting node
+        :param xG: Goal node
+        :param parent: Relationship between nodes
+        :param policy: Action needed for transfer between two nodes
+        :return: The planning path
+        """
+
+        path_back = [xG]
+        acts_back = [policy[xG]]
+        x_current = xG
+        while True:
+            x_current = parent[x_current]
+            path_back.append(x_current)
+            acts_back.append(policy[x_current])
+            if x_current == xI: break
+
+        return list(path_back), list(acts_back)
 
 
     def get_cost(self, x, u):
@@ -89,5 +116,3 @@ if __name__ == '__main__':
     x_Start = (5, 5)                # Starting node
     x_Goal = (49, 5)                # Goal node
     astar = Astar(x_Start, x_Goal, "manhattan")
-    [path_astar, actions_astar] = astar.searching()
-    tools.showPath(x_Start, x_Goal, path_astar)

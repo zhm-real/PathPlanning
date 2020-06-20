@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="" />
+    <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/a_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/a_star.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bfs.py" beforeDir="false" afterPath="$PROJECT_DIR$/bfs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dfs.py" beforeDir="false" afterPath="$PROJECT_DIR$/dfs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dijkstra.py" beforeDir="false" afterPath="$PROJECT_DIR$/dijkstra.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env.py" beforeDir="false" afterPath="$PROJECT_DIR$/env.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/motion_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/plotting.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,7 +32,7 @@
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../test" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
@@ -148,9 +157,9 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.a_star" />
-        <item itemvalue="Python.dijkstra" />
         <item itemvalue="Python.dfs" />
         <item itemvalue="Python.bfs" />
+        <item itemvalue="Python.dijkstra" />
         <item itemvalue="Python.searching" />
       </list>
     </recent_temporary>

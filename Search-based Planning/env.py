@@ -4,34 +4,44 @@
 @author: huiming zhou
 """
 
-x_range, y_range = 51, 31     # size of background
+class Env():
+    def __init__(self):
+        self.x_range = 51           # size of background
+        self.y_range = 31
+        self.motions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+        self.obs = self.obs_map()
 
-def obs_map():
-    """
-    Initialize obstacles' positions
 
-    :return: map of obstacles
-    """
+    def obs_map(self):
+        """
+        Initialize obstacles' positions
 
-    obs = []
-    for i in range(x_range):
-        obs.append((i, 0))
-    for i in range(x_range):
-        obs.append((i, y_range - 1))
+        :return: map of obstacles
+        """
 
-    for i in range(y_range):
-        obs.append((0, i))
-    for i in range(y_range):
-        obs.append((x_range - 1, i))
+        x = self.x_range
+        y = self.y_range
+        obs = []
 
-    for i in range(10, 21):
-        obs.append((i, 15))
-    for i in range(15):
-        obs.append((20, i))
+        for i in range(x):
+            obs.append((i, 0))
+        for i in range(x):
+            obs.append((i, y - 1))
 
-    for i in range(15, 30):
-        obs.append((30, i))
-    for i in range(16):
-        obs.append((40, i))
+        for i in range(y):
+            obs.append((0, i))
+        for i in range(y):
+            obs.append((x - 1, i))
 
-    return obs
+        for i in range(10, 21):
+            obs.append((i, 15))
+        for i in range(15):
+            obs.append((20, i))
+
+        for i in range(15, 30):
+            obs.append((30, i))
+        for i in range(16):
+            obs.append((40, i))
+
+        return obs
+

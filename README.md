@@ -20,5 +20,16 @@ Directory Structure
         └── Q-learning.py                           # Q-learning : off-policy TD control
     └── Sampling-based Planning
 
+## Animations
+### Dijkstra's & A*
+<div align=center>
+<table>
+  <tr>
+    <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Search-based%20Planning/gif/Dijkstra.gif" alt="dijkstra" width="400"/></a></td>
+    <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Search-based%20Planning/gif/Astar.gif" alt="Astar" width="400"/></a></td>
+  </tr>
+</table>
+</div>
+
 ## License
 MIT License

@@ -7,6 +7,7 @@ import numpy as np
 
 motions = [(1, 0), (-1, 0), (0, 1), (0, -1)]                # feasible motion sets
 
+
 def move_prob(x, u, obs, eta = 0.2):
     """
     Motion model of robots,

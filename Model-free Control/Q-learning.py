@@ -13,7 +13,7 @@ import numpy as np
 import sys
 
 
-class SARSA:
+class QLEARNING:
     def __init__(self, x_start, x_goal):
         self.u_set = motion_model.motions                       # feasible input set
         self.xI, self.xG = x_start, x_goal
@@ -23,7 +23,7 @@ class SARSA:
         self.epsilon = 0.1
         self.obs = env.obs_map()                                # position of obstacles
         self.lose = env.lose_map()                              # position of lose states
-        self.name1 = "SARSA, M=" + str(self.M)
+        self.name1 = "Qlearning, M=" + str(self.M)
         self.name2 = "convergence of error"
 
 
@@ -41,14 +41,13 @@ class SARSA:
         for k in range(self.M):
             count += 1
             x = self.state_init()
-            u = self.epsilon_greedy(int(np.argmax(Q_table[x])), self.epsilon)
             while x != self.xG:
+                u = self.epsilon_greedy(int(np.argmax(Q_table[x])), self.epsilon)
                 x_next = self.move_next(x, self.u_set[u])
                 reward = env.get_reward(x_next, self.lose)
-                u_next = self.epsilon_greedy(int(np.argmax(Q_table[x_next])), self.epsilon)
                 Q_table[x][u] = (1 - self.alpha) * Q_table[x][u] + \
-                                self.alpha * (reward + self.gamma * Q_table[x_next][u_next])
-                x, u = x_next, u_next
+                                self.alpha * (reward + self.gamma * max(Q_table[x_next]))
+                x = x_next
 
         for x in Q_table:
             policy[x] = int(np.argmax(Q_table[x]))
@@ -161,6 +160,6 @@ if __name__ == '__main__':
     x_Start = (1, 1)
     x_Goal = (12, 1)
 
-    SARSA_CALL = SARSA(x_Start, x_Goal)
-    [value_SARSA, policy_SARSA] = SARSA_CALL.Monte_Carlo()
-    path_VI = SARSA_CALL.simulation(x_Start, x_Goal, policy_SARSA)
+    Q_CALL = QLEARNING(x_Start, x_Goal)
+    [value_SARSA, policy_SARSA] = Q_CALL.Monte_Carlo()
+    path_VI = Q_CALL.simulation(x_Start, x_Goal, policy_SARSA)

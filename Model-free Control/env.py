@@ -4,7 +4,7 @@
 @author: huiming zhou
 """
 
-x_range, y_range = 51, 31     # size of background
+x_range, y_range = 14, 6     # size of background
 
 
 def obs_map():
@@ -25,16 +25,6 @@ def obs_map():
     for i in range(y_range):
         obs.append((x_range - 1, i))
 
-    for i in range(10, 21):
-        obs.append((i, 15))
-    for i in range(15):
-        obs.append((20, i))
-
-    for i in range(15, 30):
-        obs.append((30, i))
-    for i in range(16):
-        obs.append((40, i))
-
     return obs
 
 
@@ -45,13 +35,13 @@ def lose_map():
     """
 
     lose = []
-    for i in range(25, 36):
-        lose.append((i, 13))
+    for i in range(2, 12):
+        lose.append((i, 1))
 
     return lose
 
 
-def get_reward(x_next, xG, lose):
+def get_reward(x_next, lose):
     """
     calculate reward of next state
 
@@ -59,13 +49,8 @@ def get_reward(x_next, xG, lose):
     :return: reward
     """
 
-    reward = []
-    for x in x_next:
-        if x in xG:
-            reward.append(10)           # reward : 10, for goal states
-        elif x in lose:
-            reward.append(-10)          # reward : -10, for lose states
-        else:
-            reward.append(0)            # reward : 0, for other states
+    if x_next in lose:
+        return -100                      # reward : -100, for lose states
+    return -1                            # reward : -1, for other states
 
-    return reward
+

@@ -67,13 +67,11 @@ def show_map(xI, xG, obs_map, lose_map, name):
     lose_x = [lose_map[i][0] for i in range(len(lose_map))]
     lose_y = [lose_map[i][1] for i in range(len(lose_map))]
 
-    plt.plot(xI[0], xI[1], "bs")                                    # plot starting state (blue)
+    plt.plot(xI[0], xI[1], "bs", ms = 24)                                    # plot starting state (blue)
+    plt.plot(xG[0], xG[1], "gs", ms = 24)                                    # plot goal states (green)
 
-    for x in xG:
-        plt.plot(x[0], x[1], "gs")                                  # plot goal states (green)
-
-    plt.plot(obs_x, obs_y, "sk")                                    # plot obstacles (black)
-    plt.plot(lose_x, lose_y, marker = 's', color = '#A52A2A')       # plot losing states (grown)
+    plt.plot(obs_x, obs_y, "sk", ms = 24)                                    # plot obstacles (black)
+    plt.plot(lose_x, lose_y, marker = 's', color = '#808080', ms = 24)       # plot losing states (grown)
     plt.title(name, fontdict=None)
     plt.axis("equal")
 
@@ -86,7 +84,7 @@ def plot_dots(x):
     :return: a plot
     """
 
-    plt.plot(x[0], x[1], linewidth='3', color='#808080', marker='o')    # plot dots for animation
+    plt.plot(x[0], x[1], linewidth='3', color='#808080', marker='o', ms = 24)    # plot dots for animation
     plt.gcf().canvas.mpl_connect('key_release_event',
                                  lambda event: [exit(0) if event.key == 'escape' else None])
     plt.pause(0.001)

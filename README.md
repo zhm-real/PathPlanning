@@ -19,3 +19,6 @@ Directory Structure
         ├── Sarsa.py                                # SARSA : on-policy TD control
         └── Q-learning.py                           # Q-learning : off-policy TD control
     └── Sampling-based Planning
+
+## License
+MIT License

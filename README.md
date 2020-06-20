@@ -7,9 +7,8 @@ Directory Structure
         ├── dijkstra.py                             # dijkstra's
         ├── a_star.py                               # a*
         ├── queue.py                                # FIFO, FILO, Priority queues
-        ├── env.py                                  # environment: working space
-        ├── motion_model.py                         # motion model, feasible input
-        └── tools.py                                # animation, figure generation ...
+        ├── env.py                                  # environment: grid world, motions
+        └── plotting.py                             # animation
     └── Stochastic Shortest Path
         ├── value_iteration.py                      # value iteration
         ├── policy_iteration.py                     # policy iteration

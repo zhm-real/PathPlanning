@@ -84,7 +84,7 @@ def plot_dots(x):
     :return: a plot
     """
 
-    plt.plot(x[0], x[1], linewidth='3', color='#808080', marker='o', ms = 24)    # plot dots for animation
+    plt.plot(x[0], x[1], linewidth='3', color='#808080', marker='o', ms = 23)    # plot dots for animation
     plt.gcf().canvas.mpl_connect('key_release_event',
                                  lambda event: [exit(0) if event.key == 'escape' else None])
     plt.pause(0.001)

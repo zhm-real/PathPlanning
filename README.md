@@ -15,7 +15,7 @@ Directory Structure
         ├── policy_iteration.py                     # policy iteration
         ├── Q-value_iteration.py                    # Q-value iteration
         └── Q-policy_iteration.py                   # Q-policy iteration
-    └── Sampling-based Planning
+    └── Model-free Control
         ├── Sarsa.py                                # SARSA : on-policy TD control
         └── Q-learning.py                           # Q-learning : off-policy TD control
-    └── Model-free Control
+    └── Sampling-based Planning

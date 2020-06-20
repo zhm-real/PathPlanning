@@ -21,8 +21,8 @@ Directory Structure
 
 ## Animations
 ### Dijkstra's & A*
-* Blue node: starting node
-* Green node: goal node
+* Blue: starting state
+* Green: goal state
 
 <div align=right>
 <table>
@@ -32,6 +32,18 @@ Directory Structure
   </tr>
 </table>
 </div>
+
+### Value/Policy/Q-value/Q-policy Iteration
+* Brown: losing states
+<div align=right>
+<table>
+  <tr>
+    <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Stochastic%20Shortest%20Path/gif/VI.gif" alt="value iteration" width="400"/></a></td>
+    <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Stochastic%20Shortest%20Path/gif/VI.jpeg" alt="value iteration" width="400"/></a></td>
+  </tr>
+</table>
+</div>
+
 
 ## License
 MIT License

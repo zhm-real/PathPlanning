@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bfs.py" beforeDir="false" afterPath="$PROJECT_DIR$/bfs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dfs.py" beforeDir="false" afterPath="$PROJECT_DIR$/dfs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plotting.py" beforeDir="false" afterPath="$PROJECT_DIR$/plotting.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -152,9 +151,9 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.a_star" />
+        <item itemvalue="Python.dijkstra" />
         <item itemvalue="Python.dfs" />
         <item itemvalue="Python.bfs" />
-        <item itemvalue="Python.dijkstra" />
         <item itemvalue="Python.searching" />
       </list>
     </recent_temporary>

@@ -21,9 +21,8 @@ class Value_iteration:
         self.gamma = 0.9                                       # discount factor
         self.obs = env.obs_map()                               # position of obstacles
         self.lose = env.lose_map()                             # position of lose states
-        self.name1 = "value_iteration, e=" + str(self.e) \
-                     + ", gamma=" + str(self.gamma)
-        self.name2 = "convergence of error, e=" + str(self.e)
+        self.name1 = "value_iteration, gamma=" + str(self.gamma)
+        self.name2 = "converge process, e=" + str(self.e)
 
 
     def iteration(self):
@@ -114,6 +113,7 @@ class Value_iteration:
         plt.plot(diff, color='#808080', marker='o')
         plt.title(self.name2, fontdict=None)
         plt.xlabel('iterations')
+        plt.ylabel('difference of successive iterations')
         plt.grid('on')
         plt.show()
 

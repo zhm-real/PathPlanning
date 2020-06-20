@@ -92,32 +92,48 @@ class Value_iteration:
         :return: simulation path
         """
 
-        plt.figure(1)                                               # path animation
-        tools.show_map(xI, xG, self.obs, self.lose, self.name1)     # show background
+        # plt.figure(1)                                               # path animation
+        # tools.show_map(xI, xG, self.obs, self.lose, self.name1)     # show background
+        #
+        # x, path = xI, []
+        # while True:
+        #     u = policy[x]
+        #     x_next = (x[0] + u[0], x[1] + u[1])
+        #     if x_next in self.obs:
+        #         print("Collision!")                                 # collision: simulation failed
+        #     else:
+        #         x = x_next
+        #         if x_next in xG: break
+        #         else:
+        #             tools.plot_dots(x)                              # each state in optimal path
+        #             path.append(x)
+        # plt.pause(1)
 
-        x, path = xI, []
-        while True:
-            u = policy[x]
-            x_next = (x[0] + u[0], x[1] + u[1])
-            if x_next in self.obs:
-                print("Collision!")                                 # collision: simulation failed
-            else:
-                x = x_next
-                if x_next in xG: break
-                else:
-                    tools.plot_dots(x)                              # each state in optimal path
-                    path.append(x)
-        plt.pause(1)
+        # plt.figure(2)                                               # difference between two successive iteration
+        # plt.plot(diff, color='#808080', marker='o')
+        fig, ax = plt.subplots()
 
-        plt.figure(2)                                               # difference between two successive iteration
-        plt.plot(diff, color='#808080', marker='o')
+        ax.set_xlim(-5, 60)
+        ax.set_ylim(-1, 9)
         plt.title(self.name2, fontdict=None)
         plt.xlabel('iterations')
         plt.ylabel('difference of successive iterations')
         plt.grid('on')
+
+        count = 0
+
+        for x in diff:
+            plt.plot(count, x, color='#808080', marker='o')  # plot dots for animation
+            plt.gcf().canvas.mpl_connect('key_release_event',
+                                         lambda event: [exit(0) if event.key == 'escape' else None])
+            plt.pause(0.07)
+            count += 1
+
+        plt.plot(diff, color='#808080')
+        plt.pause(0.01)
         plt.show()
 
-        return path
+        return
 
 
     def message(self, count):

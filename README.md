@@ -9,7 +9,7 @@ Directory Structure
         ├── queue.py                                # FIFO, FILO, Priority queues
         ├── env.py                                  # environment: working space
         ├── motion_model.py                         # motion model, feasible input
-        ├── tools.py                                # animation, figure generation ...
+        └── tools.py                                # animation, figure generation ...
     └── Stochastic Shortest Path
         ├── value_iteration.py                      # value iteration
         ├── policy_iteration.py                     # policy iteration

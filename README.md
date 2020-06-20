@@ -22,7 +22,10 @@ Directory Structure
 
 ## Animations
 ### Dijkstra's & A*
-<div align=center>
+* Blue node: starting node
+* Green node: goal node
+
+<div align=right>
 <table>
   <tr>
     <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Search-based%20Planning/gif/Dijkstra.gif" alt="dijkstra" width="400"/></a></td>

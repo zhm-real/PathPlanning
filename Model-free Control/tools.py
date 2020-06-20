@@ -71,7 +71,7 @@ def show_map(xI, xG, obs_map, lose_map, name):
     plt.plot(xG[0], xG[1], "gs", ms = 24)                                    # plot goal states (green)
 
     plt.plot(obs_x, obs_y, "sk", ms = 24)                                    # plot obstacles (black)
-    plt.plot(lose_x, lose_y, marker = 's', color = '#808080', ms = 24)       # plot losing states (grown)
+    plt.plot(lose_x, lose_y, marker = 's', color = '#A52A2A', ms = 24)       # plot losing states (grown)
     plt.title(name, fontdict=None)
     plt.axis("equal")
 
@@ -87,6 +87,6 @@ def plot_dots(x):
     plt.plot(x[0], x[1], linewidth='3', color='#808080', marker='o', ms = 23)    # plot dots for animation
     plt.gcf().canvas.mpl_connect('key_release_event',
                                  lambda event: [exit(0) if event.key == 'escape' else None])
-    plt.pause(0.001)
+    plt.pause(0.1)
 
 

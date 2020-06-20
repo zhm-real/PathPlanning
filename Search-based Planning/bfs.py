@@ -18,7 +18,7 @@ class BFS:
         self.obs = self.Env.obs                                     # position of obstacles
         [self.path, self.policy, self.visited] = self.searching(self.xI, self.xG)
 
-        self.fig_name = "Dijkstra's Algorithm"
+        self.fig_name = "Breadth-first Searching"
         plotting.animation(self.xI, self.xG, self.obs,
                            self.path, self.visited, self.fig_name)  # animation generate
 

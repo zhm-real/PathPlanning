@@ -11,7 +11,6 @@ class Motion_model():
         self.env = env.Env(xI, xG)
         self.obs = self.env.obs_map()
 
-
     def move_next(self, x, u, eta=0.2):
         """
         Motion model of robots,

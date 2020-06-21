@@ -8,16 +8,13 @@ import env
 import plotting
 import motion_model
 
-import matplotlib.pyplot as plt
 import numpy as np
-import sys
-
 
 class QLEARNING:
     def __init__(self, x_start, x_goal):
         self.xI, self.xG = x_start, x_goal
-        self.M = 500  # iteration numbers
-        self.gamma = 0.9  # discount factor
+        self.M = 500                                        # iteration numbers
+        self.gamma = 0.9                                    # discount factor
         self.alpha = 0.5
         self.epsilon = 0.1
 
@@ -25,10 +22,10 @@ class QLEARNING:
         self.motion = motion_model.Motion_model(self.xI, self.xG)
         self.plotting = plotting.Plotting(self.xI, self.xG)
 
-        self.u_set = self.env.motions  # feasible input set
-        self.stateSpace = self.env.stateSpace  # state space
-        self.obs = self.env.obs_map()  # position of obstacles
-        self.lose = self.env.lose_map()  # position of lose states
+        self.u_set = self.env.motions                       # feasible input set
+        self.stateSpace = self.env.stateSpace               # state space
+        self.obs = self.env.obs_map()                       # position of obstacles
+        self.lose = self.env.lose_map()                     # position of lose states
 
         self.name1 = "SARSA, M=" + str(self.M)
 
@@ -49,10 +46,10 @@ class QLEARNING:
 
         for k in range(self.M):                                                     # iterations
             x = self.state_init()                                                   # initial state
-            while x != xG:                                                     # stop condition
+            while x != xG:                                                          # stop condition
                 u = self.epsilon_greedy(int(np.argmax(Q_table[x])), self.epsilon)   # epsilon_greedy policy
                 x_next = self.move_next(x, self.u_set[u])                           # next state
-                reward = self.env.get_reward(x_next)                          # reward observed
+                reward = self.env.get_reward(x_next)                                # reward observed
                 Q_table[x][u] = (1 - self.alpha) * Q_table[x][u] + \
                                 self.alpha * (reward + self.gamma * max(Q_table[x_next]))
                 x = x_next
@@ -139,7 +136,7 @@ class QLEARNING:
         """
 
         x, path = xI, [xI]
-        while x not in xG:
+        while x != xG:
             u = self.u_set[policy[x]]
             x_next = (x[0] + u[0], x[1] + u[1])
             if x_next in self.obs:

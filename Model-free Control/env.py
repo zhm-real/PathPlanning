@@ -6,7 +6,7 @@
 
 class Env():
     def __init__(self, xI, xG):
-        self.x_range = 14  # size of background
+        self.x_range = 14                           # size of background
         self.y_range = 6
         self.motions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
         self.xI = xI
@@ -72,5 +72,5 @@ class Env():
         """
 
         if x_next in self.lose:
-            return -100  # reward : -100, for lose states
-        return -1  # reward : -1, for other states
+            return -100                         # reward : -100, for lose states
+        return -1                               # reward : -1, for other states

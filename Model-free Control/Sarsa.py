@@ -10,12 +10,11 @@ import motion_model
 
 import numpy as np
 
-
 class SARSA:
     def __init__(self, x_start, x_goal):
         self.xI, self.xG = x_start, x_goal
-        self.M = 500  # iteration numbers
-        self.gamma = 0.9  # discount factor
+        self.M = 500                                # iteration numbers
+        self.gamma = 0.9                            # discount factor
         self.alpha = 0.5
         self.epsilon = 0.1
 
@@ -23,17 +22,16 @@ class SARSA:
         self.motion = motion_model.Motion_model(self.xI, self.xG)
         self.plotting = plotting.Plotting(self.xI, self.xG)
 
-        self.u_set = self.env.motions  # feasible input set
-        self.stateSpace = self.env.stateSpace  # state space
-        self.obs = self.env.obs_map()  # position of obstacles
-        self.lose = self.env.lose_map()  # position of lose states
+        self.u_set = self.env.motions               # feasible input set
+        self.stateSpace = self.env.stateSpace       # state space
+        self.obs = self.env.obs_map()               # position of obstacles
+        self.lose = self.env.lose_map()             # position of lose states
 
-        self.name1 = "SARSA, M=" + str(self.M)
+        self.name1 = "Q-learning, M=" + str(self.M)
 
         [self.value, self.policy] = self.Monte_Carlo(self.xI, self.xG)
         self.path = self.extract_path(self.xI, self.xG, self.policy)
         self.plotting.animation(self.path, self.name1)
-
 
     def Monte_Carlo(self, xI, xG):
         """
@@ -48,9 +46,9 @@ class SARSA:
         for k in range(self.M):                                                 # iterations
             x = self.state_init()                                               # initial state
             u = self.epsilon_greedy(int(np.argmax(Q_table[x])), self.epsilon)
-            while x != xG:                                                 # stop condition
+            while x != xG:                                                      # stop condition
                 x_next = self.move_next(x, self.u_set[u])                       # next state
-                reward = self.env.get_reward(x_next)                      # reward observed
+                reward = self.env.get_reward(x_next)                            # reward observed
                 u_next = self.epsilon_greedy(int(np.argmax(Q_table[x_next])), self.epsilon)
                 Q_table[x][u] = (1 - self.alpha) * Q_table[x][u] + \
                                 self.alpha * (reward + self.gamma * Q_table[x_next][u_next])
@@ -60,7 +58,6 @@ class SARSA:
             policy[x] = int(np.argmax(Q_table[x]))                              # extract policy
 
         return Q_table, policy
-
 
     def table_init(self):
         """
@@ -81,7 +78,6 @@ class SARSA:
                     Q_table[x] = u
         return Q_table
 
-
     def state_init(self):
         """
         initialize a starting state
@@ -92,7 +88,6 @@ class SARSA:
             j = np.random.randint(0, self.env.y_range - 1)
             if (i, j) not in self.obs:
                 return (i, j)
-
 
     def epsilon_greedy(self, u, error):
         """
@@ -113,7 +108,6 @@ class SARSA:
                 else: u_e = 3
             return u_e
         return u
-
 
     def move_next(self, x, u):
         """
@@ -140,12 +134,12 @@ class SARSA:
         """
 
         x, path = xI, [xI]
-        while x not in xG:
+        while x != xG:
             u = self.u_set[policy[x]]
             x_next = (x[0] + u[0], x[1] + u[1])
             if x_next in self.obs:
                 print("Collision! Please run again!")
-                break
+                return path
             else:
                 path.append(x_next)
                 x = x_next

@@ -15,17 +15,17 @@ import copy
 class Policy_iteration:
     def __init__(self, x_start, x_goal):
         self.xI, self.xG = x_start, x_goal
-        self.e = 0.001  # threshold for convergence
-        self.gamma = 0.9  # discount factor
+        self.e = 0.001                                      # threshold for convergence
+        self.gamma = 0.9                                    # discount factor
 
         self.env = env.Env(self.xI, self.xG)
         self.motion = motion_model.Motion_model(self.xI, self.xG)
         self.plotting = plotting.Plotting(self.xI, self.xG)
 
-        self.u_set = self.env.motions  # feasible input set
-        self.stateSpace = self.env.stateSpace  # state space
-        self.obs = self.env.obs_map()  # position of obstacles
-        self.lose = self.env.lose_map()  # position of lose states
+        self.u_set = self.env.motions                       # feasible input set
+        self.stateSpace = self.env.stateSpace               # state space
+        self.obs = self.env.obs_map()                       # position of obstacles
+        self.lose = self.env.lose_map()                     # position of lose states
 
         self.name1 = "policy_iteration, gamma=" + str(self.gamma)
 
@@ -45,7 +45,7 @@ class Policy_iteration:
 
         delta = sys.maxsize
 
-        while delta > self.e:           # convergence condition
+        while delta > self.e:                               # convergence condition
             x_value = 0
             for x in self.stateSpace:
                 if x not in self.xG:
@@ -91,8 +91,8 @@ class Policy_iteration:
         count = 0
 
         for x in self.stateSpace:
-            value_table[x] = 0             # initialize value table
-            policy[x] = self.u_set[0]      # initialize policy table
+            value_table[x] = 0                                              # initialize value table
+            policy[x] = self.u_set[0]                                       # initialize policy table
 
         while True:
             count += 1
@@ -117,7 +117,7 @@ class Policy_iteration:
         """
 
         value = 0
-        reward = self.env.get_reward(x)                  # get reward of next state
+        reward = self.env.get_reward(x)                                 # get reward of next state
         for i in range(len(x)):
             value += p[i] * (reward[i] + self.gamma * table[x[i]])      # cal Q-value
 

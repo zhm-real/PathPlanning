@@ -14,17 +14,17 @@ import sys
 class Q_value_iteration:
     def __init__(self, x_start, x_goal):
         self.xI, self.xG = x_start, x_goal
-        self.e = 0.001  # threshold for convergence
-        self.gamma = 0.9  # discount factor
+        self.e = 0.001                                          # threshold for convergence
+        self.gamma = 0.9                                        # discount factor
 
-        self.env = env.Env(self.xI, self.xG)
-        self.motion = motion_model.Motion_model(self.xI, self.xG)
-        self.plotting = plotting.Plotting(self.xI, self.xG)
+        self.env = env.Env(self.xI, self.xG)                            # class Env
+        self.motion = motion_model.Motion_model(self.xI, self.xG)       # class Motion_model
+        self.plotting = plotting.Plotting(self.xI, self.xG)             # class Plotting
 
-        self.u_set = self.env.motions  # feasible input set
-        self.stateSpace = self.env.stateSpace  # state space
-        self.obs = self.env.obs_map()  # position of obstacles
-        self.lose = self.env.lose_map()  # position of lose states
+        self.u_set = self.env.motions                                   # feasible input set
+        self.stateSpace = self.env.stateSpace                           # state space
+        self.obs = self.env.obs_map()                                   # position of obstacles
+        self.lose = self.env.lose_map()                                 # position of lose states
 
         self.name1 = "Q-value_iteration, gamma=" + str(self.gamma)
         self.name2 = "converge process, e=" + str(self.e)
@@ -48,7 +48,7 @@ class Q_value_iteration:
         count = 0
 
         for x in self.stateSpace:
-            Q_table[x] = [0, 0, 0, 0]          # initialize Q_table
+            Q_table[x] = [0, 0, 0, 0]                       # initialize Q_table
 
         while delta > self.e:                               # convergence condition
             count += 1

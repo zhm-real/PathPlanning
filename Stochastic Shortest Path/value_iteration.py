@@ -17,9 +17,9 @@ class Value_iteration:
         self.e = 0.001                                              # threshold for convergence
         self.gamma = 0.9                                            # discount factor
 
-        self.env = env.Env(self.xI, self.xG)
-        self.motion = motion_model.Motion_model(self.xI, self.xG)
-        self.plotting = plotting.Plotting(self.xI, self.xG)
+        self.env = env.Env(self.xI, self.xG)                        # class Env
+        self.motion = motion_model.Motion_model(self.xI, self.xG)   # class Motion_model
+        self.plotting = plotting.Plotting(self.xI, self.xG)         # class Plotting
 
         self.u_set = self.env.motions                               # feasible input set
         self.stateSpace = self.env.stateSpace                       # state space

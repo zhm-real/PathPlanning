@@ -88,10 +88,10 @@ class Env():
         reward = []
         for x in x_next:
             if x in self.xG:
-                reward.append(10)  # reward : 10, for goal states
+                reward.append(10)       # reward : 10, for goal states
             elif x in self.lose:
-                reward.append(-10)  # reward : -10, for lose states
+                reward.append(-10)      # reward : -10, for lose states
             else:
-                reward.append(0)  # reward : 0, for other states
+                reward.append(0)        # reward : 0, for other states
 
         return reward

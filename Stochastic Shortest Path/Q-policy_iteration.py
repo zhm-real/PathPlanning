@@ -5,26 +5,33 @@
 """
 
 import env
-import tools
+import plotting
 import motion_model
 
-import matplotlib.pyplot as plt
 import numpy as np
 import copy
 import sys
 
-
 class Q_policy_iteration:
     def __init__(self, x_start, x_goal):
-        self.u_set = motion_model.motions                       # feasible input set
         self.xI, self.xG = x_start, x_goal
-        self.e = 0.001                                          # threshold for convergence
-        self.gamma = 0.9                                        # discount factor
-        self.obs = env.obs_map()                                # position of obstacles
-        self.lose = env.lose_map()                              # position of lose states
-        self.name1 = "Q-policy_iteration, e=" + str(self.e) \
-                     + ", gamma=" + str(self.gamma)
-        self.name2 = "convergence of error"
+        self.e = 0.001  # threshold for convergence
+        self.gamma = 0.9  # discount factor
+
+        self.env = env.Env(self.xI, self.xG)
+        self.motion = motion_model.Motion_model(self.xI, self.xG)
+        self.plotting = plotting.Plotting(self.xI, self.xG)
+
+        self.u_set = self.env.motions  # feasible input set
+        self.stateSpace = self.env.stateSpace  # state space
+        self.obs = self.env.obs_map()  # position of obstacles
+        self.lose = self.env.lose_map()  # position of lose states
+
+        self.name1 = "Q-policy_iteration, gamma=" + str(self.gamma)
+
+        [self.value, self.policy] = self.iteration()
+        self.path = self.extract_path(self.xI, self.xG, self.policy)
+        self.plotting.animation(self.path, self.name1)
 
 
     def policy_evaluation(self, policy, value):
@@ -43,7 +50,7 @@ class Q_policy_iteration:
             for x in value:
                 if x not in self.xG:
                     for k in range(len(self.u_set)):
-                        [x_next, p_next] = motion_model.move_prob(x, self.u_set[k], self.obs)
+                        [x_next, p_next] = self.motion.move_next(x, self.u_set[k])
                         v_Q = self.cal_Q_value(x_next, p_next, policy, value)
                         v_diff = abs(value[x][k] - v_Q)
                         value[x][k] = v_Q
@@ -63,7 +70,7 @@ class Q_policy_iteration:
         :return: improved policy
         """
 
-        for x in value:
+        for x in self.stateSpace:
             if x not in self.xG:
                 policy[x] = int(np.argmax(value[x]))
 
@@ -80,11 +87,9 @@ class Q_policy_iteration:
         policy = {}
         count = 0
 
-        for i in range(env.x_range):
-            for j in range(env.y_range):
-                if (i, j) not in self.obs:
-                    Q_table[(i, j)] = [0, 0, 0, 0]              # initialize Q_value table
-                    policy[(i, j)] = 0                          # initialize policy table
+        for x in self.stateSpace:
+            Q_table[x] = [0, 0, 0, 0]              # initialize Q_value table
+            policy[x] = 0                          # initialize policy table
 
         while True:
             count += 1
@@ -109,45 +114,44 @@ class Q_policy_iteration:
         """
 
         value = 0
-        reward = env.get_reward(x, self.xG, self.lose)                  # get reward of next state
+        reward = self.env.get_reward(x)                  # get reward of next state
         for i in range(len(x)):
             value += p[i] * (reward[i] + self.gamma * table[x[i]][policy[x[i]]])
 
         return value
 
 
-    def simulation(self, xI, xG, policy):
+    def extract_path(self, xI, xG, policy):
         """
-        simulate a path using converged policy.
+        extract path from converged policy.
 
         :param xI: starting state
-        :param xG: goal state
+        :param xG: goal states
         :param policy: converged policy
-        :return: simulation path
+        :return: path
         """
 
-        plt.figure(1)                                               # path animation
-        tools.show_map(xI, xG, self.obs, self.lose, self.name1)     # show background
-
-        x, path = xI, []
-        while True:
+        x, path = xI, [xI]
+        while x not in xG:
             u = self.u_set[policy[x]]
             x_next = (x[0] + u[0], x[1] + u[1])
             if x_next in self.obs:
-                print("Collision!")                                 # collision: simulation failed
+                print("Collision! Please run again!")
+                break
             else:
+                path.append(x_next)
                 x = x_next
-                if x_next in xG:
-                    break
-                else:
-                    tools.plot_dots(x)                              # each state in optimal path
-                    path.append(x)
-        plt.show()
-
         return path
 
 
     def message(self, count):
+        """
+        print important message.
+
+        :param count: iteration numbers
+        :return: print
+        """
+
         print("starting state: ", self.xI)
         print("goal states: ", self.xG)
         print("condition for convergence: ", self.e)
@@ -160,5 +164,3 @@ if __name__ == '__main__':
     x_Goal = [(49, 5), (49, 25)]
 
     QPI = Q_policy_iteration(x_Start, x_Goal)
-    [value_QPI, policy_QPI] = QPI.iteration()
-    path_QPI = QPI.simulation(x_Start, x_Goal, policy_QPI)

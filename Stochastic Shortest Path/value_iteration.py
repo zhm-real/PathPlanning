@@ -5,27 +5,37 @@
 """
 
 import env
-import tools
+import plotting
 import motion_model
 
-import matplotlib.pyplot as plt
 import numpy as np
 import sys
 
-
 class Value_iteration:
     def __init__(self, x_start, x_goal):
-        self.u_set = motion_model.motions                      # feasible input set
         self.xI, self.xG = x_start, x_goal
-        self.e = 0.001                                         # threshold for convergence
-        self.gamma = 0.9                                       # discount factor
-        self.obs = env.obs_map()                               # position of obstacles
-        self.lose = env.lose_map()                             # position of lose states
+        self.e = 0.001                                              # threshold for convergence
+        self.gamma = 0.9                                            # discount factor
+
+        self.env = env.Env(self.xI, self.xG)
+        self.motion = motion_model.Motion_model(self.xI, self.xG)
+        self.plotting = plotting.Plotting(self.xI, self.xG)
+
+        self.u_set = self.env.motions                               # feasible input set
+        self.stateSpace = self.env.stateSpace                       # state space
+        self.obs = self.env.obs_map()                               # position of obstacles
+        self.lose = self.env.lose_map()                             # position of lose states
+
         self.name1 = "value_iteration, gamma=" + str(self.gamma)
         self.name2 = "converge process, e=" + str(self.e)
 
+        [self.value, self.policy, self.diff] = self.iteration(self.xI, self.xG)
+        self.path = self.extract_path(self.xI, self.xG, self.policy)
+        self.plotting.animation(self.path, self.name1)
+        self.plotting.plot_diff(self.diff, self.name2)
 
-    def iteration(self):
+
+    def iteration(self, xI, xG):
         """
         value_iteration.
 
@@ -38,28 +48,26 @@ class Value_iteration:
         delta = sys.maxsize                     # initialize maximum difference
         count = 0                               # iteration times
 
-        for i in range(env.x_range):
-            for j in range(env.y_range):
-                if (i, j) not in self.obs:
-                    value_table[(i, j)] = 0     # initialize value table for feasible states
+        for x in self.stateSpace:               # initialize value table for feasible states
+            value_table[x] = 0
 
         while delta > self.e:                   # converged condition
             count += 1
             x_value = 0
-            for x in value_table:
-                if x not in self.xG:
+            for x in self.stateSpace:
+                if x not in xG:
                     value_list = []
                     for u in self.u_set:
-                        [x_next, p_next] = motion_model.move_prob(x, u, self.obs)           # recall motion model
+                        [x_next, p_next] = self.motion.move_next(x, u)                      # recall motion model
                         value_list.append(self.cal_Q_value(x_next, p_next, value_table))    # cal Q value
                     policy[x] = self.u_set[int(np.argmax(value_list))]                      # update policy
                     v_diff = abs(value_table[x] - max(value_list))                          # maximum difference
                     value_table[x] = max(value_list)                                        # update value table
-                    if v_diff > 0:
-                        x_value = max(x_value, v_diff)
+                    x_value = max(x_value, v_diff)
             delta = x_value                                                                 # update delta
             diff.append(delta)
-        self.message(count)                                                                 # print key parameters
+
+        self.message(count)                                                                 # print messages
 
         return value_table, policy, diff
 
@@ -75,68 +83,44 @@ class Value_iteration:
         """
 
         value = 0
-        reward = env.get_reward(x, self.xG, self.lose)                  # get reward of next state
+        reward = self.env.get_reward(x)                                 # get reward of next state
         for i in range(len(x)):
             value += p[i] * (reward[i] + self.gamma * table[x[i]])      # cal Q-value
 
         return value
 
 
-    def simulation(self, xI, xG, policy, diff):
+    def extract_path(self, xI, xG, policy):
         """
-        simulate a path using converged policy.
+        extract path from converged policy.
 
         :param xI: starting state
-        :param xG: goal state
+        :param xG: goal states
         :param policy: converged policy
-        :return: simulation path
+        :return: path
         """
 
-        # plt.figure(1)                                               # path animation
-        # tools.show_map(xI, xG, self.obs, self.lose, self.name1)     # show background
-        #
-        # x, path = xI, []
-        # while True:
-        #     u = policy[x]
-        #     x_next = (x[0] + u[0], x[1] + u[1])
-        #     if x_next in self.obs:
-        #         print("Collision!")                                 # collision: simulation failed
-        #     else:
-        #         x = x_next
-        #         if x_next in xG: break
-        #         else:
-        #             tools.plot_dots(x)                              # each state in optimal path
-        #             path.append(x)
-        # plt.pause(1)
-
-        # plt.figure(2)                                               # difference between two successive iteration
-        # plt.plot(diff, color='#808080', marker='o')
-        fig, ax = plt.subplots()
-
-        ax.set_xlim(-5, 60)
-        ax.set_ylim(-1, 9)
-        plt.title(self.name2, fontdict=None)
-        plt.xlabel('iterations')
-        plt.ylabel('difference of successive iterations')
-        plt.grid('on')
-
-        count = 0
-
-        for x in diff:
-            plt.plot(count, x, color='#808080', marker='o')  # plot dots for animation
-            plt.gcf().canvas.mpl_connect('key_release_event',
-                                         lambda event: [exit(0) if event.key == 'escape' else None])
-            plt.pause(0.07)
-            count += 1
-
-        plt.plot(diff, color='#808080')
-        plt.pause(0.01)
-        plt.show()
-
-        return
+        x, path = xI, [xI]
+        while x not in xG:
+            u = policy[x]
+            x_next = (x[0] + u[0], x[1] + u[1])
+            if x_next in self.obs:
+                print("Collision! Please run again!")
+                break
+            else:
+                path.append(x_next)
+                x = x_next
+        return path
 
 
     def message(self, count):
+        """
+        print important message.
+
+        :param count: iteration numbers
+        :return: print
+        """
+
         print("starting state: ", self.xI)
         print("goal states: ", self.xG)
         print("condition for convergence: ", self.e)
@@ -149,6 +133,3 @@ if __name__ == '__main__':
     x_Goal = [(49, 5), (49, 25)]        # goal states
 
     VI = Value_iteration(x_Start, x_Goal)
-    [value_VI, policy_VI, diff_VI] = VI.iteration()
-    path_VI = VI.simulation(x_Start, x_Goal, policy_VI, diff_VI)
-

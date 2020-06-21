@@ -3,6 +3,19 @@
   <component name="ChangeListManager">
     <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/a_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/a_star.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bfs.py" beforeDir="false" afterPath="$PROJECT_DIR$/bfs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dfs.py" beforeDir="false" afterPath="$PROJECT_DIR$/dfs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dijkstra.py" beforeDir="false" afterPath="$PROJECT_DIR$/dijkstra.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plotting.py" beforeDir="false" afterPath="$PROJECT_DIR$/plotting.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/queue.py" beforeDir="false" afterPath="$PROJECT_DIR$/queue.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Stochastic Shortest Path/Q-policy_iteration.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Stochastic Shortest Path/Q-policy_iteration.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Stochastic Shortest Path/Q-value_iteration.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Stochastic Shortest Path/Q-value_iteration.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Stochastic Shortest Path/env.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Stochastic Shortest Path/env.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Stochastic Shortest Path/gif/VI_E.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../Stochastic Shortest Path/gif/VI_E.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Stochastic Shortest Path/motion_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Stochastic Shortest Path/motion_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Stochastic Shortest Path/policy_iteration.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Stochastic Shortest Path/policy_iteration.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Stochastic Shortest Path/tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Stochastic Shortest Path/plotting.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Stochastic Shortest Path/value_iteration.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Stochastic Shortest Path/value_iteration.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -26,6 +39,7 @@
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../Stochastic Shortest Path" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
@@ -42,7 +56,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.a_star">
+  <component name="RunManager" selected="Python.dfs">
     <configuration name="a_star" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Search-based Planning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -150,10 +164,10 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.a_star" />
-        <item itemvalue="Python.dijkstra" />
         <item itemvalue="Python.dfs" />
         <item itemvalue="Python.bfs" />
+        <item itemvalue="Python.dijkstra" />
+        <item itemvalue="Python.a_star" />
         <item itemvalue="Python.searching" />
       </list>
     </recent_temporary>

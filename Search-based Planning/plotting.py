@@ -5,52 +5,58 @@
 """
 
 import matplotlib.pyplot as plt
+import env
+
+class Plotting():
+    def __init__(self, xI, xG):
+        self.xI, self.xG = xI, xG
+        self.env = env.Env()
+        self.obs = self.env.obs_map()
 
 
-def animation(xI, xG, obs, path, visited, name):
-    """
-    generate animation for exploring process of algorithm
+    def animation(self, path, visited, name):
+        self.plot_grid(name)
+        self.plot_visited(visited)
+        self.plot_path(path)
 
-    :param xI: starting state
-    :param xG: goal state
-    :param obs: obstacle map
-    :param path: optimal path
-    :param visited: visited nodes
-    :param name: name of this figure
-    :return: animation
-    """
 
-    visited.remove(xI)
-    path.remove(xI)
-    path.remove(xG)
+    def plot_grid(self, name):
+        obs_x = [self.obs[i][0] for i in range(len(self.obs))]
+        obs_y = [self.obs[i][1] for i in range(len(self.obs))]
 
-    # plot gridworld
-    obs_x = [obs[i][0] for i in range(len(obs))]
-    obs_y = [obs[i][1] for i in range(len(obs))]
-    plt.plot(xI[0], xI[1], "bs")
-    plt.plot(xG[0], xG[1], "gs")
-    plt.plot(obs_x, obs_y, "sk")
-    plt.title(name)
-    plt.axis("equal")
+        plt.plot(self.xI[0], self.xI[1], "bs")
+        plt.plot(self.xG[0], self.xG[1], "gs")
+        plt.plot(obs_x, obs_y, "sk")
+        plt.title(name)
+        plt.axis("equal")
 
-    # animation for the exploring order of visited nodes
-    count = 0
-    for x in visited:
-        count += 1
-        plt.plot(x[0], x[1], linewidth='3', color='#808080', marker='o')
-        plt.gcf().canvas.mpl_connect('key_release_event',
-                                     lambda event: [exit(0) if event.key == 'escape' else None])
-        if count < 500: length = 20
-        elif count < 700: length = 30
-        else: length = 50
 
-        if count % length == 0: plt.pause(0.001)
+    def plot_visited(self, visited):
+        visited.remove(self.xI)
+        count = 0
 
-    # plot optimal path
-    path_x = [path[i][0] for i in range(len(path))]
-    path_y = [path[i][1] for i in range(len(path))]
-    plt.plot(path_x, path_y, linewidth='3', color='r', marker='o')
+        for x in visited:
+            count += 1
+            plt.plot(x[0], x[1], linewidth='3', color='#808080', marker='o')
+            plt.gcf().canvas.mpl_connect('key_release_event', lambda event:
+            [exit(0) if event.key == 'escape' else None])
 
-    # show animation
-    plt.pause(0.01)
-    plt.show()
+            if count < len(visited) / 3:
+                length = 15
+            elif count < len(visited) * 2 / 3:
+                length = 30
+            else:
+                length = 45
+
+            if count % length == 0: plt.pause(0.001)
+
+
+    def plot_path(self, path):
+        path.remove(self.xI)
+        path.remove(self.xG)
+        path_x = [path[i][0] for i in range(len(path))]
+        path_y = [path[i][1] for i in range(len(path))]
+
+        plt.plot(path_x, path_y, linewidth='3', color='r', marker='o')
+        plt.pause(0.01)
+        plt.show()

@@ -8,19 +8,20 @@ import queue
 import env
 import plotting
 
-
 class Dijkstra:
     def __init__(self, x_start, x_goal):
         self.xI, self.xG = x_start, x_goal
 
         self.Env = env.Env()
+        self.plotting = plotting.Plotting(self.xI, self.xG)
+
         self.u_set = self.Env.motions                               # feasible input set
         self.obs = self.Env.obs                                     # position of obstacles
+
         [self.path, self.policy, self.visited] = self.searching(self.xI, self.xG)
 
         self.fig_name = "Dijkstra's Algorithm"
-        plotting.animation(self.xI, self.xG, self.obs,
-                           self.path, self.visited, self.fig_name)  # animation generate
+        self.plotting.animation(self.path, self.visited, self.fig_name)  # animation generate
 
 
     def searching(self, xI, xG):

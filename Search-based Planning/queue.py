@@ -9,14 +9,12 @@
 import collections
 import heapq
 
-
-"""
+class QueueFIFO:
+    """
     Class: QueueFIFO
     Description: QueueFIFO is designed for First-in-First-out rule.
-"""
+    """
 
-
-class QueueFIFO:
     def __init__(self):
         self.queue = collections.deque()
 
@@ -29,14 +27,12 @@ class QueueFIFO:
     def get(self):
         return self.queue.popleft()        # leave from front
 
-
-"""
+class QueueLIFO:
+    """
     Class: QueueLIFO
     Description: QueueLIFO is designed for Last-in-First-out rule.
-"""
+    """
 
-
-class QueueLIFO:
     def __init__(self):
         self.queue = collections.deque()
 
@@ -49,14 +45,12 @@ class QueueLIFO:
     def get(self):
         return self.queue.pop()            # leave from back
 
-
-"""
+class QueuePrior:
+    """
     Class: QueuePrior
     Description: QueuePrior reorders elements using value [priority]
-"""
+    """
 
-
-class QueuePrior:
     def __init__(self):
         self.queue = []
 

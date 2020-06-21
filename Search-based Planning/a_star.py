@@ -8,20 +8,20 @@ import queue
 import plotting
 import env
 
-
 class Astar:
     def __init__(self, x_start, x_goal, heuristic_type):
         self.xI, self.xG = x_start, x_goal
 
         self.Env = env.Env()
+        self.plotting = plotting.Plotting(self.xI, self.xG)
+
         self.u_set = self.Env.motions                               # feasible input set
         self.obs = self.Env.obs                                     # position of obstacles
 
         [self.path, self.policy, self.visited] = self.searching(self.xI, self.xG, heuristic_type)
 
         self.fig_name = "A* Algorithm"
-        plotting.animation(self.xI, self.xG, self.obs,
-                           self.path, self.visited, self.fig_name)  # animation generate
+        self.plotting.animation(self.path, self.visited, self.fig_name)  # animation generate
 
 
     def searching(self, xI, xG, heuristic_type):

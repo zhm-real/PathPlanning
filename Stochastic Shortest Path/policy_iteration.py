@@ -5,26 +5,33 @@
 """
 
 import env
-import tools
+import plotting
 import motion_model
 
-import matplotlib.pyplot as plt
 import numpy as np
-import copy
 import sys
-
+import copy
 
 class Policy_iteration:
     def __init__(self, x_start, x_goal):
-        self.u_set = motion_model.motions                       # feasible input set
         self.xI, self.xG = x_start, x_goal
-        self.e = 0.001                                          # threshold for convergence
-        self.gamma = 0.9                                        # discount factor
-        self.obs = env.obs_map()                                # position of obstacles
-        self.lose = env.lose_map()                              # position of lose states
-        self.name1 = "policy_iteration, e=" + str(self.e) \
-                     + ", gamma=" + str(self.gamma)
-        self.name2 = "convergence of error, e=" + str(self.e)
+        self.e = 0.001  # threshold for convergence
+        self.gamma = 0.9  # discount factor
+
+        self.env = env.Env(self.xI, self.xG)
+        self.motion = motion_model.Motion_model(self.xI, self.xG)
+        self.plotting = plotting.Plotting(self.xI, self.xG)
+
+        self.u_set = self.env.motions  # feasible input set
+        self.stateSpace = self.env.stateSpace  # state space
+        self.obs = self.env.obs_map()  # position of obstacles
+        self.lose = self.env.lose_map()  # position of lose states
+
+        self.name1 = "policy_iteration, gamma=" + str(self.gamma)
+
+        [self.value, self.policy] = self.iteration()
+        self.path = self.extract_path(self.xI, self.xG, self.policy)
+        self.plotting.animation(self.path, self.name1)
 
 
     def policy_evaluation(self, policy, value):
@@ -40,9 +47,9 @@ class Policy_iteration:
 
         while delta > self.e:           # convergence condition
             x_value = 0
-            for x in value:
+            for x in self.stateSpace:
                 if x not in self.xG:
-                    [x_next, p_next] = motion_model.move_prob(x, policy[x], self.obs)
+                    [x_next, p_next] = self.motion.move_next(x, policy[x])
                     v_Q = self.cal_Q_value(x_next, p_next, value)
                     v_diff = abs(value[x] - v_Q)
                     value[x] = v_Q
@@ -62,11 +69,11 @@ class Policy_iteration:
         :return: improved policy table
         """
 
-        for x in value:
+        for x in self.stateSpace:
             if x not in self.xG:
                 value_list = []
                 for u in self.u_set:
-                    [x_next, p_next] = motion_model.move_prob(x, u, self.obs)
+                    [x_next, p_next] = self.motion.move_next(x, u)
                     value_list.append(self.cal_Q_value(x_next, p_next, value))
                 policy[x] = self.u_set[int(np.argmax(value_list))]
 
@@ -83,11 +90,9 @@ class Policy_iteration:
         policy = {}
         count = 0
 
-        for i in range(env.x_range):
-            for j in range(env.y_range):
-                if (i, j) not in self.obs:
-                    value_table[(i, j)] = 0             # initialize value table
-                    policy[(i, j)] = self.u_set[0]      # initialize policy table
+        for x in self.stateSpace:
+            value_table[x] = 0             # initialize value table
+            policy[x] = self.u_set[0]      # initialize policy table
 
         while True:
             count += 1
@@ -112,45 +117,44 @@ class Policy_iteration:
         """
 
         value = 0
-        reward = env.get_reward(x, self.xG, self.lose)                  # get reward of next state
+        reward = self.env.get_reward(x)                  # get reward of next state
         for i in range(len(x)):
             value += p[i] * (reward[i] + self.gamma * table[x[i]])      # cal Q-value
 
         return value
 
 
-    def simulation(self, xI, xG, policy):
+    def extract_path(self, xI, xG, policy):
         """
-        simulate a path using converged policy.
+        extract path from converged policy.
 
         :param xI: starting state
-        :param xG: goal state
+        :param xG: goal states
         :param policy: converged policy
-        :return: simulation path
+        :return: path
         """
 
-        plt.figure(1)                                               # path animation
-        tools.show_map(xI, xG, self.obs, self.lose, self.name1)     # show background
-
-        x, path = xI, []
-        while True:
+        x, path = xI, [xI]
+        while x not in xG:
             u = policy[x]
             x_next = (x[0] + u[0], x[1] + u[1])
             if x_next in self.obs:
-                print("Collision!")                                 # collision: simulation failed
+                print("Collision! Please run again!")
+                break
             else:
+                path.append(x_next)
                 x = x_next
-                if x_next in xG:
-                    break
-                else:
-                    tools.plot_dots(x)                              # each state in optimal path
-                    path.append(x)
-        plt.show()
-
         return path
 
 
     def message(self, count):
+        """
+        print important message.
+
+        :param count: iteration numbers
+        :return: print
+        """
+
         print("starting state: ", self.xI)
         print("goal states: ", self.xG)
         print("condition for convergence: ", self.e)
@@ -163,5 +167,3 @@ if __name__ == '__main__':
     x_Goal = [(49, 5), (49, 25)]
 
     PI = Policy_iteration(x_Start, x_Goal)
-    [value_PI, policy_PI] = PI.iteration()
-    path_PI = PI.simulation(x_Start, x_Goal, policy_PI)

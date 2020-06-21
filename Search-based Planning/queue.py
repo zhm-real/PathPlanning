@@ -3,7 +3,6 @@
 
 """
 @author: Huiming Zhou
-@description: this file defines three kinds of queues that will be used in algorithms.
 """
 
 import collections

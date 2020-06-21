@@ -15,13 +15,13 @@ class Dijkstra:
         self.Env = env.Env()
         self.plotting = plotting.Plotting(self.xI, self.xG)
 
-        self.u_set = self.Env.motions                               # feasible input set
-        self.obs = self.Env.obs                                     # position of obstacles
+        self.u_set = self.Env.motions                                           # feasible input set
+        self.obs = self.Env.obs                                                 # position of obstacles
 
         [self.path, self.policy, self.visited] = self.searching(self.xI, self.xG)
 
         self.fig_name = "Dijkstra's Algorithm"
-        self.plotting.animation(self.path, self.visited, self.fig_name)  # animation generate
+        self.plotting.animation(self.path, self.visited, self.fig_name)         # animation generate
 
 
     def searching(self, xI, xG):

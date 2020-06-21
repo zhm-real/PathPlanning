@@ -15,13 +15,13 @@ class BFS:
         self.Env = env.Env()
         self.plotting = plotting.Plotting(self.xI, self.xG)
 
-        self.u_set = self.Env.motions                               # feasible input set
-        self.obs = self.Env.obs                                     # position of obstacles
+        self.u_set = self.Env.motions                                       # feasible input set
+        self.obs = self.Env.obs                                             # position of obstacles
 
         [self.path, self.policy, self.visited] = self.searching(self.xI, self.xG)
 
         self.fig_name = "Breadth-first Searching"
-        self.plotting.animation(self.path, self.visited, self.fig_name)  # animation generate
+        self.plotting.animation(self.path, self.visited, self.fig_name)     # animation generate
 
 
     def searching(self, xI, xG):
@@ -31,10 +31,10 @@ class BFS:
         :return: planning path, action in each node, visited nodes in the planning process
         """
 
-        q_bfs = queue.QueueFIFO()                                     # first-in-first-out queue
+        q_bfs = queue.QueueFIFO()                                           # first-in-first-out queue
         q_bfs.put(xI)
-        parent = {xI: xI}                                   # record parents of nodes
-        action = {xI: (0, 0)}                                    # record actions of nodes
+        parent = {xI: xI}                                                   # record parents of nodes
+        action = {xI: (0, 0)}                                               # record actions of nodes
         visited = []
 
         while not q_bfs.empty():
@@ -42,13 +42,13 @@ class BFS:
             if x_current == xG:
                 break
             visited.append(x_current)
-            for u_next in self.u_set:                                 # explore neighborhoods of current node
+            for u_next in self.u_set:                                       # explore neighborhoods of current node
                 x_next = tuple([x_current[i] + u_next[i] for i in range(len(x_current))])
-                if x_next not in parent and x_next not in self.obs:   # node not visited and not in obstacles
+                if x_next not in parent and x_next not in self.obs:         # node not visited and not in obstacles
                     q_bfs.put(x_next)
                     parent[x_next], action[x_next] = x_current, u_next
 
-        [path, policy] = self.extract_path(xI, xG, parent, action)     # extract path
+        [path, policy] = self.extract_path(xI, xG, parent, action)          # extract path
 
         return path, policy, visited
 

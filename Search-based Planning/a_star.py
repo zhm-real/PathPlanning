@@ -12,16 +12,16 @@ class Astar:
     def __init__(self, x_start, x_goal, heuristic_type):
         self.xI, self.xG = x_start, x_goal
 
-        self.Env = env.Env()
-        self.plotting = plotting.Plotting(self.xI, self.xG)
+        self.Env = env.Env()                                                        # class Env
+        self.plotting = plotting.Plotting(self.xI, self.xG)                         # class Plotting
 
-        self.u_set = self.Env.motions                               # feasible input set
-        self.obs = self.Env.obs                                     # position of obstacles
+        self.u_set = self.Env.motions                                               # feasible input set
+        self.obs = self.Env.obs                                                     # position of obstacles
 
         [self.path, self.policy, self.visited] = self.searching(self.xI, self.xG, heuristic_type)
 
         self.fig_name = "A* Algorithm"
-        self.plotting.animation(self.path, self.visited, self.fig_name)  # animation generate
+        self.plotting.animation(self.path, self.visited, self.fig_name)             # animation generate
 
 
     def searching(self, xI, xG, heuristic_type):
@@ -31,26 +31,26 @@ class Astar:
         :return: planning path, action in each node, visited nodes in the planning process
         """
 
-        q_astar = queue.QueuePrior()                            # priority queue
+        q_astar = queue.QueuePrior()                                                # priority queue
         q_astar.put(xI, 0)
-        parent = {xI: xI}                                       # record parents of nodes
-        action = {xI: (0, 0)}                                   # record actions of nodes
+        parent = {xI: xI}                                                           # record parents of nodes
+        action = {xI: (0, 0)}                                                       # record actions of nodes
         visited = []
         cost = {xI: 0}
 
         while not q_astar.empty():
             x_current = q_astar.get()
-            if x_current == xG:                                 # stop condition
+            if x_current == xG:                                                     # stop condition
                 break
             visited.append(x_current)
-            for u_next in self.u_set:                           # explore neighborhoods of current node
+            for u_next in self.u_set:                                   # explore neighborhoods of current node
                 x_next = tuple([x_current[i] + u_next[i] for i in range(len(x_current))])
                 if x_next not in self.obs:
                     new_cost = cost[x_current] + self.get_cost(x_current, u_next)
-                    if x_next not in cost or new_cost < cost[x_next]:           # conditions for updating cost
+                    if x_next not in cost or new_cost < cost[x_next]:   # conditions for updating cost
                         cost[x_next] = new_cost
                         priority = new_cost + self.Heuristic(x_next, xG, heuristic_type)
-                        q_astar.put(x_next, priority)           # put node into queue using priority "f+h"
+                        q_astar.put(x_next, priority)                   # put node into queue using priority "f+h"
                         parent[x_next], action[x_next] = x_current, u_next
 
         [path, policy] = self.extract_path(xI, xG, parent, action)
@@ -113,6 +113,7 @@ class Astar:
 
 
 if __name__ == '__main__':
-    x_Start = (5, 5)                # Starting node
-    x_Goal = (49, 5)                # Goal node
+    x_Start = (5, 5)  # Starting node
+    x_Goal = (49, 5)  # Goal node
+
     astar = Astar(x_Start, x_Goal, "manhattan")

@@ -5,27 +5,37 @@
 """
 
 import env
-import tools
+import plotting
 import motion_model
 
-import matplotlib.pyplot as plt
 import numpy as np
 
 
 class SARSA:
     def __init__(self, x_start, x_goal):
-        self.u_set = motion_model.motions                       # feasible input set
         self.xI, self.xG = x_start, x_goal
-        self.M = 500                                            # iteration numbers
-        self.gamma = 0.9                                        # discount factor
+        self.M = 500  # iteration numbers
+        self.gamma = 0.9  # discount factor
         self.alpha = 0.5
-        self.epsilon = 0.1                                      # epsilon error
-        self.obs = env.obs_map()                                # position of obstacles
-        self.lose = env.lose_map()                              # position of lose states
+        self.epsilon = 0.1
+
+        self.env = env.Env(self.xI, self.xG)
+        self.motion = motion_model.Motion_model(self.xI, self.xG)
+        self.plotting = plotting.Plotting(self.xI, self.xG)
+
+        self.u_set = self.env.motions  # feasible input set
+        self.stateSpace = self.env.stateSpace  # state space
+        self.obs = self.env.obs_map()  # position of obstacles
+        self.lose = self.env.lose_map()  # position of lose states
+
         self.name1 = "SARSA, M=" + str(self.M)
 
+        [self.value, self.policy] = self.Monte_Carlo(self.xI, self.xG)
+        self.path = self.extract_path(self.xI, self.xG, self.policy)
+        self.plotting.animation(self.path, self.name1)
 
-    def Monte_Carlo(self):
+
+    def Monte_Carlo(self, xI, xG):
         """
         Monte_Carlo experiments
 
@@ -38,9 +48,9 @@ class SARSA:
         for k in range(self.M):                                                 # iterations
             x = self.state_init()                                               # initial state
             u = self.epsilon_greedy(int(np.argmax(Q_table[x])), self.epsilon)
-            while x != self.xG:                                                 # stop condition
+            while x != xG:                                                 # stop condition
                 x_next = self.move_next(x, self.u_set[u])                       # next state
-                reward = env.get_reward(x_next, self.lose)                      # reward observed
+                reward = self.env.get_reward(x_next)                      # reward observed
                 u_next = self.epsilon_greedy(int(np.argmax(Q_table[x_next])), self.epsilon)
                 Q_table[x][u] = (1 - self.alpha) * Q_table[x][u] + \
                                 self.alpha * (reward + self.gamma * Q_table[x_next][u_next])
@@ -60,17 +70,15 @@ class SARSA:
 
         Q_table = {}
 
-        for i in range(env.x_range):
-            for j in range(env.y_range):
-                u = []
-                if (i, j) not in self.obs:
-                    for k in range(len(self.u_set)):
-                        if (i, j) == self.xG:
-                            u.append(0)
-                        else:
-                            u.append(np.random.random_sample())
-                    Q_table[(i, j)] = u
-
+        for x in self.stateSpace:
+            u = []
+            if x not in self.obs:
+                for k in range(len(self.u_set)):
+                    if x == self.xG:
+                        u.append(0)
+                    else:
+                        u.append(np.random.random_sample())
+                    Q_table[x] = u
         return Q_table
 
 
@@ -80,8 +88,8 @@ class SARSA:
         :return: starting state
         """
         while True:
-            i = np.random.randint(0, env.x_range - 1)
-            j = np.random.randint(0, env.y_range - 1)
+            i = np.random.randint(0, self.env.x_range - 1)
+            j = np.random.randint(0, self.env.y_range - 1)
             if (i, j) not in self.obs:
                 return (i, j)
 
@@ -121,40 +129,36 @@ class SARSA:
             return x
         return x_next
 
-
-    def simulation(self, xI, xG, policy):
+    def extract_path(self, xI, xG, policy):
         """
-        simulate a path using converged policy.
+        extract path from converged policy.
 
         :param xI: starting state
-        :param xG: goal state
+        :param xG: goal states
         :param policy: converged policy
-        :return: simulation path
+        :return: path
         """
 
-        plt.figure(1)                                                   # path animation
-        tools.show_map(xI, xG, self.obs, self.lose, self.name1)         # show background
-
-        x, path = xI, []
-        while True:
+        x, path = xI, [xI]
+        while x not in xG:
             u = self.u_set[policy[x]]
             x_next = (x[0] + u[0], x[1] + u[1])
             if x_next in self.obs:
-                print("Collision!")                                     # collision: simulation failed
+                print("Collision! Please run again!")
+                break
             else:
+                path.append(x_next)
                 x = x_next
-                if x_next == xG:
-                    break
-                else:
-                    tools.plot_dots(x)                                  # each state in optimal path
-                    path.append(x)
-        plt.show()
-        self.message()
-
         return path
 
-
     def message(self):
+        """
+        print important message.
+
+        :param count: iteration numbers
+        :return: print
+        """
+
         print("starting state: ", self.xI)
         print("goal state: ", self.xG)
         print("iteration numbers: ", self.M)
@@ -168,5 +172,3 @@ if __name__ == '__main__':
     x_Goal = (12, 1)
 
     SARSA_CALL = SARSA(x_Start, x_Goal)
-    [value_SARSA, policy_SARSA] = SARSA_CALL.Monte_Carlo()
-    path_VI = SARSA_CALL.simulation(x_Start, x_Goal, policy_SARSA)

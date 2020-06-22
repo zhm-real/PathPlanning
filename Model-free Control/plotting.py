@@ -1,11 +1,6 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-@author: huiming zhou
-"""
-
 import matplotlib.pyplot as plt
 import env
+
 
 class Plotting():
     def __init__(self, xI, xG):
@@ -39,10 +34,10 @@ class Plotting():
         obs_x = [self.obs[i][0] for i in range(len(self.obs))]
         obs_y = [self.obs[i][1] for i in range(len(self.obs))]
 
-        plt.plot(self.xI[0], self.xI[1], "bs", ms = 24)
-        plt.plot(self.xG[0], self.xG[1], "gs", ms = 24)
+        plt.plot(self.xI[0], self.xI[1], "bs", ms=24)
+        plt.plot(self.xG[0], self.xG[1], "gs", ms=24)
 
-        plt.plot(obs_x, obs_y, "sk", ms = 24)
+        plt.plot(obs_x, obs_y, "sk", ms=24)
         plt.title(name)
         plt.axis("equal")
 
@@ -55,7 +50,7 @@ class Plotting():
         lose_x = [self.lose[i][0] for i in range(len(self.lose))]
         lose_y = [self.lose[i][1] for i in range(len(self.lose))]
 
-        plt.plot(lose_x, lose_y, color = '#A52A2A', marker = 's', ms = 24)
+        plt.plot(lose_x, lose_y, color='#A52A2A', marker='s', ms=24)
 
     def plot_visited(self, visited):
         """
@@ -88,7 +83,7 @@ class Plotting():
         path.remove(self.xG)
 
         for x in path:
-            plt.plot(x[0], x[1], color='#808080', marker='o', ms = 23)
+            plt.plot(x[0], x[1], color='#808080', marker='o', ms=23)
             plt.gcf().canvas.mpl_connect('key_release_event', lambda event:
             [exit(0) if event.key == 'escape' else None])
             plt.pause(0.001)

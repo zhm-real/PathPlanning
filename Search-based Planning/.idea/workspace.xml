@@ -2,16 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/Search-based Planning.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Search-based Planning.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/a_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/a_star.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bfs.py" beforeDir="false" afterPath="$PROJECT_DIR$/bfs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dfs.py" beforeDir="false" afterPath="$PROJECT_DIR$/dfs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dijkstra.py" beforeDir="false" afterPath="$PROJECT_DIR$/dijkstra.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env.py" beforeDir="false" afterPath="$PROJECT_DIR$/env.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plotting.py" beforeDir="false" afterPath="$PROJECT_DIR$/plotting.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/queue.py" beforeDir="false" afterPath="$PROJECT_DIR$/queue.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,7 +35,7 @@
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.bfs">
+  <component name="RunManager" selected="Python.a_star">
     <configuration name="a_star" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Search-based Planning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -152,8 +143,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.bfs" />
         <item itemvalue="Python.a_star" />
+        <item itemvalue="Python.bfs" />
         <item itemvalue="Python.dfs" />
         <item itemvalue="Python.dijkstra" />
         <item itemvalue="Python.searching" />
@@ -186,25 +177,25 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1832" height="296" key="GridCell.Tab.0.bottom" timestamp="1592800940514">
+    <state width="1832" height="296" key="GridCell.Tab.0.bottom" timestamp="1592801510790">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1832" height="296" key="GridCell.Tab.0.bottom/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1592800940514" />
-    <state width="1832" height="296" key="GridCell.Tab.0.center" timestamp="1592800940514">
+    <state width="1832" height="296" key="GridCell.Tab.0.bottom/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1592801510790" />
+    <state width="1832" height="296" key="GridCell.Tab.0.center" timestamp="1592801510790">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1832" height="296" key="GridCell.Tab.0.center/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1592800940514" />
-    <state width="1832" height="296" key="GridCell.Tab.0.left" timestamp="1592800940514">
+    <state width="1832" height="296" key="GridCell.Tab.0.center/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1592801510790" />
+    <state width="1832" height="296" key="GridCell.Tab.0.left" timestamp="1592801510789">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1832" height="296" key="GridCell.Tab.0.left/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1592800940514" />
-    <state width="1832" height="296" key="GridCell.Tab.0.right" timestamp="1592800940514">
+    <state width="1832" height="296" key="GridCell.Tab.0.left/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1592801510789" />
+    <state width="1832" height="296" key="GridCell.Tab.0.right" timestamp="1592801510790">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1832" height="296" key="GridCell.Tab.0.right/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1592800940514" />
-    <state x="2406" y="174" key="SettingsEditor" timestamp="1592800563456">
+    <state width="1832" height="296" key="GridCell.Tab.0.right/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1592801510790" />
+    <state x="2406" y="174" key="SettingsEditor" timestamp="1592801555194">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state x="2406" y="174" key="SettingsEditor/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1592800563456" />
+    <state x="2406" y="174" key="SettingsEditor/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1592801555194" />
   </component>
 </project>

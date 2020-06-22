@@ -1,11 +1,6 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-@author: huiming zhou
-"""
-
 import matplotlib.pyplot as plt
 import env
+
 
 class Plotting():
     def __init__(self, xI, xG):
@@ -13,7 +8,6 @@ class Plotting():
         self.env = env.Env(self.xI, self.xG)
         self.obs = self.env.obs_map()
         self.lose = self.env.lose_map()
-
 
     def animation(self, path, name):
         """
@@ -28,7 +22,6 @@ class Plotting():
         self.plot_grid(name)
         self.plot_lose()
         self.plot_path(path)
-
 
     def plot_grid(self, name):
         """
@@ -49,7 +42,6 @@ class Plotting():
         plt.title(name)
         plt.axis("equal")
 
-
     def plot_lose(self):
         """
         plot losing states in environment.
@@ -59,8 +51,7 @@ class Plotting():
         lose_x = [self.lose[i][0] for i in range(len(self.lose))]
         lose_y = [self.lose[i][1] for i in range(len(self.lose))]
 
-        plt.plot(lose_x, lose_y, color = '#A52A2A', marker = 's')
-
+        plt.plot(lose_x, lose_y, color='#A52A2A', marker='s')
 
     def plot_visited(self, visited):
         """
@@ -88,7 +79,6 @@ class Plotting():
 
             if count % length == 0: plt.pause(0.001)
 
-
     def plot_path(self, path):
         path.remove(self.xI)
         for x in self.xG:
@@ -102,7 +92,6 @@ class Plotting():
             plt.pause(0.001)
         plt.show()
         plt.pause(0.5)
-
 
     def plot_diff(self, diff, name):
         plt.figure(2)

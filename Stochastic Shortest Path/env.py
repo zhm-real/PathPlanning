@@ -1,12 +1,6 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-@author: huiming zhou
-"""
-
-class Env():
+class Env:
     def __init__(self, xI, xG):
-        self.x_range = 51           # size of background
+        self.x_range = 51  # size of background
         self.y_range = 31
         self.motions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
         self.xI = xI
@@ -14,7 +8,6 @@ class Env():
         self.obs = self.obs_map()
         self.lose = self.lose_map()
         self.stateSpace = self.state_space()
-
 
     def obs_map(self):
         """
@@ -48,7 +41,6 @@ class Env():
 
         return obs
 
-
     def lose_map(self):
         """
         Initialize losing states' positions
@@ -60,7 +52,6 @@ class Env():
             lose.append((i, 13))
 
         return lose
-
 
     def state_space(self):
         """
@@ -76,7 +67,6 @@ class Env():
 
         return state_space
 
-
     def get_reward(self, x_next):
         """
         calculate reward of next state
@@ -88,10 +78,10 @@ class Env():
         reward = []
         for x in x_next:
             if x in self.xG:
-                reward.append(10)       # reward : 10, for goal states
+                reward.append(10)  # reward : 10, for goal states
             elif x in self.lose:
-                reward.append(-10)      # reward : -10, for lose states
+                reward.append(-10)  # reward : -10, for lose states
             else:
-                reward.append(0)        # reward : 0, for other states
+                reward.append(0)  # reward : 0, for other states
 
         return reward

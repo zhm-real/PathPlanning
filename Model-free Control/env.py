@@ -1,10 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-@author: huiming zhou
-"""
-
-class Env():
+class Env:
     def __init__(self, xI, xG):
         self.x_range = 14                           # size of background
         self.y_range = 6

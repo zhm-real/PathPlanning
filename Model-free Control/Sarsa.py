@@ -1,20 +1,15 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-@author: huiming zhou
-"""
-
 import env
 import plotting
 import motion_model
 
 import numpy as np
 
+
 class SARSA:
     def __init__(self, x_start, x_goal):
         self.xI, self.xG = x_start, x_goal
-        self.M = 500                                # iteration numbers
-        self.gamma = 0.9                            # discount factor
+        self.M = 500  # iteration numbers
+        self.gamma = 0.9  # discount factor
         self.alpha = 0.5
         self.epsilon = 0.1
 
@@ -22,10 +17,10 @@ class SARSA:
         self.motion = motion_model.Motion_model(self.xI, self.xG)
         self.plotting = plotting.Plotting(self.xI, self.xG)
 
-        self.u_set = self.env.motions               # feasible input set
-        self.stateSpace = self.env.stateSpace       # state space
-        self.obs = self.env.obs_map()               # position of obstacles
-        self.lose = self.env.lose_map()             # position of lose states
+        self.u_set = self.env.motions  # feasible input set
+        self.stateSpace = self.env.stateSpace  # state space
+        self.obs = self.env.obs_map()  # position of obstacles
+        self.lose = self.env.lose_map()  # position of lose states
 
         self.name1 = "Q-learning, M=" + str(self.M)
 
@@ -40,22 +35,22 @@ class SARSA:
         :return: Q_table, policy
         """
 
-        Q_table = self.table_init()                                             # Q_table initialization
-        policy = {}                                                             # policy table
+        Q_table = self.table_init()  # Q_table initialization
+        policy = {}  # policy table
 
-        for k in range(self.M):                                                 # iterations
-            x = self.state_init()                                               # initial state
+        for k in range(self.M):  # iterations
+            x = self.state_init()  # initial state
             u = self.epsilon_greedy(int(np.argmax(Q_table[x])), self.epsilon)
-            while x != xG:                                                      # stop condition
-                x_next = self.move_next(x, self.u_set[u])                       # next state
-                reward = self.env.get_reward(x_next)                            # reward observed
+            while x != xG:  # stop condition
+                x_next = self.move_next(x, self.u_set[u])  # next state
+                reward = self.env.get_reward(x_next)  # reward observed
                 u_next = self.epsilon_greedy(int(np.argmax(Q_table[x_next])), self.epsilon)
                 Q_table[x][u] = (1 - self.alpha) * Q_table[x][u] + \
                                 self.alpha * (reward + self.gamma * Q_table[x_next][u_next])
                 x, u = x_next, u_next
 
         for x in Q_table:
-            policy[x] = int(np.argmax(Q_table[x]))                              # extract policy
+            policy[x] = int(np.argmax(Q_table[x]))  # extract policy
 
         return Q_table, policy
 
@@ -102,10 +97,14 @@ class SARSA:
             u_e = u
             while u_e == u:
                 p = np.random.random_sample()
-                if p < 0.25: u_e = 0
-                elif p < 0.5: u_e = 1
-                elif p < 0.75: u_e = 2
-                else: u_e = 3
+                if p < 0.25:
+                    u_e = 0
+                elif p < 0.5:
+                    u_e = 1
+                elif p < 0.75:
+                    u_e = 2
+                else:
+                    u_e = 3
             return u_e
         return u
 

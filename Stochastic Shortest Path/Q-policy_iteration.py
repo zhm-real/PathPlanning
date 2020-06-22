@@ -1,9 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-@author: huiming zhou
-"""
-
 import env
 import plotting
 import motion_model
@@ -12,27 +6,27 @@ import numpy as np
 import copy
 import sys
 
+
 class Q_policy_iteration:
     def __init__(self, x_start, x_goal):
         self.xI, self.xG = x_start, x_goal
-        self.e = 0.001                                  # threshold for convergence
-        self.gamma = 0.9                                # discount factor
+        self.e = 0.001  # threshold for convergence
+        self.gamma = 0.9  # discount factor
 
-        self.env = env.Env(self.xI, self.xG)                        # class Env
-        self.motion = motion_model.Motion_model(self.xI, self.xG)   # class Motion_model
-        self.plotting = plotting.Plotting(self.xI, self.xG)         # class Plotting
+        self.env = env.Env(self.xI, self.xG)  # class Env
+        self.motion = motion_model.Motion_model(self.xI, self.xG)  # class Motion_model
+        self.plotting = plotting.Plotting(self.xI, self.xG)  # class Plotting
 
-        self.u_set = self.env.motions                               # feasible input set
-        self.stateSpace = self.env.stateSpace                       # state space
-        self.obs = self.env.obs_map()                               # position of obstacles
-        self.lose = self.env.lose_map()                             # position of lose states
+        self.u_set = self.env.motions  # feasible input set
+        self.stateSpace = self.env.stateSpace  # state space
+        self.obs = self.env.obs_map()  # position of obstacles
+        self.lose = self.env.lose_map()  # position of lose states
 
         self.name1 = "Q-policy_iteration, gamma=" + str(self.gamma)
 
         [self.value, self.policy] = self.iteration()
         self.path = self.extract_path(self.xI, self.xG, self.policy)
         self.plotting.animation(self.path, self.name1)
-
 
     def policy_evaluation(self, policy, value):
         """
@@ -45,7 +39,7 @@ class Q_policy_iteration:
 
         delta = sys.maxsize
 
-        while delta > self.e:               # convergence condition
+        while delta > self.e:  # convergence condition
             x_value = 0
             for x in value:
                 if x not in self.xG:
@@ -59,7 +53,6 @@ class Q_policy_iteration:
             delta = x_value
 
         return value
-
 
     def policy_improvement(self, policy, value):
         """
@@ -76,7 +69,6 @@ class Q_policy_iteration:
 
         return policy
 
-
     def iteration(self):
         """
         Q-policy iteration
@@ -88,20 +80,19 @@ class Q_policy_iteration:
         count = 0
 
         for x in self.stateSpace:
-            Q_table[x] = [0, 0, 0, 0]              # initialize Q_value table
-            policy[x] = 0                          # initialize policy table
+            Q_table[x] = [0, 0, 0, 0]  # initialize Q_value table
+            policy[x] = 0  # initialize policy table
 
         while True:
             count += 1
             policy_back = copy.deepcopy(policy)
-            Q_table = self.policy_evaluation(policy, Q_table)   # evaluation process
-            policy = self.policy_improvement(policy, Q_table)   # improvement process
-            if policy_back == policy: break                     # convergence condition
+            Q_table = self.policy_evaluation(policy, Q_table)  # evaluation process
+            policy = self.policy_improvement(policy, Q_table)  # improvement process
+            if policy_back == policy: break  # convergence condition
 
         self.message(count)
 
         return Q_table, policy
-
 
     def cal_Q_value(self, x, p, policy, table):
         """
@@ -114,12 +105,11 @@ class Q_policy_iteration:
         """
 
         value = 0
-        reward = self.env.get_reward(x)                  # get reward of next state
+        reward = self.env.get_reward(x)  # get reward of next state
         for i in range(len(x)):
             value += p[i] * (reward[i] + self.gamma * table[x[i]][policy[x[i]]])
 
         return value
-
 
     def extract_path(self, xI, xG, policy):
         """
@@ -142,7 +132,6 @@ class Q_policy_iteration:
                 path.append(x_next)
                 x = x_next
         return path
-
 
     def message(self, count):
         """

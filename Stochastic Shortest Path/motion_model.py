@@ -1,16 +1,10 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-@author: huiming zhou
-"""
-
 import env
+
 
 class Motion_model():
     def __init__(self, xI, xG):
         self.env = env.Env(xI, xG)
         self.obs = self.env.obs_map()
-
 
     def move_next(self, x, u, eta=0.2):
         """

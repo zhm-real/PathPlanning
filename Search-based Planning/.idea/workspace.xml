@@ -1,7 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../Sampling-based Planning/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Sampling-based Planning/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Sampling-based Planning/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Sampling-based Planning/RRT.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Sampling-based Planning/env.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Sampling-based Planning/plotting.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -177,22 +201,26 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1832" height="296" key="GridCell.Tab.0.bottom" timestamp="1592801510790">
+    <state x="2700" y="297" width="424" height="482" key="FileChooserDialogImpl" timestamp="1592802293738">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1832" height="296" key="GridCell.Tab.0.bottom/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1592801510790" />
-    <state width="1832" height="296" key="GridCell.Tab.0.center" timestamp="1592801510790">
+    <state x="2700" y="297" width="424" height="482" key="FileChooserDialogImpl/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1592802293738" />
+    <state width="1832" height="296" key="GridCell.Tab.0.bottom" timestamp="1592801972746">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1832" height="296" key="GridCell.Tab.0.center/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1592801510790" />
-    <state width="1832" height="296" key="GridCell.Tab.0.left" timestamp="1592801510789">
+    <state width="1832" height="296" key="GridCell.Tab.0.bottom/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1592801972746" />
+    <state width="1832" height="296" key="GridCell.Tab.0.center" timestamp="1592801972746">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1832" height="296" key="GridCell.Tab.0.left/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1592801510789" />
-    <state width="1832" height="296" key="GridCell.Tab.0.right" timestamp="1592801510790">
+    <state width="1832" height="296" key="GridCell.Tab.0.center/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1592801972746" />
+    <state width="1832" height="296" key="GridCell.Tab.0.left" timestamp="1592801972746">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1832" height="296" key="GridCell.Tab.0.right/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1592801510790" />
+    <state width="1832" height="296" key="GridCell.Tab.0.left/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1592801972746" />
+    <state width="1832" height="296" key="GridCell.Tab.0.right" timestamp="1592801972746">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1832" height="296" key="GridCell.Tab.0.right/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1592801972746" />
     <state x="2406" y="174" key="SettingsEditor" timestamp="1592801555194">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>

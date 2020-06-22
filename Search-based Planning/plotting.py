@@ -1,11 +1,6 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-@author: huiming zhou
-"""
-
 import matplotlib.pyplot as plt
 import env
+
 
 class Plotting():
     def __init__(self, xI, xG):
@@ -13,12 +8,10 @@ class Plotting():
         self.env = env.Env()
         self.obs = self.env.obs_map()
 
-
     def animation(self, path, visited, name):
         self.plot_grid(name)
         self.plot_visited(visited)
         self.plot_path(path)
-
 
     def plot_grid(self, name):
         obs_x = [self.obs[i][0] for i in range(len(self.obs))]
@@ -29,7 +22,6 @@ class Plotting():
         plt.plot(obs_x, obs_y, "sk")
         plt.title(name)
         plt.axis("equal")
-
 
     def plot_visited(self, visited):
         visited.remove(self.xI)
@@ -49,7 +41,6 @@ class Plotting():
                 length = 45
 
             if count % length == 0: plt.pause(0.001)
-
 
     def plot_path(self, path):
         path.remove(self.xI)

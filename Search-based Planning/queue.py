@@ -1,12 +1,6 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-"""
-@author: Huiming Zhou
-"""
-
 import collections
 import heapq
+
 
 class QueueFIFO:
     """
@@ -21,10 +15,11 @@ class QueueFIFO:
         return len(self.queue) == 0
 
     def put(self, node):
-        self.queue.append(node)            # enter from back
+        self.queue.append(node)  # enter from back
 
     def get(self):
-        return self.queue.popleft()        # leave from front
+        return self.queue.popleft()  # leave from front
+
 
 class QueueLIFO:
     """
@@ -39,10 +34,11 @@ class QueueLIFO:
         return len(self.queue) == 0
 
     def put(self, node):
-        self.queue.append(node)            # enter from back
+        self.queue.append(node)  # enter from back
 
     def get(self):
-        return self.queue.pop()            # leave from back
+        return self.queue.pop()  # leave from back
+
 
 class QueuePrior:
     """
@@ -57,7 +53,7 @@ class QueuePrior:
         return len(self.queue) == 0
 
     def put(self, item, priority):
-        heapq.heappush(self.queue, (priority, item))    # reorder x using priority
+        heapq.heappush(self.queue, (priority, item))  # reorder x using priority
 
     def get(self):
-        return heapq.heappop(self.queue)[1]             # pop out the smallest item
+        return heapq.heappop(self.queue)[1]  # pop out the smallest item

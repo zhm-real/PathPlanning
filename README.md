@@ -4,7 +4,7 @@ Directory Structure
     └── Search-based Planning
         ├── bfs.py                                  # breadth-first
         ├── dfs.py                                  # depth-first
-        ├── dijkstra.py                             # dijkstra's
+        ├── dijkstra.py                             # dijkstra
         ├── a_star.py                               # a*
         ├── queue.py                                # FIFO, FILO, Priority queues
         ├── env.py                                  # environment: grid world, motions

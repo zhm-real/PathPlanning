@@ -8,35 +8,23 @@ class Plotting:
         self.xI, self.xG = xI, xG
         self.env = env.Env()
         self.obs_bound = self.env.obs_boundary
-        self.obs_circle = self.env.obs_circle
+        self.obs_circle = self.env.obs
 
-    def animation(self, nodelist, node_rand=None):
-        plt.clf()
-        # for stopping simulation with the esc key.
-        plt.gcf().canvas.mpl_connect('key_release_event',
-                                     lambda event: [exit(0) if event.key == 'escape' else None])
-        if node_rand is not None:
-            plt.plot(node_rand.x, node_rand.y, "^k")
+    def animation(self, nodelist, path):
+        if path is None:
+            print("No path found!")
+            return
 
-        for node in nodelist:
-            if node.parent:
-                plt.plot(node.path_x, node.path_y, "-g")
-
-        plt.plot(self.xI[0], self.xI[1], "b*")
-        plt.plot(self.xG[0], self.xG[1], "g*")
-
-        plt.axis("equal")
-        plt.axis([-5, 55, -5, 35])
-        plt.title("RRT")
-        plt.grid(True)
-        plt.pause(0.01)
+        self.plot_visited(nodelist)
+        self.plot_path(path)
 
     def plot_grid(self, name):
         fig, ax = plt.subplots()
+
         for x in self.obs_bound:
             ax.add_patch(
                 patches.Rectangle(
-                    (x[0], x[1]), x[2], x[2],
+                    (x[0], x[1]), x[2], x[3],
                     edgecolor='black',
                     facecolor='black',
                     fill=True
@@ -47,44 +35,28 @@ class Plotting:
             ax.add_patch(
                 patches.Circle(
                     (x[0], x[1]), x[2],
-                    edgecolor='gray',
+                    edgecolor='black',
                     facecolor='gray',
                     fill=True
                 )
             )
 
-        plt.plot(self.xI[0], self.xI[1], "b*")
-        plt.plot(self.xG[0], self.xG[1], "g*")
-
+        plt.plot(self.xI[0], self.xI[1], "bs", linewidth=3)
+        plt.plot(self.xG[0], self.xG[1], "gs", linewidth=3)
         plt.title(name)
         plt.axis("equal")
-        plt.show()
 
-    def plot_visited(self, visited):
-        visited.remove(self.xI)
-        count = 0
+    @staticmethod
+    def plot_visited(nodelist):
+        for node in nodelist:
+            if node.parent:
+                plt.plot(node.path_x, node.path_y, "-g")
+                plt.gcf().canvas.mpl_connect('key_release_event',
+                                             lambda event: [exit(0) if event.key == 'escape' else None])
+                plt.pause(0.001)
 
-        for x in visited:
-            count += 1
-            plt.plot(x[0], x[1], linewidth='3', color='#808080', marker='o')
-            plt.gcf().canvas.mpl_connect('key_release_event',
-                                         lambda event: [exit(0) if event.key == 'escape' else None])
-
-            if count < len(visited) / 3:
-                length = 15
-            elif count < len(visited) * 2 / 3:
-                length = 30
-            else:
-                length = 45
-
-            if count % length == 0: plt.pause(0.001)
-
-    def plot_path(self, path):
-        path.remove(self.xI)
-        path.remove(self.xG)
-        path_x = [path[i][0] for i in range(len(path))]
-        path_y = [path[i][1] for i in range(len(path))]
-
-        plt.plot(path_x, path_y, linewidth='3', color='r', marker='o')
+    @staticmethod
+    def plot_path(path):
+        plt.plot([x[0] for x in path], [x[1] for x in path], '-r', linewidth=2)
         plt.pause(0.01)
         plt.show()

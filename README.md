@@ -18,6 +18,12 @@ Directory Structure
         ├── Sarsa.py                                # SARSA : on-policy TD control
         └── Q-learning.py                           # Q-learning : off-policy TD control
     └── Sampling-based Planning
+        └── rrt_2D
+            ├── rrt.py                              # rrt : goal-biased rrt
+            └── rrt_star.py
+        └── rrt_3D
+            ├── rrt3D.py                            # rrt3D : goal-biased rrt3D
+            └── rrtstar3D.py
 
 ## Animations
 ### Dijkstra's & A*

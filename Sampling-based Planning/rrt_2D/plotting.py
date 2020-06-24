@@ -3,9 +3,14 @@ Plotting tools for RRT_2D
 @author: huiming zhou
 """
 
-
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
+                "/../../Sampling-based Planning/")
 
 from rrt_2D import env
 

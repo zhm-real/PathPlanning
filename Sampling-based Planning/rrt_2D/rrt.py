@@ -12,17 +12,17 @@ class Node:
         self.parent = None
 
 
-class RRT:
-    def __init__(self, xI, xG):
-        self.xI = Node(xI)
-        self.xG = Node(xG)
-        self.expand_len = 0.4
-        self.goal_sample_rate = 0.05
-        self.iterations = 5000
-        self.node_list = [self.xI]
+class Rrt:
+    def __init__(self, x_start, x_goal, expand_len, goal_sample_rate, iter_limit):
+        self.xI = Node(x_start)
+        self.xG = Node(x_goal)
+        self.expand_len = expand_len
+        self.goal_sample_rate = goal_sample_rate
+        self.iter_limit = iter_limit
+        self.vertex = [self.xI]
 
         self.env = env.Env()
-        self.plotting = plotting.Plotting(xI, xG)
+        self.plotting = plotting.Plotting(x_start, x_goal)
 
         self.x_range = self.env.x_range
         self.y_range = self.env.y_range
@@ -30,33 +30,31 @@ class RRT:
         self.obs_rectangle = self.env.obs_rectangle
         self.obs_boundary = self.env.obs_boundary
 
-        self.path = self.planning()
-        self.plotting.animation(self.node_list, self.path)
-
     def planning(self):
-        for i in range(self.iterations):
-            node_rand = self.random_state()
-            node_near = self.nearest_neighbor(self.node_list, node_rand)
+        for i in range(self.iter_limit):
+            node_rand = self.random_state(self.goal_sample_rate)
+            node_near = self.nearest_neighbor(self.vertex, node_rand)
             node_new = self.new_state(node_near, node_rand)
 
-            if not self.check_collision(node_new):
-                self.node_list.append(node_new)
+            if node_new and not self.check_collision(node_new):
+                self.vertex.append(node_new)
+                dist, _ = self.get_distance_and_angle(node_new, self.xG)
 
-            if self.dis_to_goal(self.node_list[-1]) <= self.expand_len:
-                self.new_state(self.node_list[-1], self.xG)
-                return self.extract_path(self.node_list)
+                if dist <= self.expand_len:
+                    self.new_state(node_new, self.xG)
+                    return self.extract_path(node_new)
 
         return None
 
-    def random_state(self):
-        if np.random.random() > self.goal_sample_rate:
+    def random_state(self, goal_sample_rate):
+        if np.random.random() > goal_sample_rate:
             return Node((np.random.uniform(self.x_range[0], self.x_range[1]),
                          np.random.uniform(self.y_range[0], self.y_range[1])))
         return self.xG
 
     def nearest_neighbor(self, node_list, n):
-        return self.node_list[int(np.argmin([math.hypot(nd.x - n.x, nd.y - n.y)
-                                             for nd in node_list]))]
+        return self.vertex[int(np.argmin([math.hypot(nd.x - n.x, nd.y - n.y)
+                                          for nd in node_list]))]
 
     def new_state(self, node_start, node_end):
         node_new = Node((node_start.x, node_start.y))
@@ -69,9 +67,9 @@ class RRT:
 
         return node_new
 
-    def extract_path(self, nodelist):
+    def extract_path(self, node_end):
         path = [(self.xG.x, self.xG.y)]
-        node_now = nodelist[-1]
+        node_now = node_end
 
         while node_now.parent is not None:
             node_now = node_now.parent
@@ -79,13 +77,7 @@ class RRT:
 
         return path
 
-    def dis_to_goal(self, node_cal):
-        return math.hypot(node_cal.x - self.xG.x, node_cal.y - self.xG.y)
-
     def check_collision(self, node_end):
-        if node_end is None:
-            return True
-
         for (ox, oy, r) in self.obs_circle:
             if math.hypot(node_end.x - ox, node_end.y - oy) <= r:
                 return True
@@ -107,8 +99,18 @@ class RRT:
         return math.hypot(dx, dy), math.atan2(dy, dx)
 
 
-if __name__ == '__main__':
-    x_Start = (2, 2)  # Starting node
-    x_Goal = (49, 28)  # Goal node
+def main():
+    x_start = (2, 2)  # Starting node
+    x_goal = (49, 28)  # Goal node
 
-    rrt = RRT(x_Start, x_Goal)
+    rrt = Rrt(x_start, x_goal, 0.4, 0.05, 2000)
+    path = rrt.planning()
+
+    if path:
+        rrt.plotting.animation(rrt.vertex, path)
+    else:
+        print("No Path Found!")
+
+
+if __name__ == '__main__':
+    main()

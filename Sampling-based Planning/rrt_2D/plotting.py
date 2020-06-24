@@ -5,17 +5,14 @@ from rrt_2D import env
 
 
 class Plotting:
-    def __init__(self, xI, xG):
-        self.xI, self.xG = xI, xG
+    def __init__(self, x_start, x_goal):
+        self.xI, self.xG = x_start, x_goal
         self.env = env.Env()
         self.obs_bound = self.env.obs_boundary
         self.obs_circle = self.env.obs_circle
         self.obs_rectangle = self.env.obs_rectangle
 
     def animation(self, nodelist, path, animation=False):
-        if path is None:
-            print("No path found!")
-            return
         self.plot_grid("RRT")
         self.plot_visited(nodelist, animation)
         self.plot_path(path)
@@ -55,6 +52,7 @@ class Plotting:
 
         plt.plot(self.xI[0], self.xI[1], "bs", linewidth=3)
         plt.plot(self.xG[0], self.xG[1], "gs", linewidth=3)
+
         plt.title(name)
         plt.axis("equal")
 
@@ -71,7 +69,6 @@ class Plotting:
             for node in nodelist:
                 if node.parent:
                     plt.plot([node.parent.x, node.x], [node.parent.y, node.y], "-g")
-
 
     @staticmethod
     def plot_path(path):

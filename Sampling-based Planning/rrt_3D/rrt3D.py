@@ -5,11 +5,16 @@ This is rrt star code for 3D
 """
 import numpy as np
 from numpy.matlib import repmat
-from rrt_3D.env3D import env
 from collections import defaultdict
-import pyrr as pyrr
-from rrt_3D.utils3D import getDist, sampleFree, nearest, steer, isCollide, near, visualization, cost, path, edgeset
 import time
+
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__))+"/../../Sampling-based Planning/")
+
+from rrt_3D.env3D import env
+from rrt_3D.utils3D import getDist, sampleFree, nearest, steer, isCollide, near, visualization, cost, path, edgeset
+
 
 
 class rrtstar():

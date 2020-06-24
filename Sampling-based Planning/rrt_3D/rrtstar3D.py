@@ -5,10 +5,10 @@ This is rrt star code for 3D
 """
 import numpy as np
 from numpy.matlib import repmat
-from rrt_3D.env3D import env
+from env3D import env
 from collections import defaultdict
 import pyrr as pyrr
-from rrt_3D.utils3D import getDist, sampleFree, nearest, steer, isCollide, near, visualization, cost, path
+from utils3D import getDist, sampleFree, nearest, steer, isCollide, near, visualization, cost, path
 import time
 
 
@@ -66,6 +66,7 @@ class rrtstar():
                             self.wireup(xnear,xnew)
                 self.i += 1
             ind += 1
+            # when the goal is reached
             if getDist(xnew,self.env.goal) <= 1:
                 self.wireup(self.env.goal,xnew)
                 self.Path,D = path(self)

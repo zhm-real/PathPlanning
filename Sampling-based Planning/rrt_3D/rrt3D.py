@@ -5,7 +5,7 @@ This is rrt star code for 3D
 """
 import numpy as np
 from numpy.matlib import repmat
-from rrt_3D.env3D import env
+from env3D import env
 from collections import defaultdict
 import pyrr as pyrr
 from utils3D import getDist, sampleFree, nearest, steer, isCollide, near, visualization, cost, path
@@ -26,11 +26,6 @@ class rrtstar():
     def wireup(self,x,y):
         self.E.append([x,y]) # add edge
         self.Parent[str(x[0])][str(x[1])][str(x[2])] = y
-
-    def removewire(self,xnear):
-        xparent = self.Parent[str(xnear[0])][str(xnear[1])][str(xnear[2])]
-        a = np.array([xnear,xparent])
-        self.E = [xx for xx in self.E if not (xx==a).all()] # remove and replace old the connection
 
     def run(self):
         self.V.append(self.env.start)

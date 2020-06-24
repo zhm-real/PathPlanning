@@ -64,11 +64,15 @@ def draw_block_list(ax, blocks):
 
 
 def sampleFree(initparams):
+    '''biased sampling'''
     x = np.random.uniform(initparams.env.boundary[0:3], initparams.env.boundary[3:6])
+    i = np.random.random()
     if isinside(initparams, x):
         return sampleFree(initparams)
     else:
-        return np.array(x)
+        if i < 0.05:
+            return initparams.env.goal
+        else: return np.array(x)
 
 
 def isinside(initparams, x):
@@ -107,8 +111,9 @@ def steer(initparams, x, y):
     return xnew
 
 
-def near(initparams, x, r=2):
+def near(initparams, x):
     # TODO: r = min{gamma*log(card(V)/card(V)1/d),eta}
+    r = initparams.stepsize
     V = np.array(initparams.V)
     if initparams.i == 0:
         return initparams.V[0]
@@ -128,7 +133,7 @@ def cost(initparams, x):
 
 def visualization(initparams):
     V = np.array(initparams.V)
-    E = np.array(initparams.E)
+    E = initparams.E
     Path = np.array(initparams.Path)
     start = initparams.env.start
     goal = initparams.env.goal
@@ -136,8 +141,9 @@ def visualization(initparams):
     ax.view_init(elev=0., azim=90)
     ax.clear()
     draw_block_list(ax, initparams.env.blocks)
-    if E != []:
-        for i in E:
+    edges = E.get_edge()
+    if edges != []:
+        for i in edges:
             xs = i[0][0], i[1][0]
             ys = i[0][1], i[1][1]
             zs = i[0][2], i[1][2]
@@ -175,3 +181,40 @@ def path(initparams, Path=[], dist=0):
         x = x2
     return Path, dist
 
+class edgeset(object):
+    def __init__(self):
+        self.E = {}
+
+    def hash(self,x):
+        return str(x[0])+' '+str(x[1])+' '+str(x[2])
+
+    def dehash(self,x):
+        return np.array([float(i) for i in x.split(' ')])
+
+    def add_edge(self,edge):
+        x, y = self.hash(edge[0]),self.hash(edge[1])
+        if x in self.E:
+            self.E[x].append(y)
+        else:
+            self.E[x] = [y]
+
+    def remove_edge(self,edge):
+        x, y = edge[0],edge[1]
+        self.E[self.hash(x)].remove(self.hash(y))
+
+    def get_edge(self):
+        edges = []
+        for v in self.E:
+            for n in self.E[v]:
+                #if (n,v) not in edges:
+                edges.append((self.dehash(v),self.dehash(n)))
+        return edges
+
+if __name__ == '__main__':
+    x = np.array([1.0,2.3,3.3])
+    y = np.array([1.2,2.4,3.5])
+    E = edgeset()
+    E.add_edge([x,y])
+    print(E.get_edge())
+    E.remove_edge([x,y])
+    print(E.get_edge())

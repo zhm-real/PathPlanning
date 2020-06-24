@@ -1,3 +1,9 @@
+"""
+RRT_star 2D
+@author: huiming zhou
+"""
+
+
 from rrt_2D import env
 from rrt_2D import plotting
 

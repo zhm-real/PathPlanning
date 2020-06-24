@@ -1,3 +1,9 @@
+"""
+Environment for rrt_2D
+@author: huiming zhou
+"""
+
+
 class Env:
     def __init__(self):
         self.x_range = (0, 50)

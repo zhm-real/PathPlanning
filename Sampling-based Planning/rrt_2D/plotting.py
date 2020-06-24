@@ -1,3 +1,9 @@
+"""
+Plotting tools for RRT_2D
+@author: huiming zhou
+"""
+
+
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 

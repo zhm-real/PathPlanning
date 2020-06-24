@@ -20,10 +20,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../Sampling-based Planning/RRT.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Sampling-based Planning/RRT.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Sampling-based Planning/env.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Sampling-based Planning/env.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Sampling-based Planning/node.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Sampling-based Planning/plotting.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Sampling-based Planning/plotting.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -53,7 +49,7 @@
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../PythonRobotics/PathPlanning" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
@@ -199,10 +195,11 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="2700" y="297" width="424" height="482" key="FileChooserDialogImpl" timestamp="1592802293738">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state x="819" y="314" width="424" height="482" key="FileChooserDialogImpl" timestamp="1592933974409">
+      <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state x="2700" y="297" width="424" height="482" key="FileChooserDialogImpl/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1592802293738" />
+    <state x="819" y="314" key="FileChooserDialogImpl/65.24.1855.1056/1920.0.1920.1080@65.24.1855.1056" timestamp="1592933974409" />
     <state width="1832" height="296" key="GridCell.Tab.0.bottom" timestamp="1592801972746">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>

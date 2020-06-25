@@ -30,8 +30,8 @@ class Plotting:
         for x in visited:
             count += 1
             plt.plot(x[0], x[1], linewidth='3', color='#808080', marker='o')
-            plt.gcf().canvas.mpl_connect('key_release_event', lambda event:
-            [exit(0) if event.key == 'escape' else None])
+            plt.gcf().canvas.mpl_connect('key_release_event',
+                                         lambda event: [exit(0) if event.key == 'escape' else None])
 
             if count < len(visited) / 3:
                 length = 15

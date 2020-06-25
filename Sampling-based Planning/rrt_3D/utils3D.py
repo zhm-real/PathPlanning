@@ -1,17 +1,15 @@
 import numpy as np
 from numpy.matlib import repmat
 import pyrr as pyrr
-# plotting
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-import mpl_toolkits.mplot3d as plt3d
 
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__))+"/../../Sampling-based Planning/")
+from rrt_3D.plot_util3D import visualization
 
 def getRay(x, y):
     direc = [y[0] - x[0], y[1] - x[1], y[2] - x[2]]
     return np.array([x, direc])
-
 
 def getAABB(blocks):
     AABB = []
@@ -22,34 +20,6 @@ def getAABB(blocks):
 
 def getDist(pos1, pos2):
     return np.sqrt(sum([(pos1[0] - pos2[0]) ** 2, (pos1[1] - pos2[1]) ** 2, (pos1[2] - pos2[2]) ** 2]))
-
-
-def draw_block_list(ax, blocks):
-    '''
-    Subroutine used by draw_map() to display the environment blocks
-    '''
-    v = np.array([[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 1, 0], [0, 0, 1], [1, 0, 1], [1, 1, 1], [0, 1, 1]],
-                 dtype='float')
-    f = np.array([[0, 1, 5, 4], [1, 2, 6, 5], [2, 3, 7, 6], [3, 0, 4, 7], [0, 1, 2, 3], [4, 5, 6, 7]])
-    # clr = blocks[:,6:]/255
-    n = blocks.shape[0]
-    d = blocks[:, 3:6] - blocks[:, :3]
-    vl = np.zeros((8 * n, 3))
-    fl = np.zeros((6 * n, 4), dtype='int64')
-    # fcl = np.zeros((6*n,3))
-    for k in range(n):
-        vl[k * 8:(k + 1) * 8, :] = v * d[k] + blocks[k, :3]
-        fl[k * 6:(k + 1) * 6, :] = f + k * 8
-        # fcl[k*6:(k+1)*6,:] = clr[k,:]
-
-    if type(ax) is Poly3DCollection:
-        ax.set_verts(vl[fl])
-    else:
-        pc = Poly3DCollection(vl[fl], alpha=0.15, linewidths=1, edgecolors='k')
-        # pc.set_facecolor(fcl)
-        h = ax.add_collection3d(pc)
-        return h
-
 
 ''' The following utils can be used for rrt or rrt*,
     required param initparams should have
@@ -93,6 +63,12 @@ def isCollide(initparams, x, y):
             dist_wall = getDist(x, shot)
             if dist_wall <= dist:  # collide
                 return True
+    for i in initparams.env.balls:
+        shot = pyrr.geometric_tests.ray_intersect_sphere(ray, i)
+        if shot != []:
+            dists_wall = [getDist(x, j) for j in shot]
+            if all(dists_wall <= dist):  # collide
+                return True
     return False
 
 
@@ -129,47 +105,6 @@ def cost(initparams, x):
         return 0
     xparent = initparams.Parent[str(x[0])][str(x[1])][str(x[2])]
     return cost(initparams, xparent) + getDist(x, xparent)
-
-
-def visualization(initparams):
-    V = np.array(initparams.V)
-    E = initparams.E
-    Path = np.array(initparams.Path)
-    start = initparams.env.start
-    goal = initparams.env.goal
-    ax = plt.subplot(111, projection='3d')
-    ax.view_init(elev=0., azim=90)
-    ax.clear()
-    draw_block_list(ax, initparams.env.blocks)
-    edges = E.get_edge()
-    if edges != []:
-        for i in edges:
-            xs = i[0][0], i[1][0]
-            ys = i[0][1], i[1][1]
-            zs = i[0][2], i[1][2]
-            line = plt3d.art3d.Line3D(xs, ys, zs)
-            ax.add_line(line)
-
-    if Path != []:
-        for i in Path:
-            xs = i[0][0], i[1][0]
-            ys = i[0][1], i[1][1]
-            zs = i[0][2], i[1][2]
-            line = plt3d.art3d.Line3D(xs, ys, zs, color='r')
-            ax.add_line(line)
-
-    ax.plot(start[0:1], start[1:2], start[2:], 'go', markersize=7, markeredgecolor='k')
-    ax.plot(goal[0:1], goal[1:2], goal[2:], 'ro', markersize=7, markeredgecolor='k')
-    ax.scatter3D(V[:, 0], V[:, 1], V[:, 2])
-    plt.xlim(initparams.env.boundary[0], initparams.env.boundary[3])
-    plt.ylim(initparams.env.boundary[1], initparams.env.boundary[4])
-    ax.set_zlim(initparams.env.boundary[2], initparams.env.boundary[5])
-    plt.xlabel('x')
-    plt.ylabel('y')
-    if not Path != []:
-        plt.pause(0.001)
-    else:
-        plt.show()
 
 
 def path(initparams, Path=[], dist=0):
@@ -209,12 +144,3 @@ class edgeset(object):
                 #if (n,v) not in edges:
                 edges.append((self.dehash(v),self.dehash(n)))
         return edges
-
-if __name__ == '__main__':
-    x = np.array([1.0,2.3,3.3])
-    y = np.array([1.2,2.4,3.5])
-    E = edgeset()
-    E.add_edge([x,y])
-    print(E.get_edge())
-    E.remove_edge([x,y])
-    print(E.get_edge())

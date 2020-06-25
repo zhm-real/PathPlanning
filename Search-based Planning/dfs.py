@@ -46,7 +46,8 @@ class DFS:
 
         return path, policy, visited
 
-    def extract_path(self, xI, xG, parent, policy):
+    @staticmethod
+    def extract_path(xI, xG, parent, policy):
         """
         Extract the path based on the relationship of nodes.
 
@@ -64,7 +65,9 @@ class DFS:
             x_current = parent[x_current]
             path_back.append(x_current)
             acts_back.append(policy[x_current])
-            if x_current == xI: break
+
+            if x_current == xI:
+                break
 
         return list(path_back), list(acts_back)
 

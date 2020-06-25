@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import env
 
 
-class Plotting():
+class Plotting:
     def __init__(self, xI, xG):
         self.xI, self.xG = xI, xG
         self.env = env.Env()

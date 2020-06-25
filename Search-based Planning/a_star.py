@@ -13,7 +13,7 @@ class Astar:
         self.u_set = self.Env.motions  # feasible input set
         self.obs = self.Env.obs  # position of obstacles
 
-        [self.path, self.policy, self.visited] = self.searching(self.xI, self.xG, heuristic_type)
+        self.path, self.policy, self.visited = self.searching(self.xI, self.xG, heuristic_type)
 
         self.fig_name = "A* Algorithm"
         self.plotting.animation(self.path, self.visited, self.fig_name)  # animation generate
@@ -51,7 +51,8 @@ class Astar:
 
         return path, policy, visited
 
-    def extract_path(self, xI, xG, parent, policy):
+    @staticmethod
+    def extract_path(xI, xG, parent, policy):
         """
         Extract the path based on the relationship of nodes.
 
@@ -69,11 +70,14 @@ class Astar:
             x_current = parent[x_current]
             path_back.append(x_current)
             acts_back.append(policy[x_current])
-            if x_current == xI: break
+
+            if x_current == xI:
+                break
 
         return list(path_back), list(acts_back)
 
-    def get_cost(self, x, u):
+    @staticmethod
+    def get_cost(x, u):
         """
         Calculate cost for this motion
 
@@ -85,7 +89,8 @@ class Astar:
 
         return 1
 
-    def Heuristic(self, state, goal, heuristic_type):
+    @staticmethod
+    def Heuristic(state, goal, heuristic_type):
         """
         Calculate heuristic.
 

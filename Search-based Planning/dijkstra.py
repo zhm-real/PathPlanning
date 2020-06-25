@@ -51,7 +51,8 @@ class Dijkstra:
 
         return path, policy, visited
 
-    def get_cost(self, x, u):
+    @staticmethod
+    def get_cost(x, u):
         """
         Calculate cost for this motion
 
@@ -63,7 +64,8 @@ class Dijkstra:
 
         return 1
 
-    def extract_path(self, xI, xG, parent, policy):
+    @staticmethod
+    def extract_path(xI, xG, parent, policy):
         """
         Extract the path based on the relationship of nodes.
 

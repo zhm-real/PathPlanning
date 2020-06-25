@@ -77,7 +77,7 @@ class Plotting:
                     plt.plot([node.parent.x, node.x], [node.parent.y, node.y], "-g")
                     plt.gcf().canvas.mpl_connect('key_release_event',
                                                  lambda event: [exit(0) if event.key == 'escape' else None])
-                    if count % 5 == 0: plt.pause(0.001)
+                    if count % 10 == 0: plt.pause(0.001)
         else:
             for node in nodelist:
                 if node.parent:

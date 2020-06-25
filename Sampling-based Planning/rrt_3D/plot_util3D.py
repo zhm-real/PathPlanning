@@ -66,7 +66,7 @@ def visualization(initparams):
             xs = i[0][0], i[1][0]
             ys = i[0][1], i[1][1]
             zs = i[0][2], i[1][2]
-            line = plt3d.art3d.Line3D(xs, ys, zs)
+            line = plt3d.art3d.Line3D(xs, ys, zs, alpha=0.25)
             ax.add_line(line)
 
     if Path != []:
@@ -79,7 +79,7 @@ def visualization(initparams):
 
     ax.plot(start[0:1], start[1:2], start[2:], 'go', markersize=7, markeredgecolor='k')
     ax.plot(goal[0:1], goal[1:2], goal[2:], 'ro', markersize=7, markeredgecolor='k')
-    ax.scatter3D(V[:, 0], V[:, 1], V[:, 2], s=2, color='g')
+    ax.scatter3D(V[:, 0], V[:, 1], V[:, 2], s=2, color='g',)
 
     xmin, xmax = initparams.env.boundary[0], initparams.env.boundary[3]
     ymin, ymax = initparams.env.boundary[1], initparams.env.boundary[4]
@@ -89,7 +89,7 @@ def visualization(initparams):
     ax.set_ylim3d(ymin, ymax)
     ax.set_zlim3d(zmin, zmax)
     ax.get_proj = make_get_proj(ax,1*dx, 1*dy, 2*dy)
-    ax.dist = 5
+    #ax.dist = 5
     plt.xlabel('x')
     plt.ylabel('y')
     if not Path != []:
@@ -135,7 +135,7 @@ def make_get_proj(self, rx, ry, rz):
 
         self.eye = E
         self.vvec = R - E
-        self.vvec = self.vvec / proj3d.mod(self.vvec)
+        self.vvec = self.vvec / np.linalg.norm(self.vvec)
 
         if abs(relev) > np.pi/2:
             # upside down

@@ -12,41 +12,54 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Sampling-based Planning/")
 from rrt_3D.env3D import env
-from rrt_3D.utils3D import getDist, sampleFree, nearest, steer, isCollide, near, visualization, cost, path, edgeset
+from rrt_3D.utils3D import getDist, sampleFree, nearest, steer, isCollide, near, visualization, cost, path, edgeset, hash3D, dehash
 
 
 class rrtstar():
     def __init__(self):
         self.env = env()
-        self.Parent = defaultdict(lambda: defaultdict(dict))
+        self.Parent = {}
         self.E = edgeset()
         self.V = []
         self.i = 0
-        self.maxiter = 10000
+        self.maxiter = 4000 # at least 4000 in this env
         self.stepsize = 0.5
+        self.gamma = 500
+        self.eta = 1.1*self.stepsize
         self.Path = []
+        self.done = False
 
-    def wireup(self, x, y):
-        self.E.add_edge([x, y])  # add edge
-        self.Parent[str(x[0])][str(x[1])][str(x[2])] = y
+    def wireup(self,x,y):
+        self.E.add_edge([x,y]) # add edge
+        self.Parent[hash3D(x)] = y
 
-    def removewire(self, xnear):
-        xparent = self.Parent[str(xnear[0])][str(xnear[1])][str(xnear[2])]
-        a = [xnear, xparent]
-        self.E.remove_edge(a)  # remove and replace old the connection
+    def removewire(self,xnear):
+        xparent = self.Parent[hash3D(xnear)]
+        a = [xnear,xparent]
+        self.E.remove_edge(a) # remove and replace old the connection
+        #self.Parent.pop(hash3D(xnear), None)
+
+    def reached(self):
+        self.done = True
+        xn = near(self,self.env.goal)
+        c = [cost(self,x) for x in xn]
+        xncmin = xn[np.argmin(c)]
+        self.wireup(self.env.goal,xncmin)
+        self.V.append(self.env.goal)
+        self.Path,self.D = path(self)
 
     def run(self):
         self.V.append(self.env.start)
         ind = 0
         xnew = self.env.start
-        while ind < self.maxiter and getDist(xnew, self.env.goal) > 1:
-            # while ind < self.maxiter:
-            xrand = sampleFree(self)
-            xnearest = nearest(self, xrand)
-            xnew = steer(self, xnearest, xrand)
-            if not isCollide(self, xnearest, xnew):
-                Xnear = near(self, xnew)
-                self.V.append(xnew)  # add point
+        print('start rrt*... ')
+        while ind < self.maxiter:
+            xrand    = sampleFree(self)
+            xnearest = nearest(self,xrand)
+            xnew     = steer(self,xnearest,xrand)
+            if not isCollide(self,xnearest,xnew):
+                Xnear = near(self,xnew)
+                self.V.append(xnew) # add point
                 # visualization(self)
                 # minimal path and minimal cost
                 xmin, cmin = xnearest, cost(self, xnearest) + getDist(xnearest, xnew)
@@ -70,16 +83,15 @@ class rrtstar():
                             self.wireup(xnear, xnew)
                 self.i += 1
             ind += 1
-            # when the goal is reached
-            if getDist(xnew, self.env.goal) <= 1:
-                self.wireup(self.env.goal, xnew)
-                self.Path, self.D = path(self)
+        # max sample reached
+        self.reached()
+        print('time used = ' + str(time.time()-starttime))
+        print('Total distance = '+str(self.D))
         visualization(self)
-        print('Total distance = ' + str(self.D))
-
+        
 
 if __name__ == '__main__':
     p = rrtstar()
     starttime = time.time()
     p.run()
-    print('time used = ' + str(time.time() - starttime))
+    

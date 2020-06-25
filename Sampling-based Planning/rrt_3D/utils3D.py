@@ -40,9 +40,10 @@ def sampleFree(initparams):
     if isinside(initparams, x):
         return sampleFree(initparams)
     else:
-        if i < 0.05:
-            return initparams.env.goal
-        else: return np.array(x)
+        #if i < 0.05:
+        #    return initparams.env.goal+0.01
+        #else: return np.array(x)
+        return np.array(x)
 
 
 def isinside(initparams, x):
@@ -88,8 +89,11 @@ def steer(initparams, x, y):
 
 
 def near(initparams, x):
-    # TODO: r = min{gamma*log(card(V)/card(V)1/d),eta}
-    r = initparams.stepsize
+    cardV = len(initparams.V)
+    eta = initparams.eta
+    gamma = initparams.gamma
+    r = min(gamma*(np.log(cardV)/cardV),eta)
+    if initparams.done: r = 1
     V = np.array(initparams.V)
     if initparams.i == 0:
         return initparams.V[0]
@@ -103,31 +107,31 @@ def cost(initparams, x):
     '''here use the additive recursive cost function'''
     if all(x == initparams.env.start):
         return 0
-    xparent = initparams.Parent[str(x[0])][str(x[1])][str(x[2])]
+    xparent = initparams.Parent[hash3D(x)]
     return cost(initparams, xparent) + getDist(x, xparent)
 
 
 def path(initparams, Path=[], dist=0):
     x = initparams.env.goal
     while not all(x == initparams.env.start):
-        x2 = initparams.Parent[str(x[0])][str(x[1])][str(x[2])]
+        x2 = initparams.Parent[hash3D(x)]
         Path.append(np.array([x, x2]))
         dist += getDist(x, x2)
         x = x2
     return Path, dist
 
+def hash3D(x):
+    return str(x[0])+' '+str(x[1])+' '+str(x[2])
+
+def dehash(x):
+    return np.array([float(i) for i in x.split(' ')])
+
 class edgeset(object):
     def __init__(self):
         self.E = {}
 
-    def hash(self,x):
-        return str(x[0])+' '+str(x[1])+' '+str(x[2])
-
-    def dehash(self,x):
-        return np.array([float(i) for i in x.split(' ')])
-
     def add_edge(self,edge):
-        x, y = self.hash(edge[0]),self.hash(edge[1])
+        x, y = hash3D(edge[0]),hash3D(edge[1])
         if x in self.E:
             self.E[x].append(y)
         else:
@@ -135,12 +139,12 @@ class edgeset(object):
 
     def remove_edge(self,edge):
         x, y = edge[0],edge[1]
-        self.E[self.hash(x)].remove(self.hash(y))
+        self.E[hash3D(x)].remove(hash3D(y))
 
     def get_edge(self):
         edges = []
         for v in self.E:
             for n in self.E[v]:
                 #if (n,v) not in edges:
-                edges.append((self.dehash(v),self.dehash(n)))
+                edges.append((dehash(v),dehash(n)))
         return edges

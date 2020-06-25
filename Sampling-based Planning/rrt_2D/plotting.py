@@ -22,8 +22,8 @@ class Plotting:
         self.obs_circle = self.env.obs_circle
         self.obs_rectangle = self.env.obs_rectangle
 
-    def animation(self, nodelist, path, animation=False):
-        self.plot_grid("RRT")
+    def animation(self, nodelist, path, name, animation=False):
+        self.plot_grid(name)
         self.plot_visited(nodelist, animation)
         self.plot_path(path)
 

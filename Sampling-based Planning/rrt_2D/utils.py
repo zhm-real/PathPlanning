@@ -38,9 +38,7 @@ class Utils:
 
         return obs_list
 
-    def is_intersect_segment(self, start, end, a, b):
-        o, d = self.get_ray(start, end)
-
+    def is_intersect_rec(self, start, end, o, d, a, b):
         v1 = [o[0] - a[0], o[1] - a[1]]
         v2 = [b[0] - a[0], b[1] - a[1]]
         v3 = [-d[1], d[0]]
@@ -48,7 +46,7 @@ class Utils:
         div = np.dot(v2, v3)
 
         if div == 0:
-            div = 0.01
+            return False
 
         t1 = np.linalg.norm(np.cross(v2, v1)) / div
         t2 = np.dot(v1, v3) / div
@@ -62,15 +60,40 @@ class Utils:
 
         return False
 
+    def is_intersect_circle(self, o, d, a, r):
+        d2 = np.dot(d, d)
+        delta = self.delta
+
+        if d2 == 0:
+            return False
+
+        t = np.dot([a[0] - o[0], a[1] - o[1]], d) / d2
+
+        if 0 <= t <= 1:
+            shot = Node((o[0] + t * d[0], o[1] + t * d[1]))
+            if self.get_dist(shot, Node(a)) <= r + delta:
+                return True
+
+        return False
+
     def is_collision(self, start, end):
         if self.is_inside_obs(start) or self.is_inside_obs(end):
             return True
 
+        o, d = self.get_ray(start, end)
+
         for (v1, v2, v3, v4) in self.obs_vertex:
-            if self.is_intersect_segment(start, end, v1, v2) \
-                    or self.is_intersect_segment(start, end, v2, v3) \
-                    or self.is_intersect_segment(start, end, v3, v4) \
-                    or self.is_intersect_segment(start, end, v4, v1):
+            if self.is_intersect_rec(start, end, o, d, v1, v2):
+                return True
+            if self.is_intersect_rec(start, end, o, d, v2, v3):
+                return True
+            if self.is_intersect_rec(start, end, o, d, v3, v4):
+                return True
+            if self.is_intersect_rec(start, end, o, d, v4, v1):
+                return True
+
+        for (x, y, r) in self.obs_circle:
+            if self.is_intersect_circle(o, d, [x, y], r):
                 return True
 
         return False

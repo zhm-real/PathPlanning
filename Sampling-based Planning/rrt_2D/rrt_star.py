@@ -47,6 +47,9 @@ class RrtStar:
 
     def planning(self):
         for k in range(self.iter_max):
+            if k % 500 == 0:
+                print(k)
+
             node_rand = self.random_state(self.goal_sample_rate)
             node_near = self.nearest_neighbor(self.vertex, node_rand)
             node_new = self.new_state(node_near, node_rand)
@@ -87,9 +90,12 @@ class RrtStar:
     def find_near_neighbor(self, node_new):
         n = len(self.vertex) + 1
         r = min(self.search_radius * math.sqrt((math.log(n) / n)), self.step_len)
-        dist_table = [math.hypot(nd.x - node_new.x, nd.y - node_new.y) for nd in self.vertex]
 
-        return [dist_table.index(d) for d in dist_table if d <= r]
+        dist_table = [math.hypot(nd.x - node_new.x, nd.y - node_new.y) for nd in self.vertex]
+        dist_table_index = [dist_table.index(d) for d in dist_table if d <= r and
+                            not self.utils.is_collision(node_new, self.vertex[dist_table.index(d)])]
+
+        return dist_table_index
 
     def choose_parent(self, node_new, neighbor_index):
         cost = []
@@ -109,7 +115,8 @@ class RrtStar:
         node_index = [dist_list.index(i) for i in dist_list if i <= self.step_len]
 
         if node_index:
-            cost_list = [dist_list[i] + self.vertex[i].cost for i in node_index]
+            cost_list = [dist_list[i] + self.vertex[i].cost for i in node_index
+                         if not self.utils.is_collision(self.vertex[i], self.xG)]
             return node_index[int(np.argmin(cost_list))]
 
         return None
@@ -152,13 +159,13 @@ class RrtStar:
 
 def main():
     x_start = (2, 2)  # Starting node
-    x_goal = (49, 28)  # Goal node
+    x_goal = (49, 24)  # Goal node
 
-    rrt_star = RrtStar(x_start, x_goal, 5, 0.2, 20, 20000)
+    rrt_star = RrtStar(x_start, x_goal, 8, 0.10, 20, 20000)
     path = rrt_star.planning()
 
     if path:
-        rrt_star.plotting.animation(rrt_star.vertex, path)
+        rrt_star.plotting.animation(rrt_star.vertex, path, "RRT*")
     else:
         print("No Path Found!")
 

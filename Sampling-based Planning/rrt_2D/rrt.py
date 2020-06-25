@@ -102,7 +102,7 @@ def main():
     x_start = (2, 2)  # Starting node
     x_goal = (49, 28)  # Goal node
 
-    rrt = Rrt(x_start, x_goal, 0.6, 0.05, 3000)
+    rrt = Rrt(x_start, x_goal, 5, 0.05, 3000)
     path = rrt.planning()
 
     if path:

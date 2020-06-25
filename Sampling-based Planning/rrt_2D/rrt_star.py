@@ -61,21 +61,6 @@ class RrtStar:
         index = self.search_goal_parent()
         return self.extract_path(self.vertex[index])
 
-    def check_collision(self, node_end):
-        for (ox, oy, r) in self.obs_circle:
-            if math.hypot(node_end.x - ox, node_end.y - oy) <= r:
-                return True
-
-        for (ox, oy, w, h) in self.obs_rectangle:
-            if 0 <= (node_end.x - ox) <= w and 0 <= (node_end.y - oy) <= h:
-                return True
-
-        for (ox, oy, w, h) in self.obs_boundary:
-            if 0 <= (node_end.x - ox) <= w and 0 <= (node_end.y - oy) <= h:
-                return True
-
-        return False
-
     def random_state(self, goal_sample_rate):
         delta = self.utils.delta
 
@@ -102,7 +87,6 @@ class RrtStar:
     def find_near_neighbor(self, node_new):
         n = len(self.vertex) + 1
         r = min(self.search_radius * math.sqrt((math.log(n) / n)), self.step_len)
-
         dist_table = [math.hypot(nd.x - node_new.x, nd.y - node_new.y) for nd in self.vertex]
 
         return [dist_table.index(d) for d in dist_table if d <= r]
@@ -170,7 +154,7 @@ def main():
     x_start = (2, 2)  # Starting node
     x_goal = (49, 28)  # Goal node
 
-    rrt_star = RrtStar(x_start, x_goal, 1.2, 0.15, 10, 20000)
+    rrt_star = RrtStar(x_start, x_goal, 5, 0.2, 20, 20000)
     path = rrt_star.planning()
 
     if path:

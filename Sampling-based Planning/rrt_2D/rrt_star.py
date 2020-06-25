@@ -13,6 +13,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
 
 from rrt_2D import env
 from rrt_2D import plotting
+from rrt_2D import utils
 
 
 class Node:
@@ -24,18 +25,19 @@ class Node:
 
 
 class RrtStar:
-    def __init__(self, x_start, x_goal, expand_len,
-                 goal_sample_rate, search_radius, iter_limit):
+    def __init__(self, x_start, x_goal, step_len,
+                 goal_sample_rate, search_radius, iter_max):
         self.xI = Node(x_start)
         self.xG = Node(x_goal)
-        self.expand_len = expand_len
+        self.step_len = step_len
         self.goal_sample_rate = goal_sample_rate
         self.search_radius = search_radius
-        self.iter_limit = iter_limit
+        self.iter_max = iter_max
         self.vertex = [self.xI]
 
         self.env = env.Env()
         self.plotting = plotting.Plotting(x_start, x_goal)
+        self.utils = utils.Utils()
 
         self.x_range = self.env.x_range
         self.y_range = self.env.y_range
@@ -44,12 +46,12 @@ class RrtStar:
         self.obs_boundary = self.env.obs_boundary
 
     def planning(self):
-        for k in range(self.iter_limit):
+        for k in range(self.iter_max):
             node_rand = self.random_state(self.goal_sample_rate)
             node_near = self.nearest_neighbor(self.vertex, node_rand)
             node_new = self.new_state(node_near, node_rand)
 
-            if node_new and not self.check_collision(node_new):
+            if node_new and not self.utils.is_collision(node_near, node_new):
                 neighbor_index = self.find_near_neighbor(node_new)
                 if neighbor_index:
                     node_new = self.choose_parent(node_new, neighbor_index)
@@ -59,10 +61,28 @@ class RrtStar:
         index = self.search_goal_parent()
         return self.extract_path(self.vertex[index])
 
+    def check_collision(self, node_end):
+        for (ox, oy, r) in self.obs_circle:
+            if math.hypot(node_end.x - ox, node_end.y - oy) <= r:
+                return True
+
+        for (ox, oy, w, h) in self.obs_rectangle:
+            if 0 <= (node_end.x - ox) <= w and 0 <= (node_end.y - oy) <= h:
+                return True
+
+        for (ox, oy, w, h) in self.obs_boundary:
+            if 0 <= (node_end.x - ox) <= w and 0 <= (node_end.y - oy) <= h:
+                return True
+
+        return False
+
     def random_state(self, goal_sample_rate):
+        delta = self.utils.delta
+
         if np.random.random() > goal_sample_rate:
-            return Node((np.random.uniform(self.x_range[0], self.x_range[1]),
-                         np.random.uniform(self.y_range[0], self.y_range[1])))
+            return Node((np.random.uniform(self.x_range[0] + delta, self.x_range[1] - delta),
+                         np.random.uniform(self.y_range[0] + delta, self.y_range[1] - delta)))
+
         return self.xG
 
     def nearest_neighbor(self, node_list, n):
@@ -70,19 +90,18 @@ class RrtStar:
                                           for nd in node_list]))]
 
     def new_state(self, node_start, node_goal):
-        node_new = Node((node_start.x, node_start.y))
-        dist, theta = self.get_distance_and_angle(node_new, node_goal)
-        dist = min(self.expand_len, dist)
+        dist, theta = self.get_distance_and_angle(node_start, node_goal)
 
-        node_new.x += dist * math.cos(theta)
-        node_new.y += dist * math.sin(theta)
+        dist = min(self.step_len, dist)
+        node_new = Node((node_start.x + dist * math.cos(theta),
+                         node_start.y + dist * math.sin(theta)))
         node_new.parent = node_start
 
         return node_new
 
     def find_near_neighbor(self, node_new):
         n = len(self.vertex) + 1
-        r = min(self.search_radius * math.sqrt((math.log(n) / n)), self.expand_len)
+        r = min(self.search_radius * math.sqrt((math.log(n) / n)), self.step_len)
 
         dist_table = [math.hypot(nd.x - node_new.x, nd.y - node_new.y) for nd in self.vertex]
 
@@ -103,7 +122,7 @@ class RrtStar:
 
     def search_goal_parent(self):
         dist_list = [math.hypot(n.x - self.xG.x, n.y - self.xG.y) for n in self.vertex]
-        node_index = [dist_list.index(i) for i in dist_list if i <= self.expand_len]
+        node_index = [dist_list.index(i) for i in dist_list if i <= self.step_len]
 
         if node_index:
             cost_list = [dist_list[i] + self.vertex[i].cost for i in node_index]
@@ -140,21 +159,6 @@ class RrtStar:
 
         return path
 
-    def check_collision(self, node_end):
-        for (ox, oy, r) in self.obs_circle:
-            if math.hypot(node_end.x - ox, node_end.y - oy) <= r:
-                return True
-
-        for (ox, oy, w, h) in self.obs_rectangle:
-            if 0 <= (node_end.x - ox) <= w and 0 <= (node_end.y - oy) <= h:
-                return True
-
-        for (ox, oy, w, h) in self.obs_boundary:
-            if 0 <= (node_end.x - ox) <= w and 0 <= (node_end.y - oy) <= h:
-                return True
-
-        return False
-
     @staticmethod
     def get_distance_and_angle(node_start, node_end):
         dx = node_end.x - node_start.x
@@ -166,7 +170,7 @@ def main():
     x_start = (2, 2)  # Starting node
     x_goal = (49, 28)  # Goal node
 
-    rrt_star = RrtStar(x_start, x_goal, 1, 0.1, 10, 5000)
+    rrt_star = RrtStar(x_start, x_goal, 1, 0.1, 10, 20000)
     path = rrt_star.planning()
 
     if path:

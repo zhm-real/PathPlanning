@@ -6,6 +6,7 @@ Directory Structure
         ├── dfs.py                                  # depth-first
         ├── dijkstra.py                             # dijkstra
         ├── a_star.py                               # a*
+        ├── ara_star.py                             # ara*
         ├── queue.py                                # FIFO, FILO, Priority queues
         ├── env.py                                  # environment: grid world, motions
         └── plotting.py                             # animation

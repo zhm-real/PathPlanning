@@ -6,13 +6,20 @@ import env
 class Astar:
     def __init__(self, x_start, x_goal, e, heuristic_type):
         self.xI, self.xG = x_start, x_goal
-        self.e = e
         self.heuristic_type = heuristic_type
 
         self.Env = env.Env()  # class Env
 
+        self.e = e
         self.u_set = self.Env.motions  # feasible input set
         self.obs = self.Env.obs  # position of obstacles
+
+        self.g = {self.xI: 0, self.xG: float("inf")}
+        self.fig_name = "A* Algorithm"
+
+        self.OPEN = queue.QueuePrior()  # priority queue / OPEN
+        self.OPEN.put(self.xI, self.fvalue(self.xI))
+        self.parent = {self.xI: self.xI}
 
     def searching(self):
         """
@@ -21,61 +28,46 @@ class Astar:
         :return: planning path, action in each node, visited nodes in the planning process
         """
 
-        xI = self.xI
-        xG = self.xG
-        heuristic_type = self.heuristic_type
-        e = self.e
-
-        q_astar = queue.QueuePrior()  # priority queue / OPEN
-        q_astar.put(xI, e * self.Heuristic(xI, xG, heuristic_type))
-        parent = {xI: xI}  # record parents of nodes
-        action = {xI: (0, 0)}  # record actions of nodes
         visited = []
-        cost = {xI: 0}
 
-        while not q_astar.empty():
-            x_current = q_astar.get()
-            if x_current == xG:  # stop condition
+        while not self.OPEN.empty():
+            s = self.OPEN.get()
+            if s == self.xG:  # stop condition
                 break
-            visited.append(x_current)
+            visited.append(s)
             for u_next in self.u_set:  # explore neighborhoods of current node
-                x_next = tuple([x_current[i] + u_next[i] for i in range(len(x_current))])
-                if x_next not in self.obs:
-                    new_cost = cost[x_current] + self.get_cost(x_current, u_next)
-                    if x_next not in cost or new_cost < cost[x_next]:  # conditions for updating cost
-                        cost[x_next] = new_cost
-                        priority = new_cost + e * self.Heuristic(x_next, xG, heuristic_type)
-                        q_astar.put(x_next, priority)  # put node into queue using priority "f+h"
-                        parent[x_next], action[x_next] = x_current, u_next
+                s_next = tuple([s[i] + u_next[i] for i in range(len(s))])
+                if s_next not in self.obs:
+                    new_cost = self.g[s] + self.get_cost(s, u_next)
+                    if s_next not in self.g or new_cost < self.g[s_next]:  # conditions for updating cost
+                        self.g[s_next] = new_cost
+                        self.parent[s_next] = s
+                        self.OPEN.put(s_next, self.fvalue(s_next))
 
-        [path, policy] = self.extract_path(xI, xG, parent, action)
+        return self.extract_path(), visited
 
-        return path, policy, visited
+    def fvalue(self, x):
+        h = self.e * self.Heuristic(x)
+        return self.g[x] + h
 
-    @staticmethod
-    def extract_path(xI, xG, parent, policy):
+    def extract_path(self):
         """
         Extract the path based on the relationship of nodes.
 
-        :param xI: Starting node
-        :param xG: Goal node
-        :param parent: Relationship between nodes
-        :param policy: Action needed for transfer between two nodes
         :return: The planning path
         """
 
-        path_back = [xG]
-        acts_back = [policy[xG]]
-        x_current = xG
-        while True:
-            x_current = parent[x_current]
-            path_back.append(x_current)
-            acts_back.append(policy[x_current])
+        path_back = [self.xG]
+        x_current = self.xG
 
-            if x_current == xI:
+        while True:
+            x_current = self.parent[x_current]
+            path_back.append(x_current)
+
+            if x_current == self.xI:
                 break
 
-        return list(path_back), list(acts_back)
+        return list(path_back)
 
     @staticmethod
     def get_cost(x, u):
@@ -90,8 +82,7 @@ class Astar:
 
         return 1
 
-    @staticmethod
-    def Heuristic(state, goal, heuristic_type):
+    def Heuristic(self, state):
         """
         Calculate heuristic.
 
@@ -100,6 +91,9 @@ class Astar:
         :param heuristic_type: choosing different heuristic functions
         :return: heuristic
         """
+
+        heuristic_type = self.heuristic_type
+        goal = self.xG
 
         if heuristic_type == "manhattan":
             return abs(goal[0] - state[0]) + abs(goal[1] - state[1])
@@ -117,7 +111,7 @@ def main():
     plot = plotting.Plotting(x_start, x_goal)  # class Plotting
 
     fig_name = "A* Algorithm"
-    path, policy, visited = astar.searching()
+    path, visited = astar.searching()
 
     plot.animation(path, visited, fig_name)  # animation generate
 

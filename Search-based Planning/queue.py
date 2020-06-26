@@ -57,3 +57,6 @@ class QueuePrior:
 
     def get(self):
         return heapq.heappop(self.queue)[1]  # pop out the smallest item
+
+    def enumerate(self):
+        return self.queue

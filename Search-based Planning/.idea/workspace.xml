@@ -24,6 +24,7 @@
       <change beforePath="$PROJECT_DIR$/a_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/a_star.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ara_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/ara_star.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/plotting.py" beforeDir="false" afterPath="$PROJECT_DIR$/plotting.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/queue.py" beforeDir="false" afterPath="$PROJECT_DIR$/queue.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,6 +71,27 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/a_star.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="ara_star" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Search-based Planning" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ara_star.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -141,34 +163,13 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="searching" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="Search-based Planning" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/searching.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Python.a_star" />
+        <item itemvalue="Python.ara_star" />
         <item itemvalue="Python.bfs" />
         <item itemvalue="Python.dfs" />
         <item itemvalue="Python.dijkstra" />
-        <item itemvalue="Python.searching" />
       </list>
     </recent_temporary>
   </component>
@@ -203,22 +204,22 @@
     </state>
     <state x="2700" y="297" width="424" height="482" key="FileChooserDialogImpl/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1592802293738" />
     <state x="819" y="314" key="FileChooserDialogImpl/65.24.1855.1056/1920.0.1920.1080@65.24.1855.1056" timestamp="1592933974409" />
-    <state width="1832" height="296" key="GridCell.Tab.0.bottom" timestamp="1593123745200">
+    <state width="1832" height="206" key="GridCell.Tab.0.bottom" timestamp="1593132890178">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1832" height="296" key="GridCell.Tab.0.bottom/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593123745200" />
-    <state width="1832" height="296" key="GridCell.Tab.0.center" timestamp="1593123745200">
+    <state width="1832" height="206" key="GridCell.Tab.0.bottom/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593132890178" />
+    <state width="1832" height="206" key="GridCell.Tab.0.center" timestamp="1593132890178">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1832" height="296" key="GridCell.Tab.0.center/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593123745200" />
-    <state width="1832" height="296" key="GridCell.Tab.0.left" timestamp="1593123745199">
+    <state width="1832" height="206" key="GridCell.Tab.0.center/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593132890178" />
+    <state width="1832" height="206" key="GridCell.Tab.0.left" timestamp="1593132890178">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1832" height="296" key="GridCell.Tab.0.left/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593123745199" />
-    <state width="1832" height="296" key="GridCell.Tab.0.right" timestamp="1593123745200">
+    <state width="1832" height="206" key="GridCell.Tab.0.left/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593132890178" />
+    <state width="1832" height="206" key="GridCell.Tab.0.right" timestamp="1593132890178">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1832" height="296" key="GridCell.Tab.0.right/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593123745200" />
+    <state width="1832" height="206" key="GridCell.Tab.0.right/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593132890178" />
     <state x="2406" y="174" key="SettingsEditor" timestamp="1592801555194">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>

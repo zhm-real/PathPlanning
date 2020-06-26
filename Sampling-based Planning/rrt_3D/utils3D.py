@@ -102,7 +102,7 @@ def near(initparams, x):
     if initparams.done: r = 1
     V = np.array(initparams.V)
     if initparams.i == 0:
-        return initparams.V[0]
+        return [initparams.V[0]]
     xr = repmat(x, len(V), 1)
     inside = np.linalg.norm(xr - V, axis=1) < r
     nearpoints = V[inside]

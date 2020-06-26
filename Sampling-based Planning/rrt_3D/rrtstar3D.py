@@ -65,23 +65,17 @@ class rrtstar():
                 # minimal path and minimal cost
                 xmin, cmin = xnearest, cost(self, xnearest) + getDist(xnearest, xnew)
                 # connecting along minimal cost path
-                if self.i == 0:
-                    c1 = cost(self, Xnear) + getDist(xnew, Xnear)
-                    if not isCollide(self, xnew, Xnear) and c1 < cmin:
-                        xmin, cmin = Xnear, c1
-                    self.wireup(xnew, xmin)
-                else:
-                    for xnear in Xnear:
-                        c1 = cost(self, xnear) + getDist(xnew, xnear)
-                        if not isCollide(self, xnew, xnear) and c1 < cmin:
-                            xmin, cmin = xnear, c1
-                    self.wireup(xnew, xmin)
-                    # rewire
-                    for xnear in Xnear:
-                        c2 = cost(self, xnew) + getDist(xnew, xnear)
-                        if not isCollide(self, xnew, xnear) and c2 < cost(self, xnear):
-                            self.removewire(xnear)
-                            self.wireup(xnear, xnew)
+                for xnear in Xnear:
+                    c1 = cost(self, xnear) + getDist(xnew, xnear)
+                    if not isCollide(self, xnew, xnear) and c1 < cmin:
+                        xmin, cmin = xnear, c1
+                self.wireup(xnew, xmin)
+                # rewire
+                for xnear in Xnear:
+                    c2 = cost(self, xnew) + getDist(xnew, xnear)
+                    if not isCollide(self, xnew, xnear) and c2 < cost(self, xnear):
+                        self.removewire(xnear)
+                        self.wireup(xnear, xnew)
                 self.i += 1
             self.ind += 1
         # max sample reached

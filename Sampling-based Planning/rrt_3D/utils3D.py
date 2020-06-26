@@ -53,11 +53,17 @@ def isinside(initparams, x):
             return True
     return False
 
+def isinbound(i, x):
+    if i[0] <= x[0] < i[3] and i[1] <= x[1] < i[4] and i[2] <= x[2] < i[5]:
+        return True
+    return False
 
 def isCollide(initparams, x, y):
     '''see if line intersects obstacle'''
     ray = getRay(x, y)
     dist = getDist(x, y)
+    if not isinbound(initparams.env.boundary,y):
+        return True
     for i in getAABB(initparams.env.blocks):
         shot = pyrr.geometric_tests.ray_intersect_aabb(ray, i)
         if shot is not None:
@@ -67,8 +73,8 @@ def isCollide(initparams, x, y):
     for i in initparams.env.balls:
         shot = pyrr.geometric_tests.ray_intersect_sphere(ray, i)
         if shot != []:
-            dists_wall = [getDist(x, j) for j in shot]
-            if all(dists_wall <= dist):  # collide
+            dists_ball = [getDist(x, j) for j in shot]
+            if all(dists_ball <= dist):  # collide
                 return True
     return False
 

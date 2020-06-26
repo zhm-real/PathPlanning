@@ -6,6 +6,7 @@ import numpy as np
 from numpy.matlib import repmat
 from collections import defaultdict
 import time
+import matplotlib.pyplot as plt
 
 import os
 import sys
@@ -37,7 +38,6 @@ class rrtstar():
         xparent = self.Parent[hash3D(xnear)]
         a = [xnear,xparent]
         self.E.remove_edge(a) # remove and replace old the connection
-        #self.Parent.pop(hash3D(xnear), None)
 
     def reached(self):
         self.done = True
@@ -50,17 +50,18 @@ class rrtstar():
 
     def run(self):
         self.V.append(self.env.start)
-        ind = 0
+        self.ind = 0
         xnew = self.env.start
         print('start rrt*... ')
-        while ind < self.maxiter:
+        self.fig = plt.figure(figsize = (10,8))
+        while self.ind < self.maxiter:
             xrand    = sampleFree(self)
             xnearest = nearest(self,xrand)
             xnew     = steer(self,xnearest,xrand)
             if not isCollide(self,xnearest,xnew):
                 Xnear = near(self,xnew)
                 self.V.append(xnew) # add point
-                # visualization(self)
+                visualization(self)
                 # minimal path and minimal cost
                 xmin, cmin = xnearest, cost(self, xnearest) + getDist(xnearest, xnew)
                 # connecting along minimal cost path
@@ -82,12 +83,13 @@ class rrtstar():
                             self.removewire(xnear)
                             self.wireup(xnear, xnew)
                 self.i += 1
-            ind += 1
+            self.ind += 1
         # max sample reached
         self.reached()
         print('time used = ' + str(time.time()-starttime))
         print('Total distance = '+str(self.D))
         visualization(self)
+        plt.show()
         
 
 if __name__ == '__main__':

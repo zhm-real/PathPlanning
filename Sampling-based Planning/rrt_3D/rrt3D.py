@@ -6,6 +6,7 @@ import numpy as np
 from numpy.matlib import repmat
 from collections import defaultdict
 import time
+import matplotlib.pyplot as plt
 
 import os
 import sys
@@ -13,7 +14,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Sampling-based Planning/")
 
 from rrt_3D.env3D import env
-from rrt_3D.utils3D import getDist, sampleFree, nearest, steer, isCollide, near, visualization, cost, path, edgeset
+from rrt_3D.utils3D import getDist, sampleFree, nearest, steer, isCollide, near, visualization, cost, path, edgeset, hash3D, dehash
 
 
 class rrtstar():
@@ -26,16 +27,18 @@ class rrtstar():
         self.maxiter = 10000
         self.stepsize = 0.5
         self.Path = []
+        self.done = False
 
     def wireup(self, x, y):
-        self.E.add_edge([x, y])  # add edge
-        self.Parent[str(x[0])][str(x[1])][str(x[2])] = y
+        self.E.add_edge([x,y]) # add edge
+        self.Parent[hash3D(x)] = y
 
     def run(self):
         self.V.append(self.env.start)
-        ind = 0
+        self.ind = 0
+        self.fig = plt.figure(figsize = (10,8))
         xnew = self.env.start
-        while ind < self.maxiter and getDist(xnew, self.env.goal) > 1:
+        while self.ind < self.maxiter and getDist(xnew, self.env.goal) > 1:
             xrand = sampleFree(self)
             xnearest = nearest(self, xrand)
             xnew = steer(self, xnearest, xrand)
@@ -44,12 +47,14 @@ class rrtstar():
                 self.wireup(xnew, xnearest)
                 # visualization(self)
                 self.i += 1
-            ind += 1
+            self.ind += 1
             if getDist(xnew, self.env.goal) <= 1:
                 self.wireup(self.env.goal, xnew)
                 self.Path, D = path(self)
                 print('Total distance = ' + str(D))
+        self.done = True
         visualization(self)
+        plt.show()
 
 
 if __name__ == '__main__':

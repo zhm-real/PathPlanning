@@ -1,3 +1,9 @@
+"""
+Env 2D
+@author: huiming zhou
+"""
+
+
 class Env:
     def __init__(self):
         self.x_range = 51  # size of background

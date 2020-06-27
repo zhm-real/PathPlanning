@@ -1,5 +1,16 @@
+"""
+Plot tools 2D
+@author: huiming zhou
+"""
+
+import os
+import sys
 import matplotlib.pyplot as plt
-import env
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
+                "/../../Search-based Planning/")
+
+from Search_2D import env
 
 
 class Plotting:

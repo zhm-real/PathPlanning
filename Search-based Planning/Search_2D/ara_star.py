@@ -1,8 +1,17 @@
-import queue
-import plotting
-import env
+"""
+ARA_star 2D
+@author: huiming zhou
+"""
 
-import matplotlib.pyplot as plt
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
+                "/../../Search-based Planning/")
+
+from Search_2D import queue
+from Search_2D import plotting
+from Search_2D import env
 
 
 class AraStar:

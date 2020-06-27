@@ -20,9 +20,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_6_27_20,_12_26_AM_[Default_Changelist]/shelved.patch" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_6_27_20__12_26_AM__Default_Changelist_.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../nano.save" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../nano.save.1" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ara_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/ara_star.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plotting.py" beforeDir="false" afterPath="$PROJECT_DIR$/plotting.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/a_star.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ara_star.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bfs.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dfs.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dijkstra.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/env.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plotting.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/queue.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -202,25 +212,29 @@
     </state>
     <state x="2700" y="297" width="424" height="482" key="FileChooserDialogImpl/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1592802293738" />
     <state x="819" y="314" key="FileChooserDialogImpl/65.24.1855.1056/1920.0.1920.1080@65.24.1855.1056" timestamp="1592933974409" />
-    <state width="1832" height="206" key="GridCell.Tab.0.bottom" timestamp="1593242428508">
+    <state width="1832" height="206" key="GridCell.Tab.0.bottom" timestamp="1593243345942">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1832" height="206" key="GridCell.Tab.0.bottom/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593242428508" />
-    <state width="1832" height="206" key="GridCell.Tab.0.center" timestamp="1593242428508">
+    <state width="1832" height="206" key="GridCell.Tab.0.bottom/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593243345942" />
+    <state width="1832" height="206" key="GridCell.Tab.0.center" timestamp="1593243345941">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1832" height="206" key="GridCell.Tab.0.center/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593242428508" />
-    <state width="1832" height="206" key="GridCell.Tab.0.left" timestamp="1593242428508">
+    <state width="1832" height="206" key="GridCell.Tab.0.center/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593243345941" />
+    <state width="1832" height="206" key="GridCell.Tab.0.left" timestamp="1593243345941">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1832" height="206" key="GridCell.Tab.0.left/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593242428508" />
-    <state width="1832" height="206" key="GridCell.Tab.0.right" timestamp="1593242428508">
+    <state width="1832" height="206" key="GridCell.Tab.0.left/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593243345941" />
+    <state width="1832" height="206" key="GridCell.Tab.0.right" timestamp="1593243345941">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1832" height="206" key="GridCell.Tab.0.right/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593242428508" />
+    <state width="1832" height="206" key="GridCell.Tab.0.right/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593243345941" />
     <state x="2406" y="174" key="SettingsEditor" timestamp="1592801555194">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
     <state x="2406" y="174" key="SettingsEditor/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1592801555194" />
+    <state x="2701" y="438" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1593242832142">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2701" y="438" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593242832142" />
   </component>
 </project>

@@ -7,7 +7,7 @@
 import numpy as np
 
 
-def getblocks(resolution):
+def getblocks():
     # AABBs
     block = [[3.10e+00, 0.00e+00, 2.10e+00, 3.90e+00, 5.00e+00, 6.00e+00],
              [9.10e+00, 0.00e+00, 2.10e+00, 9.90e+00, 5.00e+00, 6.00e+00],
@@ -19,22 +19,22 @@ def getblocks(resolution):
     Obstacles = []
     for i in block:
         i = np.array(i)
-        Obstacles.append([j/resolution for j in i])
+        Obstacles.append([j for j in i])
     return np.array(Obstacles)
 
-def getballs(resolution):
+def getballs():
     spheres = [[16,2.5,3,2],[10,2.5,1,1]]
     Obstacles = []
     for i in spheres:
-        Obstacles.append([j/resolution for j in i])
+        Obstacles.append([j for j in i])
     return np.array(Obstacles)
 
 class env():
     def __init__(self, xmin=0, ymin=0, zmin=0, xmax=20, ymax=5, zmax=6, resolution=1):
         self.resolution = resolution
-        self.boundary = np.array([xmin, ymin, zmin, xmax, ymax, zmax]) / resolution
-        self.blocks = getblocks(resolution)
-        self.balls = getballs(resolution)
+        self.boundary = np.array([xmin, ymin, zmin, xmax, ymax, zmax]) 
+        self.blocks = getblocks()
+        self.balls = getballs()
         self.start = np.array([0.5, 2.5, 5.5])
         self.goal = np.array([19.0, 2.5, 5.5])
 

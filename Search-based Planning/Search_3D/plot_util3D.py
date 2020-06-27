@@ -54,11 +54,11 @@ def draw_line(ax,SET,visibility=1,color=None):
 def visualization(initparams):
     if initparams.ind % 10 == 0 or initparams.done:
         V = np.array(initparams.V)
-        E = initparams.E
+        # E = initparams.E
         Path = np.array(initparams.Path)
         start = initparams.env.start
         goal = initparams.env.goal
-        edges = E.get_edge()
+        # edges = E.get_edge()
         # generate axis objects
         ax = plt.subplot(111, projection='3d')
         ax.view_init(elev=0., azim=90)
@@ -67,7 +67,7 @@ def visualization(initparams):
         draw_Spheres(ax, initparams.env.balls)
         draw_block_list(ax, initparams.env.blocks)
         draw_block_list(ax, np.array([initparams.env.boundary]),alpha=0)
-        draw_line(ax,edges,visibility=0.25)
+        # draw_line(ax,edges,visibility=0.25)
         draw_line(ax,Path,color='r')
         ax.scatter3D(V[:, 0], V[:, 1], V[:, 2], s=2, color='g',)
         ax.plot(start[0:1], start[1:2], start[2:], 'go', markersize=7, markeredgecolor='k')

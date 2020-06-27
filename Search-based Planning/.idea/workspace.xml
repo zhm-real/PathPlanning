@@ -19,7 +19,11 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="" />
+    <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ara_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/ara_star.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plotting.py" beforeDir="false" afterPath="$PROJECT_DIR$/plotting.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -51,7 +55,7 @@
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.a_star">
+  <component name="RunManager" selected="Python.ara_star">
     <configuration name="a_star" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Search-based Planning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -159,8 +163,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.a_star" />
         <item itemvalue="Python.ara_star" />
+        <item itemvalue="Python.a_star" />
         <item itemvalue="Python.bfs" />
         <item itemvalue="Python.dfs" />
         <item itemvalue="Python.dijkstra" />
@@ -198,22 +202,22 @@
     </state>
     <state x="2700" y="297" width="424" height="482" key="FileChooserDialogImpl/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1592802293738" />
     <state x="819" y="314" key="FileChooserDialogImpl/65.24.1855.1056/1920.0.1920.1080@65.24.1855.1056" timestamp="1592933974409" />
-    <state width="1832" height="206" key="GridCell.Tab.0.bottom" timestamp="1593133319558">
+    <state width="1832" height="206" key="GridCell.Tab.0.bottom" timestamp="1593242428508">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1832" height="206" key="GridCell.Tab.0.bottom/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593133319558" />
-    <state width="1832" height="206" key="GridCell.Tab.0.center" timestamp="1593133319558">
+    <state width="1832" height="206" key="GridCell.Tab.0.bottom/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593242428508" />
+    <state width="1832" height="206" key="GridCell.Tab.0.center" timestamp="1593242428508">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1832" height="206" key="GridCell.Tab.0.center/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593133319558" />
-    <state width="1832" height="206" key="GridCell.Tab.0.left" timestamp="1593133319558">
+    <state width="1832" height="206" key="GridCell.Tab.0.center/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593242428508" />
+    <state width="1832" height="206" key="GridCell.Tab.0.left" timestamp="1593242428508">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1832" height="206" key="GridCell.Tab.0.left/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593133319558" />
-    <state width="1832" height="206" key="GridCell.Tab.0.right" timestamp="1593133319558">
+    <state width="1832" height="206" key="GridCell.Tab.0.left/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593242428508" />
+    <state width="1832" height="206" key="GridCell.Tab.0.right" timestamp="1593242428508">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1832" height="206" key="GridCell.Tab.0.right/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593133319558" />
+    <state width="1832" height="206" key="GridCell.Tab.0.right/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593242428508" />
     <state x="2406" y="174" key="SettingsEditor" timestamp="1592801555194">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>

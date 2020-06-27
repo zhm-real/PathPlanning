@@ -15,7 +15,7 @@ class AraStar:
         self.u_set = self.Env.motions  # feasible input set
         self.obs = self.Env.obs  # position of obstacles
 
-        self.e = 3
+        self.e = 2.5
         self.g = {self.xI: 0, self.xG: float("inf")}
         self.fig_name = "ARA_Star Algorithm"
 
@@ -24,46 +24,56 @@ class AraStar:
         self.INCONS = []
         self.parent = {self.xI: self.xI}
 
-    def searching(self):
-        path = []
+        self.path = []
+        self.visited = []
 
+    def searching(self):
         self.OPEN.put(self.xI, self.fvalue(self.xI))
         self.ImprovePath()
-
-        path.append(self.extract_path())
+        self.path.append(self.extract_path())
 
         while self.update_e() > 1:
             self.e -= 0.5
+            print(self.e)
             OPEN_mid = [x for (p, x) in self.OPEN.enumerate()] + self.INCONS
             self.OPEN = queue.QueuePrior()
+            self.OPEN.put(self.xI, self.fvalue(self.xI))
 
             for x in OPEN_mid:
                 self.OPEN.put(x, self.fvalue(x))
+
             self.INCONS = []
             self.CLOSED = []
             self.ImprovePath()
+            self.path.append(self.extract_path())
 
-            path.append(self.extract_path())
-
-        return path
+        return self.path, self.visited
 
     def ImprovePath(self):
-        while (not self.OPEN.empty() and self.fvalue(self.xG) >
+        visited_each = []
+        while (self.fvalue(self.xG) >
                min([self.fvalue(x) for (p, x) in self.OPEN.enumerate()])):
             s = self.OPEN.get()
-            self.CLOSED.append(s)
+
+            if s not in self.CLOSED:
+                self.CLOSED.append(s)
 
             for u_next in self.u_set:
                 s_next = tuple([s[i] + u_next[i] for i in range(len(s))])
+
                 if s_next not in self.obs:
                     new_cost = self.g[s] + self.get_cost(s, u_next)
                     if s_next not in self.g or new_cost < self.g[s_next]:
                         self.g[s_next] = new_cost
                         self.parent[s_next] = s
+                        visited_each.append(s_next)
+
                         if s_next not in self.CLOSED:
                             self.OPEN.put(s_next, self.fvalue(s_next))
                         else:
                             self.INCONS.append(s_next)
+
+        self.visited.append(visited_each)
 
     def update_e(self):
         c_OPEN, c_INCONS = float("inf"), float("inf")
@@ -76,8 +86,8 @@ class AraStar:
 
         if min(c_OPEN, c_INCONS) == float("inf"):
             return 1
-        else:
-            return min(self.e, self.g[self.xG] / min(c_OPEN, c_INCONS))
+
+        return min(self.e, self.g[self.xG] / min(c_OPEN, c_INCONS))
 
     def fvalue(self, x):
         h = self.e * self.Heuristic(x)
@@ -143,23 +153,10 @@ def main():
     arastar = AraStar(x_start, x_goal, "manhattan")
     plot = plotting.Plotting(x_start, x_goal)
 
-    path = arastar.searching()
+    fig_name = "ARA* algorithm"
+    path, visited = arastar.searching()
 
-    plot.plot_grid("ARA*")
-
-    print(arastar.e)
-
-    for path_i in path:
-        path_i.remove(x_start)
-        path_i.remove(x_goal)
-
-        path_x = [path_i[i][0] for i in range(len(path_i))]
-        path_y = [path_i[i][1] for i in range(len(path_i))]
-
-        plt.plot(path_x, path_y, linewidth='3', marker='o')
-        plt.pause(1)
-
-    plt.show()
+    plot.animation_ara_star(path, visited, fig_name)
 
 
 if __name__ == '__main__':

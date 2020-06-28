@@ -52,7 +52,7 @@ def draw_line(ax,SET,visibility=1,color=None):
             ax.add_line(line)
 
 def visualization(initparams):
-    if initparams.ind % 10 == 0 or initparams.done:
+    if initparams.ind % 20 == 0 or initparams.done:
         V = np.array(initparams.V)
         # E = initparams.E
         Path = np.array(initparams.Path)
@@ -61,7 +61,7 @@ def visualization(initparams):
         # edges = E.get_edge()
         # generate axis objects
         ax = plt.subplot(111, projection='3d')
-        ax.view_init(elev=0., azim=90)
+        ax.view_init(elev=0.+ 0.03*initparams.ind/(2*np.pi), azim=90 + 0.03*initparams.ind/(2*np.pi))
         ax.clear()
         # drawing objects
         draw_Spheres(ax, initparams.env.balls)

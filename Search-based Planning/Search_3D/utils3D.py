@@ -64,11 +64,10 @@ def isCollide(initparams, x, direc):
     '''see if line intersects obstacle'''
     resolution = initparams.env.resolution
     child = np.array(list(map(np.add,x,np.multiply(direc,resolution))))
-    ray = getRay(x, direc)
-    dist = getDist(x, child)
+    ray , dist = getRay(x, child) ,  getDist(x, child)
     if not isinbound(initparams.env.boundary,child):
         return True, child
-    for i in getAABB(initparams.env.blocks):
+    for i in initparams.AABB:
         shot = pyrr.geometric_tests.ray_intersect_aabb(ray, i)
         if shot is not None:
             dist_wall = getDist(x, shot)
@@ -85,6 +84,5 @@ def isCollide(initparams, x, direc):
 def cost(i,j):
     return getDist(i,j)
     
-
 if __name__ == "__main__":
     from env3D import env

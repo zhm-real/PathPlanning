@@ -42,6 +42,11 @@ def isinbound(i, x):
         return True
     return False
 
+def isinball(i, x):
+    if getDist(i[0:3], x) <= i[3]:
+        return True
+    return False
+
 def StateSpace(initparams,factor=0):
     '''This function is used to get nodes and discretize the space.
        State space is by x*y*z,3 where each 3 is a point in 3D.'''
@@ -74,6 +79,8 @@ def isCollide(initparams, x, direc):
             if dist_wall <= dist:  # collide
                 return True, child
     for i in initparams.env.balls:
+        if isinball(i, child):
+            return True, child
         shot = pyrr.geometric_tests.ray_intersect_sphere(ray, i)
         if shot != []:
             dists_ball = [getDist(x, j) for j in shot]

@@ -31,7 +31,7 @@ class Weighted_A_star(object):
         self.OPEN = queue.QueuePrior() # store [point,priority]
         self.h = Heuristic(self.Space,self.goal)
         self.Parent = {}
-        self.CLOSED = {}
+        self.CLOSED = set()
         self.V = []
         self.done = False
         self.Path = []
@@ -51,7 +51,7 @@ class Weighted_A_star(object):
         while xt not in self.CLOSED and self.OPEN: # while xt not reached and open is not empty
             strxi = self.OPEN.get()           
             xi = dehash(strxi)
-            self.CLOSED[strxi] = [] # add the point in CLOSED set
+            self.CLOSED.add(strxi) # add the point in CLOSED set
             self.V.append(xi)
             visualization(self)
             allchild = self.children(xi)
@@ -66,7 +66,6 @@ class Weighted_A_star(object):
                         if (a, strxj) in self.OPEN.enumerate():
                             # update priority of xj
                             self.OPEN.put(strxj, a+1*self.h[strxj])
-                            pass
                         else:
                             # add xj in to OPEN set
                             self.OPEN.put(strxj, a+1*self.h[strxj])

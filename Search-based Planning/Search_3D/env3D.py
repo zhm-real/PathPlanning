@@ -23,7 +23,7 @@ def getblocks():
     return np.array(Obstacles)
 
 def getballs():
-    spheres = [[16,2.5,3,2],[10,2.5,1,1]]
+    spheres = [[16,2.5,4,2],[10,2.5,1,1]]
     Obstacles = []
     for i in spheres:
         Obstacles.append([j for j in i])

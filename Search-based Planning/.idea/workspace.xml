@@ -20,20 +20,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_6_27_20,_12_26_AM_[Default_Changelist]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_6_27_20__12_26_AM__Default_Changelist_.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../nano.save" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../nano.save.1" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Search-based Planning.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Search-based Planning.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_6_27_20__12_26_AM__Default_Changelist_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_6_27_20__12_26_AM__Default_Changelist_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/a_star.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ara_star.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bfs.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dfs.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dijkstra.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/env.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plotting.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/queue.py" beforeDir="false" />
     </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -64,6 +56,18 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
   </component>
   <component name="RunManager" selected="Python.ara_star">
     <configuration name="a_star" type="PythonConfigurationType" factoryName="Python" temporary="true">
@@ -199,12 +203,13 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
     <state x="819" y="314" width="424" height="482" key="FileChooserDialogImpl" timestamp="1592933974409">

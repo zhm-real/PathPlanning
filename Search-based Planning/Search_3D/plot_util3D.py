@@ -80,7 +80,7 @@ def visualization(initparams):
         ax.get_proj = make_get_proj(ax,1*dx, 1*dy, 2*dy)
         plt.xlabel('x')
         plt.ylabel('y')
-        plt.pause(0.001)
+        plt.pause(0.0001)
 
 def make_get_proj(self, rx, ry, rz):
     '''

@@ -35,7 +35,7 @@ class Weighted_A_star(object):
         self.h1 = Heuristic(self.Space,self.goal) # tree NO.1
         self.h2 = Heuristic(self.Space,self.start) # tree NO.2
         self.Parent1, self.Parent2 = {}, {}
-        self.CLOSED1, self.CLOSED2 = {}, {}
+        self.CLOSED1, self.CLOSED2 = set(), set()
         self.V = []
         self.done = False
         self.Path = []
@@ -53,20 +53,20 @@ class Weighted_A_star(object):
         self.OPEN1.put(x0, self.Space[x0] + self.h1[x0]) # item, priority = g + h
         self.OPEN2.put(xt, self.Space[xt] + self.h2[xt]) # item, priority = g + h
         self.ind = 0
-        while not any(check in self.CLOSED1 for check in self.CLOSED2): # while xt not reached and open is not empty
+        while not self.CLOSED1.intersection(self.CLOSED2): # while xt not reached and open is not empty
             strxi1, strxi2 = self.OPEN1.get(), self.OPEN2.get() 
             xi1, xi2 = dehash(strxi1), dehash(strxi2)
-            self.CLOSED1[strxi1] = [] # add the point in CLOSED set
-            self.CLOSED2[strxi2] = []
+            self.CLOSED1.add(strxi1) # add the point in CLOSED set
+            self.CLOSED2.add(strxi2)
             self.V.append(xi1)
             self.V.append(xi2)
-            visualization(self)
+            # visualization(self)
             allchild1,  allchild2 = self.children(xi1), self.children(xi2)
             self.evaluation(allchild1,strxi1,xi1,conf=1)
             self.evaluation(allchild2,strxi2,xi2,conf=2)
             if self.ind % 100 == 0: print('iteration number = '+ str(self.ind))
             self.ind += 1
-        self.common = set(self.CLOSED1).intersection(self.CLOSED2)
+        self.common = self.CLOSED1.intersection(self.CLOSED2)
         self.done = True
         self.Path = self.path()
         visualization(self)

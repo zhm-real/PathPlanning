@@ -27,15 +27,25 @@ Directory Structure
             └── rrtstar3D.py
 
 ## Animations
-### Dijkstra's & A*
+### DFS & BFS (Dijkstra)
 * Blue: starting state
 * Green: goal state
 
 <div align=right>
 <table>
   <tr>
-    <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Search-based%20Planning/gif/Dijkstra.gif" alt="dijkstra" width="400"/></a></td>
-    <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Search-based%20Planning/gif/Astar.gif" alt="Astar" width="400"/></a></td>
+    <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Search-based%20Planning/gif/DFS.gif" alt="dfs" width="400"/></a></td>
+    <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Search-based%20Planning/gif/BFS.gif" alt="bfs" width="400"/></a></td>
+  </tr>
+</table>
+</div>
+
+### A* and A* Variants
+<div align=right>
+<table>
+  <tr>
+    <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Search-based%20Planning/gif/Astar.gif" alt="astar" width="400"/></a></td>
+    <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Search-based%20Planning/gif/Bi-Astar.gif" alt="biastar" width="400"/></a></td>
   </tr>
 </table>
 </div>

@@ -85,5 +85,5 @@ class BFS:
 
 if __name__ == '__main__':
     x_Start = (5, 5)  # Starting node
-    x_Goal = (49, 5)  # Goal node
+    x_Goal = (49, 25)  # Goal node
     bfs = BFS(x_Start, x_Goal)

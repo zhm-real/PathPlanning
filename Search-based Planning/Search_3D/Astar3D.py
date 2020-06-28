@@ -51,9 +51,9 @@ class Weighted_A_star(object):
         while xt not in self.CLOSED and self.OPEN: # while xt not reached and open is not empty
             strxi = self.OPEN.get()           
             xi = dehash(strxi)
+            self.CLOSED[strxi] = [] # add the point in CLOSED set
             self.V.append(xi)
             visualization(self)
-            self.CLOSED[strxi] = [] # add the point in CLOSED set
             allchild = self.children(xi)
             for xj in allchild:
                 strxj = hash3D(xj)

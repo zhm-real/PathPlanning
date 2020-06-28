@@ -5,11 +5,11 @@ IDA_Star 2D
 
 import os
 import sys
+import matplotlib.pyplot as plt
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Search-based Planning/")
 
-from Search_2D import queue
 from Search_2D import plotting
 from Search_2D import env
 
@@ -24,6 +24,8 @@ class IdaStar:
         self.u_set = self.Env.motions  # feasible input set
         self.obs = self.Env.obs  # position of obstacles
 
+        self.visited = []
+
     def ida_star(self):
         bound = self.h(self.xI)
         path = [self.xI]
@@ -31,13 +33,14 @@ class IdaStar:
         while True:
             t = self.searching(path, 0, bound)
             if t == self.xG:
-                return path
+                return path, self.visited
             if t == float("inf"):
-                return None
+                return [], self.visited
             bound = t
 
     def searching(self, path, g, bound):
         s = path[-1]
+        self.visited.append(s)
         f = g + self.h(s)
 
         if f > bound:
@@ -73,17 +76,22 @@ class IdaStar:
 
 def main():
     x_start = (5, 5)  # Starting node
-    x_goal = (15, 25)  # Goal node
+    x_goal = (15, 20)  # Goal node
 
     ida_star = IdaStar(x_start, x_goal, "manhattan")
     plot = plotting.Plotting(x_start, x_goal)
 
-    path = ida_star.ida_star()
+    path, visited = ida_star.ida_star()
+    print(len(visited))
 
     if path:
-        plot.animation(path, [], "IDA_Star")
+        plot.plot_grid("IDA_star")
+        plot.plot_path(visited, 'gray', True)
+        plot.plot_path(path)
+        plt.show()
     else:
         print("Path not found!")
+    plot.plot_grid("IDA")
 
 
 if __name__ == '__main__':

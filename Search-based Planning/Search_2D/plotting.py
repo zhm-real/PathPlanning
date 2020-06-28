@@ -117,7 +117,6 @@ class Plotting:
                 plt.pause(0.001)
         plt.pause(0.01)
 
-
     @staticmethod
     def color_list():
         cl_v = ['silver', 'wheat', 'lightskyblue', 'plum', 'slategray']

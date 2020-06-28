@@ -89,6 +89,35 @@ class Plotting:
 
         plt.show()
 
+    def animation_bi_astar(self, path, v_fore, v_back, name):
+        self.plot_grid(name)
+        self.plot_visited_bi(v_fore, v_back)
+        self.plot_path(path)
+        plt.show()
+
+    def plot_visited_bi(self, v_fore, v_back):
+        if self.xI in v_fore:
+            v_fore.remove(self.xI)
+
+        if self.xG in v_back:
+            v_back.remove(self.xG)
+
+        len_fore, len_back = len(v_fore), len(v_back)
+
+        for k in range(max(len_fore, len_back)):
+            if k < len_fore:
+                plt.plot(v_fore[k][0], v_fore[k][1], linewidth='3', color='gray', marker='o')
+            if k < len_back:
+                plt.plot(v_back[k][0], v_back[k][1], linewidth='3', color='cornflowerblue', marker='o')
+
+            plt.gcf().canvas.mpl_connect('key_release_event',
+                                         lambda event: [exit(0) if event.key == 'escape' else None])
+
+            if k % 10 == 0:
+                plt.pause(0.001)
+        plt.pause(0.01)
+
+
     @staticmethod
     def color_list():
         cl_v = ['silver', 'wheat', 'lightskyblue', 'plum', 'slategray']

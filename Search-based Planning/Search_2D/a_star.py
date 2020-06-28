@@ -117,9 +117,9 @@ class Astar:
 
 def main():
     x_start = (5, 5)  # Starting node
-    x_goal = (49, 5)  # Goal node
+    x_goal = (49, 25)  # Goal node
 
-    astar = Astar(x_start, x_goal, 1, "manhattan")
+    astar = Astar(x_start, x_goal, 1, "euclidean")
     plot = plotting.Plotting(x_start, x_goal)  # class Plotting
 
     fig_name = "A* Algorithm"

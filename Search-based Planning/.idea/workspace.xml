@@ -19,7 +19,12 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="" />
+    <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Search_2D/LRTA_star.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/ara_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/ARA_star.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/ida_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/IDA_star.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,8 +69,8 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.bidirectionalAstar3D">
-    <configuration name="a_star" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.LRTA_star">
+    <configuration name="LRTA_star" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Search-based Planning" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -77,7 +82,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/a_star.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/LRTA_star.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -193,19 +198,19 @@
     </configuration>
     <list>
       <item itemvalue="Python.dijkstra" />
-      <item itemvalue="Python.a_star" />
       <item itemvalue="Python.bidirectional_a_star" />
       <item itemvalue="Python.bfs" />
       <item itemvalue="Python.dfs" />
       <item itemvalue="Python.bidirectionalAstar3D" />
+      <item itemvalue="Python.LRTA_star" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.LRTA_star" />
+        <item itemvalue="Python.bidirectional_a_star" />
         <item itemvalue="Python.bidirectionalAstar3D" />
         <item itemvalue="Python.bfs" />
         <item itemvalue="Python.dfs" />
-        <item itemvalue="Python.bidirectional_a_star" />
-        <item itemvalue="Python.a_star" />
       </list>
     </recent_temporary>
   </component>

@@ -24,12 +24,12 @@ class LRT_A_star(object):
                       [1,-1,0],[-1,1,0],[1,0,-1],[-1,0, 1],[0,1, -1],[0, -1,1],\
                       [1,-1,-1],[-1,1,-1],[-1,-1,1],[1,1,-1],[1,-1,1],[-1,1,1]])
         self.env = env(resolution = resolution)
-        self.Space = StateSpace(self) # key is the point, store g value
+        self.Space = StateSpace(self)
         self.start, self.goal = getNearest(self.Space,self.env.start), getNearest(self.Space,self.env.goal)
         self.AABB = getAABB(self.env.blocks)
-        self.Space[hash3D(getNearest(self.Space,self.start))] = 0 # set g(x0) = 0
-        self.OPEN = queue.QueuePrior() # store [point,priority]
-        self.h = Heuristic(self.Space,self.goal) # initialize heuristic
+        self.Space[hash3D(getNearest(self.Space,self.start))] = 0 
+        self.OPEN = queue.QueuePrior() 
+        self.h = Heuristic(self.Space,self.goal) # 1. initialize heuristic h = h0
         self.Child = {}
         self.CLOSED = set()
         self.V = []
@@ -45,26 +45,26 @@ class LRT_A_star(object):
         return allchild
 
     def step(self, xi, strxi):
-        childs = self.children(xi) # find all childs within one move
-        fvals = [cost(xi,i) + self.h[hash3D(i)] for i in childs]# f = g + h 
-        xj , fmin = childs[np.argmin(fvals)], min(fvals)
+        childs = self.children(xi) # 4. generate depth 1 neighborhood S(s,1) = {s' in S | norm(s,s') = 1}
+        fvals = [cost(xi,i) + self.h[hash3D(i)] for i in childs]
+        xj , fmin = childs[np.argmin(fvals)], min(fvals) # 5. compute h'(s) = min(dist(s,s') + h(s'))
         strxj = hash3D(xj)
         # add the child of xi
         self.Child[strxi] = xj
-        if fmin >= self.h[strxi]: 
-            self.h[strxi] = fmin # update h(xt) to f(xj) if f is greater
-            # TODO: action to move to xj
-            self.OPEN.put(strxj, fmin+1*self.h[strxj]) 
+        if fmin >= self.h[strxi]: # 6. if h'(s) > h(s) then update  h(s) = h'(s)
+            self.h[strxi] = fmin 
+        # TODO: action to move to xj
+        self.OPEN.put(strxj, self.h[strxj]) # 7. update current state s = argmin (dist(s,s') + h(s'))
 
     def run(self):
         x0 = hash3D(self.start)
         xt = hash3D(self.goal)
-        self.OPEN.put(x0, self.Space[x0] + self.h[x0]) # item, priority = g + h
+        self.OPEN.put(x0, self.Space[x0] + self.h[x0]) # 2. reset the current state
         self.ind = 0
-        while xt not in self.CLOSED and self.OPEN: # while xt not reached and open is not empty
+        while xt not in self.CLOSED and self.OPEN: # 3. while s not in Sg do
             strxi = self.OPEN.get()           
-            xi = dehash(strxi)
-            self.CLOSED.add(strxi) # add the point in CLOSED set
+            xi = dehash(strxi) 
+            self.CLOSED.add(strxi) 
             self.V.append(xi)
             visualization(self)
             self.step(xi , strxi)

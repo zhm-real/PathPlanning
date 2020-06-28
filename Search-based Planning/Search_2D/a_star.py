@@ -26,11 +26,10 @@ class Astar:
         self.obs = self.Env.obs  # position of obstacles
 
         self.g = {self.xI: 0, self.xG: float("inf")}
-        self.fig_name = "A* Algorithm"
-
         self.OPEN = queue.QueuePrior()  # priority queue / OPEN
         self.OPEN.put(self.xI, self.fvalue(self.xI))
-        self.parent = {self.xI: self.xI}
+        self.CLOSED = []
+        self.Parent = {self.xI: self.xI}
 
     def searching(self):
         """
@@ -39,23 +38,25 @@ class Astar:
         :return: planning path, action in each node, visited nodes in the planning process
         """
 
-        visited = []
-
         while not self.OPEN.empty():
             s = self.OPEN.get()
+            self.CLOSED.append(s)
+
             if s == self.xG:  # stop condition
                 break
-            visited.append(s)
+
             for u_next in self.u_set:  # explore neighborhoods of current node
                 s_next = tuple([s[i] + u_next[i] for i in range(len(s))])
-                if s_next not in self.obs:
+                if s_next not in self.obs and s_next not in self.CLOSED:
                     new_cost = self.g[s] + self.get_cost(s, u_next)
-                    if s_next not in self.g or new_cost < self.g[s_next]:  # conditions for updating cost
+                    if s_next not in self.g:
+                        self.g[s_next] = float("inf")
+                    if new_cost < self.g[s_next]:  # conditions for updating cost
                         self.g[s_next] = new_cost
-                        self.parent[s_next] = s
+                        self.Parent[s_next] = s
                         self.OPEN.put(s_next, self.fvalue(s_next))
 
-        return self.extract_path(), visited
+        return self.extract_path(), self.CLOSED
 
     def fvalue(self, x):
         h = self.e * self.Heuristic(x)
@@ -72,7 +73,7 @@ class Astar:
         x_current = self.xG
 
         while True:
-            x_current = self.parent[x_current]
+            x_current = self.Parent[x_current]
             path_back.append(x_current)
 
             if x_current == self.xI:
@@ -123,7 +124,6 @@ def main():
 
     fig_name = "A* Algorithm"
     path, visited = astar.searching()
-
     plot.animation(path, visited, fig_name)  # animation generate
 
 

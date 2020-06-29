@@ -91,13 +91,12 @@ import queue
 #         path = np.flip(path,axis=0)
 #         return path
 
-class LRT_A_star2():
+class LRT_A_star2:
     def __init__(self, resolution=0.5, N=7):
-        self.lookahead = N
-        self.Astar = Astar3D.Weighted_A_star()
+        self.Astar = Astar3D.Weighted_A_star(resolution)
 
         while True:
-            self.Astar.run(self.lookahead)
+            self.Astar.run(N)
 
     def updateHeuristic(self):
         for strxi in self.Astar.CLOSED:

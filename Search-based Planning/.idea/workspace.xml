@@ -19,26 +19,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/ARA_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/ARA_star.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/IDA_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/IDA_star.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/LRTA_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/LRTA_star.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/a_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/a_star.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/bfs.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/bfs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/bidirectional_a_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/bidirectional_a_star.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/dfs.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/dfs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/dijkstra.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/dijkstra.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/plotting.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/plotting.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gif/ARA_star.gif" beforeDir="false" afterPath="$PROJECT_DIR$/gif/ARA_star.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gif/Astar.gif" beforeDir="false" afterPath="$PROJECT_DIR$/gif/Astar.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gif/BFS.gif" beforeDir="false" afterPath="$PROJECT_DIR$/gif/BFS.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gif/Bi-Astar.gif" beforeDir="false" afterPath="$PROJECT_DIR$/gif/Bi-Astar.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gif/DFS.gif" beforeDir="false" afterPath="$PROJECT_DIR$/gif/DFS.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gif/Dijkstra.gif" beforeDir="false" afterPath="$PROJECT_DIR$/gif/Dijkstra.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gif/LRTA_star.gif" beforeDir="false" afterPath="$PROJECT_DIR$/gif/LRTA_star.gif" afterDir="false" />
-    </list>
+    <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

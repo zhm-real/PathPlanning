@@ -36,7 +36,8 @@ class Plotting:
             self.plot_path(path[k])
             path_combine += path[k]
             plt.pause(0.2)
-
+        if self.xI in path_combine:
+            path_combine.remove(self.xI)
         self.plot_path(path_combine)
         plt.show()
 

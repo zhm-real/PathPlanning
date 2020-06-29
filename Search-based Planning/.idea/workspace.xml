@@ -20,10 +20,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Search_2D/ARA_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/ARAstar.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/IDA_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/IDAstar.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/LRTA_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/LRTAstar.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/a_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/astar.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Search_2D/RTAAstar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/LRTAstar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/LRTAstar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/plotting.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/plotting.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gif/LRTA_star.gif" beforeDir="false" afterPath="$PROJECT_DIR$/gif/LRTA_star.gif" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -112,7 +113,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="bfs" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="RTAAstar" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Search-based Planning" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -124,7 +125,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/bfs.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/RTAAstar.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -198,19 +199,19 @@
     </configuration>
     <list>
       <item itemvalue="Python.dijkstra" />
-      <item itemvalue="Python.bfs" />
       <item itemvalue="Python.bidirectional_a_star" />
       <item itemvalue="Python.dfs" />
       <item itemvalue="Python.LRTA_star" />
       <item itemvalue="Python.LRTAstar" />
+      <item itemvalue="Python.RTAAstar" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.LRTAstar" />
+        <item itemvalue="Python.RTAAstar" />
         <item itemvalue="Python.LRTA_star" />
         <item itemvalue="Python.dfs" />
         <item itemvalue="Python.bidirectional_a_star" />
-        <item itemvalue="Python.bfs" />
       </list>
     </recent_temporary>
   </component>

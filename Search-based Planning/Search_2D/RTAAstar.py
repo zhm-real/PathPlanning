@@ -1,5 +1,5 @@
 """
-LRTA_star 2D (Learning Real-time A*)
+RTAAstar 2D (Real-time Adaptive A*)
 @author: huiming zhou
 """
 
@@ -16,7 +16,7 @@ from Search_2D import plotting
 from Search_2D import env
 
 
-class LrtAstarN:
+class RtaAstar:
     def __init__(self, x_start, x_goal, N, heuristic_type):
         self.xI, self.xG = x_start, x_goal
         self.heuristic_type = heuristic_type
@@ -34,17 +34,30 @@ class LrtAstarN:
         s_start = self.xI                               # initialize start node
 
         while True:
-            OPEN, CLOSED = self.Astar(s_start, self.N)  # OPEN, CLOSED sets in each iteration
+            OPEN, CLOSED, g_table, PARENT = \
+                self.Astar(s_start, self.N)
 
             if OPEN == "FOUND":                         # reach the goal node
                 self.path.append(CLOSED)
                 break
 
-            h_value = self.iteration(CLOSED)            # h_value table of CLOSED nodes
-            s_start, path_k = self.extract_path_in_CLOSE(s_start, h_value)      # s_start -> expected node in OPEN set
+            s_next, h_value = self.cal_h_value(OPEN, CLOSED, g_table, PARENT)
+            s_start, path_k = self.extract_path_in_CLOSE(s_start, s_next, h_value)
             self.path.append(path_k)
 
-    def extract_path_in_CLOSE(self, s_start, h_value):
+    def cal_h_value(self, OPEN, CLOSED, g_table, PARENT):
+        v_open = {}
+        h_value = {}
+        for (_, x) in OPEN.enumerate():
+            v_open[x] = g_table[PARENT[x]] + 1 + self.h(x)
+        s_open = min(v_open, key=v_open.get)
+        f_min = min(v_open.values())
+        for x in CLOSED:
+            h_value[x] = f_min - g_table[x]
+
+        return s_open, h_value
+
+    def extract_path_in_CLOSE(self, s_end, s_start, h_value):
         path = [s_start]
         s = s_start
 
@@ -52,17 +65,14 @@ class LrtAstarN:
             h_list = {}
             for u in self.u_set:
                 s_next = tuple([s[i] + u[i] for i in range(2)])
-                if s_next not in self.obs:
-                    if s_next in h_value:
-                        h_list[s_next] = h_value[s_next]
-                    else:
-                        h_list[s_next] = self.h(s_next)
-            s_key = min(h_list, key=h_list.get)                 # move to the smallest node with min h_value
+                if s_next not in self.obs and s_next in h_value:
+                    h_list[s_next] = h_value[s_next]
+            s_key = max(h_list, key=h_list.get)                 # move to the smallest node with min h_value
             path.append(s_key)                                  # generate path
             s = s_key                                           # use end of this iteration as the start of next
 
-            if s_key not in h_value:                            # reach the expected node in OPEN set
-                return s_key, path
+            if s_key == s_end:                            # reach the expected node in OPEN set
+                return s_start, list(reversed(path))
 
     def iteration(self, CLOSED):
         h_value = {}
@@ -103,7 +113,7 @@ class LrtAstarN:
 
             if s == self.xG:                                                # reach the goal node
                 self.visited.append(visited)
-                return "FOUND", self.extract_path(x_start, PARENT)
+                return "FOUND", self.extract_path(x_start, PARENT), [], []
 
             for u in self.u_set:
                 s_next = tuple([s[i] + u[i] for i in range(len(s))])
@@ -121,7 +131,7 @@ class LrtAstarN:
 
         self.visited.append(visited)                                         # visited nodes in each iteration
 
-        return OPEN, CLOSED
+        return OPEN, CLOSED, g_table, PARENT
 
     def extract_path(self, x_start, parent):
         """
@@ -171,12 +181,12 @@ def main():
     x_start = (10, 5)
     x_goal = (45, 25)
 
-    lrta = LrtAstarN(x_start, x_goal, 220, "euclidean")
+    rtaa = RtaAstar(x_start, x_goal, 220, "euclidean")
     plot = plotting.Plotting(x_start, x_goal)
-    fig_name = "Learning Real-time A* (LRTA*)"
+    fig_name = "Real-time Adaptive A* (RTAA*)"
 
-    lrta.searching()
-    plot.animation_lrta(lrta.path, lrta.visited, fig_name)
+    rtaa.searching()
+    plot.animation_lrta(rtaa.path, rtaa.visited, fig_name)
 
 
 if __name__ == '__main__':

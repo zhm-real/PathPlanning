@@ -2,14 +2,20 @@ Directory Structure
 ------
     .
     └── Search-based Planning
-        ├── bfs.py                                  # breadth-first
-        ├── dfs.py                                  # depth-first
-        ├── dijkstra.py                             # dijkstra
-        ├── a_star.py                               # a*
-        ├── ara_star.py                             # ara*
-        ├── queue.py                                # FIFO, FILO, Priority queues
-        ├── env.py                                  # environment: grid world, motions
-        └── plotting.py                             # animation
+        └── Search_2D
+            ├── bfs.py                                  # breadth-first searching
+            ├── dfs.py                                  # depth-first searching
+            ├── dijkstra.py                             # dijkstra's
+            ├── a_star.py                               # A*
+            ├── bidirectional_a_star.py                 # Bidirectional A*
+            ├── ARAstar.py                              # Anytime Reparing A*
+            ├── IDAstar.py                              # Iteratively Deepening A*
+            └── LRTAstar.py                             # Learning Real-time A*
+        └── Search_3D
+            ├── Astar3D.py                              # A*_3D
+            ├── bidirectional_Astar3D.py                # Bidirectional A*_3D
+            └── LRT_Astar3D.py                          # Learning Real-time A*_3D
+        └── gif                                         # Animations
     └── Stochastic Shortest Path
         ├── value_iteration.py                      # value iteration
         ├── policy_iteration.py                     # policy iteration

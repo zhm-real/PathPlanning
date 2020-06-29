@@ -35,6 +35,7 @@ class Weighted_A_star(object):
         self.V = []
         self.done = False
         self.Path = []
+        self.ind = 0
 
     def children(self,x):
         allchild = []
@@ -44,10 +45,9 @@ class Weighted_A_star(object):
                 allchild.append(child)
         return allchild
 
-    def run(self):
+    def run(self, N=None):
         x0, xt = hash3D(self.start), hash3D(self.goal)
         self.OPEN.put(x0, self.Space[x0] + self.h[x0]) # item, priority = g + h
-        self.ind = 0
         while xt not in self.CLOSED and self.OPEN: # while xt not reached and open is not empty
             strxi = self.OPEN.get()           
             xi = dehash(strxi)
@@ -69,12 +69,18 @@ class Weighted_A_star(object):
                         else:
                             # add xj in to OPEN set
                             self.OPEN.put(strxj, a+1*self.h[strxj])
+            # For specified expanded nodes, used primarily in LRTA*
+            if N is not None:
+                if len(self.V) % N == 0:
+                    break
             if self.ind % 100 == 0: print('iteration number = '+ str(self.ind))
             self.ind += 1
-        self.done = True
-        self.Path = self.path()
-        visualization(self)
-        plt.show()
+        # if the path finding is finished
+        if xt in self.CLOSED:
+            self.done = True
+            self.Path = self.path()
+            visualization(self)
+            plt.show()
 
     def path(self):
         path = []
@@ -87,5 +93,5 @@ class Weighted_A_star(object):
         return path
 
 if __name__ == '__main__':
-    Astar = Weighted_A_star(0.5)
+    Astar = Weighted_A_star(1)
     Astar.run()

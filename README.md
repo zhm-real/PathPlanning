@@ -10,7 +10,8 @@ Directory Structure
             ├── bidirectional_a_star.py                 # Bidirectional A*
             ├── ARAstar.py                              # Anytime Reparing A*
             ├── IDAstar.py                              # Iteratively Deepening A*
-            └── LRTAstar.py                             # Learning Real-time A*
+            ├── LRTAstar.py                             # Learning Real-time A*
+            └── RTAAstar.py                             # Real-time Adaptive A*
         └── Search_3D
             ├── Astar3D.py                              # A*_3D
             ├── bidirectional_Astar3D.py                # Bidirectional A*_3D

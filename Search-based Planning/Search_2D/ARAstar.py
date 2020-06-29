@@ -152,9 +152,9 @@ class AraStar:
 
 def main():
     x_start = (5, 5)  # Starting node
-    x_goal = (45, 25)  # Goal node
+    x_goal = (45, 5)  # Goal node
 
-    arastar = AraStar(x_start, x_goal, 2.5, "manhattan")
+    arastar = AraStar(x_start, x_goal, 2.5, "euclidean")
     plot = plotting.Plotting(x_start, x_goal)
 
     fig_name = "Anytime Repairing A* (ARA*)"

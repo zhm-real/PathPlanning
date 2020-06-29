@@ -22,8 +22,6 @@
     <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Search_2D/ARAstar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/ARAstar.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gif/ARA_star.gif" beforeDir="false" afterPath="$PROJECT_DIR$/gif/ARA_star.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gif/LRTA_star.gif" beforeDir="false" afterPath="$PROJECT_DIR$/gif/LRTA_star.gif" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -69,7 +67,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.RTAAstar">
+  <component name="RunManager" selected="Python.ARAstar">
     <configuration name="ARAstar" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Search-based Planning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -206,9 +204,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.ARAstar" />
         <item itemvalue="Python.RTAAstar" />
         <item itemvalue="Python.LRTAstar" />
-        <item itemvalue="Python.ARAstar" />
         <item itemvalue="Python.LRTA_star" />
         <item itemvalue="Python.dfs" />
       </list>

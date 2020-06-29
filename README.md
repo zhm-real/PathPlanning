@@ -16,6 +16,13 @@ Directory Structure
             ├── bidirectional_Astar3D.py                # Bidirectional A*_3D
             └── LRT_Astar3D.py                          # Learning Real-time A*_3D
         └── gif                                         # Animations
+    └── Sampling-based Planning
+        └── rrt_2D
+            ├── rrt.py                                  # rrt : goal-biased rrt
+            └── rrt_star.py
+        └── rrt_3D
+            ├── rrt3D.py                                # rrt3D : goal-biased rrt3D
+            └── rrtstar3D.py
     └── Stochastic Shortest Path
         ├── value_iteration.py                          # value iteration
         ├── policy_iteration.py                         # policy iteration
@@ -24,13 +31,6 @@ Directory Structure
     └── Model-free Control
         ├── Sarsa.py                                    # SARSA : on-policy TD control
         └── Q-learning.py                               # Q-learning : off-policy TD control
-    └── Sampling-based Planning
-        └── rrt_2D
-            ├── rrt.py                                  # rrt : goal-biased rrt
-            └── rrt_star.py
-        └── rrt_3D
-            ├── rrt3D.py                                # rrt3D : goal-biased rrt3D
-            └── rrtstar3D.py
 
 ## Animations
 ### DFS & BFS (Dijkstra)

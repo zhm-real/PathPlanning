@@ -105,8 +105,8 @@ class LRT_A_star2():
             xi = dehash(strxi)
             self.Astar.h[strxi] = min([cost(xi,xj) + self.Astar.h[hash3D(xj)] for xj in self.Astar.children(xi)])
     
-    #def move(self):
-    #    print(np.argmin([j[0] for j in self.Astar.OPEN.enumerate()]))
+    def move(self):
+        print(np.argmin([j[0] for j in self.Astar.OPEN.enumerate()]))
         
 
     def run(self):

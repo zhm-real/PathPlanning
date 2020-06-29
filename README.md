@@ -57,8 +57,14 @@ Directory Structure
 </table>
 <table>
   <tr>
+    <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Search-based%20Planning/gif/RepeatedA_star.gif" alt="repeatedastar" width="400"/></a></td>
     <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Search-based%20Planning/gif/ARA_star.gif" alt="arastar" width="400"/></a></td>
+  </tr>
+</table>
+<table>
+  <tr>
     <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Search-based%20Planning/gif/LRTA_star.gif" alt="lrtastar" width="400"/></a></td>
+    <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Search-based%20Planning/gif/RTAA_star.gif" alt="rtaastar" width="400"/></a></td>
   </tr>
 </table>
 </div>

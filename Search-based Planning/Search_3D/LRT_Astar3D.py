@@ -12,8 +12,9 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Search-based Planning/")
 from Search_3D.env3D import env
-from Search_3D.Astar3D import Weighted_A_star
-from Search_3D.utils3D import getAABB, getDist, getRay, StateSpace, Heuristic, getNearest, isCollide, hash3D, dehash, cost
+from Search_3D import Astar3D
+from Search_3D.utils3D import getAABB, getDist, getRay, StateSpace, Heuristic, getNearest, isCollide, hash3D, dehash, \
+    cost
 from Search_3D.plot_util3D import visualization
 import queue
 
@@ -91,31 +92,22 @@ import queue
 #         return path
 
 class LRT_A_star2():
-    def __init__(self,resolution=0.5, N=7):
+    def __init__(self, resolution=0.5, N=7):
         self.lookahead = N
-        self.Astar = Weighted_A_star()
-        self.Astar.env.resolution = resolution
-    
-    def expand(self):
-        self.Astar.run(self.lookahead) 
+        self.Astar = Astar3D.Weighted_A_star()
+
+        while True:
+            self.Astar.run(self.lookahead)
 
     def updateHeuristic(self):
         for strxi in self.Astar.CLOSED:
             self.Astar.h[strxi] = np.inf
             xi = dehash(strxi)
-            self.Astar.h[strxi] = min([cost(xi,xj) + self.Astar.h[hash3D(xj)] for xj in self.Astar.children(xi)])
-    
+            self.Astar.h[strxi] = min([cost(xi, xj) + self.Astar.h[hash3D(xj)] for xj in self.Astar.children(xi)])
+
     def move(self):
         print(np.argmin([j[0] for j in self.Astar.OPEN.enumerate()]))
-        
-
-    def run(self):
-        xt = hash3D(self.Astar.goal)
-        while xt not in self.Astar.CLOSED:
-            self.expand()
-            #self.updateHeuristic()
 
 
 if __name__ == '__main__':
-    T = LRT_A_star2(resolution = 1, N = 2)
-    T.run()
+    T = LRT_A_star2(resolution=1, N=50)

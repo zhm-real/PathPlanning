@@ -15,3 +15,4 @@ from Search_2D import env
 
 class LpaStar:
     def __init__(self):
+        return

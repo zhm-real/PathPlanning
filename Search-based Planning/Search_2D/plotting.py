@@ -25,6 +25,38 @@ class Plotting:
         self.plot_path(path)
         plt.show()
 
+    def animation_lrta(self, path, visited, name):
+        self.plot_grid(name)
+        cl = self.color_list_2()
+        path_combine = []
+
+        for k in range(len(path)):
+            self.plot_visited(visited[k], cl[k])
+            plt.pause(0.2)
+            self.plot_path(path[k])
+            path_combine += path[k]
+            plt.pause(0.2)
+
+        self.plot_path(path_combine)
+        plt.show()
+
+    def animation_ara_star(self, path, visited, name):
+        self.plot_grid(name)
+        cl_v, cl_p = self.color_list()
+
+        for k in range(len(path)):
+            self.plot_visited(visited[k], cl_v[k])
+            self.plot_path(path[k], cl_p[k], True)
+            plt.pause(0.5)
+
+        plt.show()
+
+    def animation_bi_astar(self, path, v_fore, v_back, name):
+        self.plot_grid(name)
+        self.plot_visited_bi(v_fore, v_back)
+        self.plot_path(path)
+        plt.show()
+
     def plot_grid(self, name):
         obs_x = [self.obs[i][0] for i in range(len(self.obs))]
         obs_y = [self.obs[i][1] for i in range(len(self.obs))]
@@ -78,23 +110,6 @@ class Plotting:
 
         plt.pause(0.01)
 
-    def animation_ara_star(self, path, visited, name):
-        self.plot_grid(name)
-        cl_v, cl_p = self.color_list()
-
-        for k in range(len(path)):
-            self.plot_visited(visited[k], cl_v[k])
-            self.plot_path(path[k], cl_p[k], True)
-            plt.pause(0.5)
-
-        plt.show()
-
-    def animation_bi_astar(self, path, v_fore, v_back, name):
-        self.plot_grid(name)
-        self.plot_visited_bi(v_fore, v_back)
-        self.plot_path(path)
-        plt.show()
-
     def plot_visited_bi(self, v_fore, v_back):
         if self.xI in v_fore:
             v_fore.remove(self.xI)
@@ -119,6 +134,29 @@ class Plotting:
 
     @staticmethod
     def color_list():
-        cl_v = ['silver', 'wheat', 'lightskyblue', 'plum', 'slategray']
-        cl_p = ['gray', 'orange', 'deepskyblue', 'red', 'm']
+        cl_v = ['silver',
+                'wheat',
+                'lightskyblue',
+                'plum',
+                'slategray']
+        cl_p = ['gray',
+                'orange',
+                'deepskyblue',
+                'red',
+                'm']
         return cl_v, cl_p
+
+    @staticmethod
+    def color_list_2():
+        cl = ['silver',
+              'steelblue',
+              'dimgray',
+              'cornflowerblue',
+              'dodgerblue',
+              'royalblue',
+              'plum',
+              'mediumslateblue',
+              'mediumpurple',
+              'blueviolet',
+              ]
+        return cl

@@ -1,5 +1,5 @@
 """
-ARA_star 2D
+ARA_star 2D (Anytime Repairing A*)
 @author: huiming zhou
 """
 
@@ -15,66 +15,66 @@ from Search_2D import env
 
 
 class AraStar:
-    def __init__(self, x_start, x_goal, heuristic_type):
+    def __init__(self, x_start, x_goal, e, heuristic_type):
         self.xI, self.xG = x_start, x_goal
         self.heuristic_type = heuristic_type
 
-        self.Env = env.Env()  # class Env
+        self.Env = env.Env()                                    # class Env
 
-        self.u_set = self.Env.motions  # feasible input set
-        self.obs = self.Env.obs  # position of obstacles
+        self.u_set = self.Env.motions                           # feasible input set
+        self.obs = self.Env.obs                                 # position of obstacles
+        self.e = e                                              # initial weight
+        self.g = {self.xI: 0, self.xG: float("inf")}            # cost to come
 
-        self.e = 2.5
-        self.g = {self.xI: 0, self.xG: float("inf")}
-        self.fig_name = "ARA_Star Algorithm"
-
-        self.OPEN = queue.QueuePrior()  # priority queue / OPEN
-        self.CLOSED = []
-        self.INCONS = []
-        self.parent = {self.xI: self.xI}
-
-        self.path = []
-        self.visited = []
+        self.OPEN = queue.QueuePrior()                          # priority queue / OPEN
+        self.CLOSED = set()                                     # closed set
+        self.INCONS = []                                        # incons set
+        self.PARENT = {self.xI: self.xI}                        # relations
+        self.path = []                                          # planning path
+        self.visited = []                                       # order of visited nodes
 
     def searching(self):
         self.OPEN.put(self.xI, self.fvalue(self.xI))
         self.ImprovePath()
         self.path.append(self.extract_path())
 
-        while self.update_e() > 1:
-            self.e -= 0.5
-            print(self.e)
-            OPEN_mid = [x for (p, x) in self.OPEN.enumerate()] + self.INCONS
+        while self.update_e() > 1:                              # continue condition
+            self.e -= 0.5                                       # increase weight
+            OPEN_mid = [x for (p, x) in self.OPEN.enumerate()] + self.INCONS        # combine two sets
             self.OPEN = queue.QueuePrior()
             self.OPEN.put(self.xI, self.fvalue(self.xI))
 
             for x in OPEN_mid:
-                self.OPEN.put(x, self.fvalue(x))
+                self.OPEN.put(x, self.fvalue(x))                # update priority
 
             self.INCONS = []
-            self.CLOSED = []
-            self.ImprovePath()
+            self.CLOSED = set()
+            self.ImprovePath()                                  # improve path
             self.path.append(self.extract_path())
 
         return self.path, self.visited
 
     def ImprovePath(self):
+        """
+        :return: a e'-suboptimal path
+        """
+
         visited_each = []
+
         while (self.fvalue(self.xG) >
                min([self.fvalue(x) for (p, x) in self.OPEN.enumerate()])):
             s = self.OPEN.get()
 
             if s not in self.CLOSED:
-                self.CLOSED.append(s)
+                self.CLOSED.add(s)
 
             for u_next in self.u_set:
                 s_next = tuple([s[i] + u_next[i] for i in range(len(s))])
-
                 if s_next not in self.obs:
                     new_cost = self.g[s] + self.get_cost(s, u_next)
                     if s_next not in self.g or new_cost < self.g[s_next]:
                         self.g[s_next] = new_cost
-                        self.parent[s_next] = s
+                        self.PARENT[s_next] = s
                         visited_each.append(s_next)
 
                         if s_next not in self.CLOSED:
@@ -87,10 +87,10 @@ class AraStar:
     def update_e(self):
         c_OPEN, c_INCONS = float("inf"), float("inf")
 
-        if not self.OPEN.empty():
+        if self.OPEN:
             c_OPEN = min(self.g[x] + self.Heuristic(x) for (p, x) in self.OPEN.enumerate())
 
-        if len(self.INCONS) != 0:
+        if self.INCONS:
             c_INCONS = min(self.g[x] + self.Heuristic(x) for x in self.INCONS)
 
         if min(c_OPEN, c_INCONS) == float("inf"):
@@ -99,14 +99,12 @@ class AraStar:
         return min(self.e, self.g[self.xG] / min(c_OPEN, c_INCONS))
 
     def fvalue(self, x):
-        h = self.e * self.Heuristic(x)
-        return self.g[x] + h
+        return self.g[x] + self.e * self.Heuristic(x)
 
     def extract_path(self):
         """
         Extract the path based on the relationship of nodes.
 
-        :param policy: Action needed for transfer between two nodes
         :return: The planning path
         """
 
@@ -114,7 +112,7 @@ class AraStar:
         x_current = self.xG
 
         while True:
-            x_current = self.parent[x_current]
+            x_current = self.PARENT[x_current]
             path_back.append(x_current)
 
             if x_current == self.xI:
@@ -126,7 +124,6 @@ class AraStar:
     def get_cost(x, u):
         """
         Calculate cost for this motion
-
         :param x: current node
         :param u: input
         :return:  cost for this motion
@@ -139,8 +136,6 @@ class AraStar:
         """
         Calculate heuristic.
         :param state: current node (state)
-        :param goal: goal node (state)
-        :param heuristic_type: choosing different heuristic functions
         :return: heuristic
         """
 
@@ -159,10 +154,10 @@ def main():
     x_start = (5, 5)  # Starting node
     x_goal = (49, 5)  # Goal node
 
-    arastar = AraStar(x_start, x_goal, "manhattan")
+    arastar = AraStar(x_start, x_goal, 2.5, "manhattan")
     plot = plotting.Plotting(x_start, x_goal)
 
-    fig_name = "ARA* algorithm"
+    fig_name = "Anytime Repairing A* (ARA*)"
     path, visited = arastar.searching()
 
     plot.animation_ara_star(path, visited, fig_name)

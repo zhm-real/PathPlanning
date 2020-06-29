@@ -1,5 +1,5 @@
 """
-BFS 2D
+BFS 2D (Breadth-first Searching)
 @author: huiming zhou
 """
 
@@ -21,69 +21,62 @@ class BFS:
         self.Env = env.Env()
         self.plotting = plotting.Plotting(self.xI, self.xG)
 
-        self.u_set = self.Env.motions  # feasible input set
-        self.obs = self.Env.obs  # position of obstacles
+        self.u_set = self.Env.motions                       # feasible input set
+        self.obs = self.Env.obs                             # position of obstacles
 
-        [self.path, self.policy, self.visited] = self.searching(self.xI, self.xG)
+        self.OPEN = queue.QueueFIFO()                       # OPEN set: visited nodes
+        self.OPEN.put(self.xI)
+        self.CLOSED = []                                    # CLOSED set: explored nodes
+        self.PARENT = {self.xI: self.xI}                    # relations
 
-        self.fig_name = "Breadth-first Searching"
-        self.plotting.animation(self.path, self.visited, self.fig_name)  # animation generate
-
-    def searching(self, xI, xG):
+    def searching(self):
         """
-        Searching using BFS.
-
-        :return: planning path, action in each node, visited nodes in the planning process
+        :return: path, order of visited nodes in the planning
         """
 
-        q_bfs = queue.QueueFIFO()  # first-in-first-out queue
-        q_bfs.put(xI)
-        parent = {xI: xI}  # record parents of nodes
-        action = {xI: (0, 0)}  # record actions of nodes
-        visited = []
-
-        while not q_bfs.empty():
-            x_current = q_bfs.get()
-            if x_current == xG:
+        while not self.OPEN.empty():
+            s = self.OPEN.get()
+            if s == self.xG:
                 break
-            visited.append(x_current)
-            for u_next in self.u_set:  # explore neighborhoods of current node
-                x_next = tuple([x_current[i] + u_next[i] for i in range(len(x_current))])
-                if x_next not in parent and x_next not in self.obs:  # node not visited and not in obstacles
-                    q_bfs.put(x_next)
-                    parent[x_next], action[x_next] = x_current, u_next
+            self.CLOSED.append(s)
 
-        [path, policy] = self.extract_path(xI, xG, parent, action)  # extract path
+            for u_next in self.u_set:                                       # explore neighborhoods
+                s_next = tuple([s[i] + u_next[i] for i in range(2)])
+                if s_next not in self.PARENT and s_next not in self.obs:    # node not visited and not in obstacles
+                    self.OPEN.put(s_next)
+                    self.PARENT[s_next] = s
 
-        return path, policy, visited
+        return self.extract_path(), self.CLOSED
 
-    @staticmethod
-    def extract_path(xI, xG, parent, policy):
+    def extract_path(self):
         """
         Extract the path based on the relationship of nodes.
-
-        :param xI: Starting node
-        :param xG: Goal node
-        :param parent: Relationship between nodes
-        :param policy: Action needed for transfer between two nodes
         :return: The planning path
         """
 
-        path_back = [xG]
-        acts_back = [policy[xG]]
-        x_current = xG
-        while True:
-            x_current = parent[x_current]
-            path_back.append(x_current)
-            acts_back.append(policy[x_current])
+        path = [self.xG]
+        s = self.xG
 
-            if x_current == xI:
+        while True:
+            s = self.PARENT[s]
+            path.append(s)
+            if s == self.xI:
                 break
 
-        return list(path_back), list(acts_back)
+        return list(path)
+
+
+def main():
+    x_start = (5, 5)  # Starting node
+    x_goal = (49, 25)  # Goal node
+
+    bfs = BFS(x_start, x_goal)
+    plot = plotting.Plotting(x_start, x_goal)
+    fig_name = "Breadth-first Searching (BFS)"
+
+    path, visited = bfs.searching()
+    plot.animation(path, visited, fig_name)  # animation
 
 
 if __name__ == '__main__':
-    x_Start = (5, 5)  # Starting node
-    x_Goal = (49, 25)  # Goal node
-    bfs = BFS(x_Start, x_Goal)
+    main()

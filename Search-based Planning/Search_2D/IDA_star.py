@@ -1,5 +1,5 @@
 """
-IDA_Star 2D
+IDA_Star 2D (Iteratively Deepening A*)
 @author: huiming zhou
 """
 
@@ -19,10 +19,10 @@ class IdaStar:
         self.xI, self.xG = x_start, x_goal
         self.heuristic_type = heuristic_type
 
-        self.Env = env.Env()  # class Env
+        self.Env = env.Env()                    # class Env
 
-        self.u_set = self.Env.motions  # feasible input set
-        self.obs = self.Env.obs  # position of obstacles
+        self.u_set = self.Env.motions           # feasible input set
+        self.obs = self.Env.obs                 # position of obstacles
 
         self.visited = []
 
@@ -75,23 +75,21 @@ class IdaStar:
 
 
 def main():
-    x_start = (5, 5)  # Starting node
-    x_goal = (15, 20)  # Goal node
+    x_start = (5, 5)
+    x_goal = (15, 20)
 
     ida_star = IdaStar(x_start, x_goal, "manhattan")
     plot = plotting.Plotting(x_start, x_goal)
 
     path, visited = ida_star.ida_star()
-    print(len(visited))
 
     if path:
-        plot.plot_grid("IDA_star")
+        plot.plot_grid("Iteratively Deepening A*")
         plot.plot_path(visited, 'gray', True)
         plot.plot_path(path)
         plt.show()
     else:
         print("Path not found!")
-    plot.plot_grid("IDA")
 
 
 if __name__ == '__main__':

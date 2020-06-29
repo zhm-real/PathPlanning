@@ -1,5 +1,5 @@
 """
-LRTA_star_N 2D
+LRTA_star 2D (Learning Real-time A*)
 @author: huiming zhou
 """
 
@@ -17,92 +17,93 @@ from Search_2D import env
 
 
 class LrtAstarN:
-    def __init__(self, x_start, x_goal, heuristic_type):
+    def __init__(self, x_start, x_goal, N, heuristic_type):
         self.xI, self.xG = x_start, x_goal
         self.heuristic_type = heuristic_type
 
-        self.Env = env.Env()  # class Env
+        self.Env = env.Env()
 
-        self.u_set = self.Env.motions  # feasible input set
-        self.obs = self.Env.obs  # position of obstacles
+        self.u_set = self.Env.motions                   # feasible input set
+        self.obs = self.Env.obs                         # position of obstacles
 
-        self.N = 150
-        self.visited = []
+        self.N = N                                      # number of expand nodes each iteration
+        self.visited = []                               # order of visited nodes in planning
+        self.path = []                                  # path of each iteration
 
     def searching(self):
-        s_start = self.xI
-
-        path = []
-        count = 0
+        s_start = self.xI                               # initialize start node
 
         while True:
-            # if count == 2:
-            #     return path
-            # count += 1
+            OPEN, CLOSED = self.Astar(s_start, self.N)  # OPEN, CLOSED sets in each iteration
 
-            h_table = {}
-            OPEN, CLOSED = self.Astar(s_start, self.N)
+            if OPEN == "FOUND":                         # reach the goal node
+                self.path.append(CLOSED)
+                break
 
-            if OPEN == "end":
-                path.append(CLOSED)
-                return path
+            h_value = self.iteration(CLOSED)            # h_value table of CLOSED nodes
+            s_start, path_k = self.extract_path_in_CLOSE(s_start, h_value)      # s_start -> expected node in OPEN set
+            self.path.append(path_k)
 
-            for x in CLOSED:
-                h_table[x] = 2000
+    def extract_path_in_CLOSE(self, s_start, h_value):
+        path = [s_start]
+        s = s_start
 
-            while True:
-                h_table_rec = copy.deepcopy(h_table)
-                for s in CLOSED:
-                    h_list = []
-                    for u in self.u_set:
-                        s_next = tuple([s[i] + u[i] for i in range(2)])
-                        if s_next not in self.obs:
-                            if s_next not in CLOSED:
-                                h_list.append(self.get_cost(s, s_next) + self.h(s_next))
-                            else:
-                                h_list.append(self.get_cost(s, s_next) + h_table[s_next])
-                    h_table[s] = min(h_list)
-                if h_table == h_table_rec:
-                    break
+        while True:
+            h_list = {}
+            for u in self.u_set:
+                s_next = tuple([s[i] + u[i] for i in range(2)])
+                if s_next not in self.obs:
+                    if s_next in h_value:
+                        h_list[s_next] = h_value[s_next]
+                    else:
+                        h_list[s_next] = self.h(s_next)
+            s_key = min(h_list, key=h_list.get)                 # move to the smallest node with min h_value
+            path.append(s_key)                                  # generate path
+            s = s_key                                           # use end of this iteration as the start of next
 
-            path_k = [s_start]
-            x = s_start
-            while True:
-                h_xlist = {}
+            if s_key not in h_value:                            # reach the expected node in OPEN set
+                return s_key, path
+
+    def iteration(self, CLOSED):
+        h_value = {}
+
+        for s in CLOSED:
+            h_value[s] = float("inf")                           # initialize h_value of CLOSED nodes
+
+        while True:
+            h_value_rec = copy.deepcopy(h_value)
+            for s in CLOSED:
+                h_list = []
                 for u in self.u_set:
-                    x_next = tuple([x[i] + u[i] for i in range(2)])
-                    if x_next not in self.obs:
-                        if x_next in CLOSED:
-                            h_xlist[x_next] = h_table[x_next]
+                    s_next = tuple([s[i] + u[i] for i in range(2)])
+                    if s_next not in self.obs:
+                        if s_next not in CLOSED:
+                            h_list.append(self.get_cost(s, s_next) + self.h(s_next))
                         else:
-                            h_xlist[x_next] = self.h(x_next)
-                s_key = min(h_xlist, key=h_xlist.get)
-                path_k.append(s_key)
-                x = s_key
-                if s_key not in CLOSED:
-                    break
-            s_start = path_k[-1]
+                            h_list.append(self.get_cost(s, s_next) + h_value[s_next])
+                h_value[s] = min(h_list)                        # update h_value of current node
 
-            path.append(path_k)
+            if h_value == h_value_rec:                          # h_value table converged
+                return h_value
 
     def Astar(self, x_start, N):
-        OPEN = queue.QueuePrior()
+        OPEN = queue.QueuePrior()                               # OPEN set
         OPEN.put(x_start, self.h(x_start))
-        CLOSED = set()
-        g_table = {x_start: 0, self.xG: float("inf")}
-        parent = {x_start: x_start}
-        count = 0
-        visited = []
+        CLOSED = set()                                          # CLOSED set
+        g_table = {x_start: 0, self.xG: float("inf")}           # cost to come
+        PARENT = {x_start: x_start}                             # relations
+        visited = []                                            # order of visited nodes
+        count = 0                                               # counter
 
         while not OPEN.empty():
             count += 1
             s = OPEN.get()
             CLOSED.add(s)
             visited.append(s)
-            if s == self.xG:
-                path = self.extract_path(x_start, parent)
+
+            if s == self.xG:                                                # reach the goal node
                 self.visited.append(visited)
-                return "end", path
+                return "FOUND", self.extract_path(x_start, PARENT)
 
             for u in self.u_set:
                 s_next = tuple([s[i] + u[i] for i in range(len(s))])
@@ -110,14 +111,15 @@ class LrtAstarN:
                     new_cost = g_table[s] + self.get_cost(s, u)
                     if s_next not in g_table:
                         g_table[s_next] = float("inf")
-                    if new_cost < g_table[s_next]:  # conditions for updating cost
+                    if new_cost < g_table[s_next]:                           # conditions for updating cost
                         g_table[s_next] = new_cost
-                        parent[s_next] = s
+                        PARENT[s_next] = s
                         OPEN.put(s_next, g_table[s_next] + self.h(s_next))
 
-            if count == N:
+            if count == N:                                                   # expand needed CLOSED nodes
                 break
-        self.visited.append(visited)
+
+        self.visited.append(visited)                                         # visited nodes in each iteration
 
         return OPEN, CLOSED
 
@@ -166,29 +168,15 @@ class LrtAstarN:
 
 
 def main():
-    x_start = (10, 5)  # Starting node
-    x_goal = (45, 25)  # Goal node
+    x_start = (10, 5)
+    x_goal = (45, 25)
 
-    lrtastarn = LrtAstarN(x_start, x_goal, "euclidean")
+    lrta = LrtAstarN(x_start, x_goal, 150, "euclidean")
     plot = plotting.Plotting(x_start, x_goal)
+    fig_name = "Learning Real-time A* (LRTA*)"
 
-    path = lrtastarn.searching()
-    plot.plot_grid("LRTA_star_N")
-
-    for k in range(len(path)):
-        plot.plot_visited(lrtastarn.visited[k])
-        plt.pause(0.5)
-        plot.plot_path(path[k])
-        plt.pause(0.5)
-    plt.pause(0.5)
-
-    path_u = []
-    for i in range(len(path)):
-        for j in range(len(path[i])):
-            path_u.append(path[i][j])
-    plot.plot_path(path_u)
-    plt.pause(0.2)
-    plt.show()
+    lrta.searching()
+    plot.animation_lrta(lrta.path, lrta.visited, fig_name)
 
 
 if __name__ == '__main__':

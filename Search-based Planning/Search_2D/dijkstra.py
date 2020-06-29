@@ -13,6 +13,7 @@ from Search_2D import queue
 from Search_2D import plotting
 from Search_2D import env
 
+
 class Dijkstra:
     def __init__(self, x_start, x_goal):
         self.xI, self.xG = x_start, x_goal
@@ -20,46 +21,58 @@ class Dijkstra:
         self.Env = env.Env()
         self.plotting = plotting.Plotting(self.xI, self.xG)
 
-        self.u_set = self.Env.motions  # feasible input set
-        self.obs = self.Env.obs  # position of obstacles
+        self.u_set = self.Env.motions                               # feasible input set
+        self.obs = self.Env.obs                                     # position of obstacles
 
-        [self.path, self.policy, self.visited] = self.searching(self.xI, self.xG)
+        self.g = {self.xI: 0, self.xG: float("inf")}                # cost to come
+        self.OPEN = queue.QueuePrior()                              # priority queue / OPEN set
+        self.OPEN.put(self.xI, 0)
+        self.CLOSED = []                                            # closed set & visited
+        self.PARENT = {self.xI: self.xI}                            # relations
 
-        self.fig_name = "Dijkstra's Algorithm"
-        self.plotting.animation(self.path, self.visited, self.fig_name)  # animation generate
-
-    def searching(self, xI, xG):
+    def searching(self):
         """
         Searching using Dijkstra.
-
-        :return: planning path, action in each node, visited nodes in the planning process
+        :return: path, order of visited nodes in the planning
         """
 
-        q_dijk = queue.QueuePrior()  # priority queue
-        q_dijk.put(xI, 0)
-        parent = {xI: xI}  # record parents of nodes
-        action = {xI: (0, 0)}  # record actions of nodes
-        visited = []  # record visited nodes
-        cost = {xI: 0}
-
-        while not q_dijk.empty():
-            x_current = q_dijk.get()
-            if x_current == xG:  # stop condition
+        while not self.OPEN.empty():
+            s = self.OPEN.get()
+            if s == self.xG:                                        # stop condition
                 break
-            visited.append(x_current)
-            for u_next in self.u_set:  # explore neighborhoods of current node
-                x_next = tuple([x_current[i] + u_next[i] for i in range(len(x_current))])
-                if x_next not in self.obs:  # node not visited and not in obstacles
-                    new_cost = cost[x_current] + self.get_cost(x_current, u_next)
-                    if x_next not in cost or new_cost < cost[x_next]:
-                        cost[x_next] = new_cost
-                        priority = new_cost
-                        q_dijk.put(x_next, priority)  # put node into queue using cost to come as priority
-                        parent[x_next], action[x_next] = x_current, u_next
+            self.CLOSED.append(s)
 
-        [path, policy] = self.extract_path(xI, xG, parent, action)
+            for u in self.u_set:                                    # explore neighborhoods
+                s_next = tuple([s[i] + u[i] for i in range(2)])
+                if s_next not in self.obs:                          # node not visited and not in obstacles
+                    new_cost = self.g[s] + self.get_cost(s, u)
+                    if s_next not in self.g:
+                        self.g[s_next] = float("inf")
+                    if new_cost < self.g[s_next]:
+                        self.g[s_next] = new_cost
+                        self.OPEN.put(s_next, new_cost)
+                        self.PARENT[s_next] = s
 
-        return path, policy, visited
+        return self.extract_path(), self.CLOSED
+
+    def extract_path(self):
+        """
+        Extract the path based on the relationship of nodes.
+
+        :return: The planning path
+        """
+
+        path_back = [self.xG]
+        x_current = self.xG
+
+        while True:
+            x_current = self.PARENT[x_current]
+            path_back.append(x_current)
+
+            if x_current == self.xI:
+                break
+
+        return list(path_back)
 
     @staticmethod
     def get_cost(x, u):
@@ -74,31 +87,18 @@ class Dijkstra:
 
         return 1
 
-    @staticmethod
-    def extract_path(xI, xG, parent, policy):
-        """
-        Extract the path based on the relationship of nodes.
 
-        :param xI: Starting node
-        :param xG: Goal node
-        :param parent: Relationship between nodes
-        :param policy: Action needed for transfer between two nodes
-        :return: The planning path
-        """
+def main():
+    x_start = (5, 5)
+    x_goal = (45, 25)
 
-        path_back = [xG]
-        acts_back = [policy[xG]]
-        x_current = xG
-        while True:
-            x_current = parent[x_current]
-            path_back.append(x_current)
-            acts_back.append(policy[x_current])
-            if x_current == xI: break
+    dijkstra = Dijkstra(x_start, x_goal)
+    plot = plotting.Plotting(x_start, x_goal)  # class Plotting
 
-        return list(path_back), list(acts_back)
+    fig_name = "Dijkstra's"
+    path, visited = dijkstra.searching()
+    plot.animation(path, visited, fig_name)  # animation generate
 
 
 if __name__ == '__main__':
-    x_Start = (5, 5)  # Starting node
-    x_Goal = (49, 25)  # Goal node
-    dijkstra = Dijkstra(x_Start, x_Goal)
+    main()

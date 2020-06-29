@@ -138,7 +138,7 @@ class Plotting:
         cl_v = ['silver',
                 'wheat',
                 'lightskyblue',
-                'plum',
+                'royalblue',
                 'slategray']
         cl_p = ['gray',
                 'orange',

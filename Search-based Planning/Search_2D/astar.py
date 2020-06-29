@@ -28,7 +28,8 @@ class Astar:
         self.g = {self.xI: 0, self.xG: float("inf")}  # cost to come
         self.OPEN = queue.QueuePrior()  # priority queue / OPEN set
         self.OPEN.put(self.xI, self.fvalue(self.xI))
-        self.CLOSED = []  # closed set & visited
+        self.CLOSED = set()  # closed set & visited
+        self.VISITED = []
         self.PARENT = {self.xI: self.xI}  # relations
 
     def searching(self):
@@ -40,7 +41,8 @@ class Astar:
 
         while not self.OPEN.empty():
             s = self.OPEN.get()
-            self.CLOSED.append(s)
+            self.CLOSED.add(s)
+            self.VISITED.append(s)
 
             if s == self.xG:  # stop condition
                 break
@@ -56,7 +58,7 @@ class Astar:
                         self.PARENT[s_next] = s
                         self.OPEN.put(s_next, self.fvalue(s_next))
 
-        return self.extract_path(self.PARENT), self.CLOSED
+        return self.extract_path(self.PARENT), self.VISITED
 
     def repeated_Searching(self, xI, xG, e):
         path, visited = [], []
@@ -162,16 +164,16 @@ def main():
     x_start = (5, 5)
     x_goal = (45, 25)
 
-    astar = Astar(x_start, x_goal, 1, "manhattan")  # weight e = 1
+    astar = Astar(x_start, x_goal, 1, "euclidean")  # weight e = 1
     plot = plotting.Plotting(x_start, x_goal)  # class Plotting
-    #
-    # fig_name = "A*"
-    # path, visited = astar.searching()
-    # plot.animation(path, visited, fig_name)  # animation generate
 
-    fig_name = "Repeated A*"
-    path, visited = astar.repeated_Searching(x_start, x_goal, 2.5)
-    plot.animation_ara_star(path, visited, fig_name)
+    fig_name = "A*"
+    path, visited = astar.searching()
+    plot.animation(path, visited, fig_name)  # animation generate
+
+    # fig_name = "Repeated A*"
+    # path, visited = astar.repeated_Searching(x_start, x_goal, 2.5)
+    # plot.animation_ara_star(path, visited, fig_name)
 
 
 if __name__ == '__main__':

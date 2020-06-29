@@ -19,7 +19,12 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="" />
+    <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/ARAstar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/ARAstar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gif/ARA_star.gif" beforeDir="false" afterPath="$PROJECT_DIR$/gif/ARA_star.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gif/LRTA_star.gif" beforeDir="false" afterPath="$PROJECT_DIR$/gif/LRTA_star.gif" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,7 +69,28 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.LRTAstar">
+  <component name="RunManager" selected="Python.RTAAstar">
+    <configuration name="ARAstar" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Search-based Planning" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Search_2D" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/ARAstar.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="LRTA_star" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Search-based Planning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -128,27 +154,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="bidirectional_a_star" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="Search-based Planning" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Search_2D" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/bidirectional_a_star.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="dfs" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Search-based Planning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -193,19 +198,19 @@
     </configuration>
     <list>
       <item itemvalue="Python.dijkstra" />
-      <item itemvalue="Python.bidirectional_a_star" />
       <item itemvalue="Python.dfs" />
       <item itemvalue="Python.LRTA_star" />
       <item itemvalue="Python.LRTAstar" />
       <item itemvalue="Python.RTAAstar" />
+      <item itemvalue="Python.ARAstar" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.LRTAstar" />
         <item itemvalue="Python.RTAAstar" />
+        <item itemvalue="Python.LRTAstar" />
+        <item itemvalue="Python.ARAstar" />
         <item itemvalue="Python.LRTA_star" />
         <item itemvalue="Python.dfs" />
-        <item itemvalue="Python.bidirectional_a_star" />
       </list>
     </recent_temporary>
   </component>

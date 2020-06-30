@@ -14,7 +14,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Search-base
 from Search_3D.env3D import env
 from Search_3D import Astar3D
 from Search_3D.utils3D import getAABB, getDist, getRay, StateSpace, Heuristic, getNearest, isCollide, hash3D, dehash, \
-    cost
+    cost, obstacleFree
 from Search_3D.plot_util3D import visualization
 import queue
 
@@ -93,21 +93,62 @@ import queue
 
 class LRT_A_star2():
     def __init__(self, resolution=0.5, N=7):
-        self.lookahead = N
-        self.Astar = Astar3D.Weighted_A_star()
+        self.N = N
+        self.Astar = Astar3D.Weighted_A_star(resolution=resolution)
+        self.path = []
 
-        while True:
-            self.Astar.run(self.lookahead)
-
+    def children(self, x):
+        allchild = []
+        resolution = self.Astar.env.resolution
+        for direc in self.Astar.Alldirec:
+            child = np.array(list(map(np.add,x,np.multiply(direc,resolution))))
+            allchild.append(hash3D(child))
+        return allchild
+        
     def updateHeuristic(self):
         for strxi in self.Astar.CLOSED:
             self.Astar.h[strxi] = np.inf
             xi = dehash(strxi)
-            self.Astar.h[strxi] = min([cost(xi, xj) + self.Astar.h[hash3D(xj)] for xj in self.Astar.children(xi)])
+            minfval = min([cost(xi, xj, settings=1) + self.Astar.h[hash3D(xj)] for xj in self.Astar.children(xi)])
+            if self.Astar.h[strxi] >= minfval:
+                self.Astar.h[strxi] = minfval
 
     def move(self):
-        print(np.argmin([j[0] for j in self.Astar.OPEN.enumerate()]))
+        #self.Astar.Parent[xj] = dehash(self.Astar.lastpoint)
+        strst = self.Astar.x0
+        st = self.Astar.start
+        ind = 0
+        while strst in self.Astar.CLOSED: # when minchild in CLOSED then continue, when minchild in OPEN, stop
+            # strChildren = self.children(st)
+            strChildren = [hash3D(i) for i in self.Astar.children(st)]
+            minh , minchild = np.inf , None
+            for child in strChildren:
+                h = self.Astar.h[child]
+                if h <= minh:
+                    minh , minchild = h , dehash(child)
+            self.path.append([st,minchild])
+            strst, st = hash3D(minchild), minchild 
+            for (_,strp) in self.Astar.OPEN.enumerate():
+                if strp == strst:
+                    break
+            ind += 1
+            if ind > 1000:
+                break
+        self.Astar.reset(st)
+
+    def run(self):
+        while self.Astar.lastpoint != hash3D(self.Astar.goal):
+            self.Astar.run(N=self.N)
+            #print(path)
+            visualization(self.Astar)
+            self.updateHeuristic()
+            self.move()
+        self.Astar.Path = self.path
+        self.Astar.done = True
+        visualization(self.Astar)
+        plt.show()
 
 
 if __name__ == '__main__':
-    T = LRT_A_star2(resolution=1, N=50)
+    T = LRT_A_star2(resolution=1, N=100)
+    T.run()

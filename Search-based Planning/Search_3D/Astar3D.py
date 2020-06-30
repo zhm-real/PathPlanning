@@ -54,6 +54,7 @@ class Weighted_A_star(object):
 
     def run(self, N=None):
         xt = self.xt
+        strxi = self.x0
         while xt not in self.CLOSED and self.OPEN:  # while xt not reached and open is not empty
             strxi = self.OPEN.get()
             xi = dehash(strxi)
@@ -85,25 +86,29 @@ class Weighted_A_star(object):
 
         self.lastpoint = strxi
         # if the path finding is finished
-        if xt in self.CLOSED and N is None:
+        if xt in self.CLOSED:
             self.done = True
             self.Path = self.path()
-            visualization(self)
-            plt.show()
+            if N is None:
+                visualization(self)
+                plt.show()
+            return True
+
+        return False
 
     def path(self):
         path = []
         strx = self.lastpoint
-        #strstart = hash3D(getNearest(self.Space, self.env.start))
+        # strstart = hash3D(getNearest(self.Space, self.env.start))
         strstart = self.x0
         while strx != strstart:
             path.append([dehash(strx), self.Parent[strx]])
             strx = hash3D(self.Parent[strx])
-        path = np.flip(path, axis=0)
+        # path = np.flip(path, axis=0)
         return path
 
     # utility used in LRTA*
-    def reset(self,xj):
+    def reset(self, xj):
         self.Space = StateSpace(self)  # key is the point, store g value
         self.start = xj
         self.Space[hash3D(getNearest(self.Space, self.start))] = 0  # set g(x0) = 0
@@ -112,6 +117,7 @@ class Weighted_A_star(object):
         self.CLOSED = set()
 
         # self.h = Heuristic(self.Space, self.goal)
+
 
 if __name__ == '__main__':
     Astar = Weighted_A_star(1)

@@ -59,8 +59,8 @@ class Plotting:
         plt.show()
 
     def plot_grid(self, name):
-        obs_x = [self.obs[i][0] for i in range(len(self.obs))]
-        obs_y = [self.obs[i][1] for i in range(len(self.obs))]
+        obs_x = [x[0] for x in self.obs]
+        obs_y = [x[1] for x in self.obs]
 
         plt.plot(self.xI[0], self.xI[1], "bs")
         plt.plot(self.xG[0], self.xG[1], "gs")

@@ -29,6 +29,11 @@ class RtaAstar:
         self.N = N                                      # number of expand nodes each iteration
         self.visited = []                               # order of visited nodes in planning
         self.path = []                                  # path of each iteration
+        self.h_table = {}
+
+        for i in range(self.Env.x_range):
+            for j in range(self.Env.y_range):
+                self.h_table[(i, j)] = self.h((i, j))   # initialize h_value
 
     def searching(self):
         s_start = self.xI                               # initialize start node
@@ -42,6 +47,10 @@ class RtaAstar:
                 break
 
             s_next, h_value = self.cal_h_value(OPEN, CLOSED, g_table, PARENT)
+
+            for x in h_value:
+                self.h_table[x] = h_value[x]
+
             s_start, path_k = self.extract_path_in_CLOSE(s_start, s_next, h_value)
             self.path.append(path_k)
 
@@ -49,7 +58,7 @@ class RtaAstar:
         v_open = {}
         h_value = {}
         for (_, x) in OPEN.enumerate():
-            v_open[x] = g_table[PARENT[x]] + 1 + self.h(x)
+            v_open[x] = g_table[PARENT[x]] + 1 + self.h_table[x]
         s_open = min(v_open, key=v_open.get)
         f_min = min(v_open.values())
         for x in CLOSED:
@@ -88,7 +97,7 @@ class RtaAstar:
                     s_next = tuple([s[i] + u[i] for i in range(2)])
                     if s_next not in self.obs:
                         if s_next not in CLOSED:
-                            h_list.append(self.get_cost(s, s_next) + self.h(s_next))
+                            h_list.append(self.get_cost(s, s_next) + self.h_table[s_next])
                         else:
                             h_list.append(self.get_cost(s, s_next) + h_value[s_next])
                 h_value[s] = min(h_list)                        # update h_value of current node
@@ -124,7 +133,7 @@ class RtaAstar:
                     if new_cost < g_table[s_next]:                           # conditions for updating cost
                         g_table[s_next] = new_cost
                         PARENT[s_next] = s
-                        OPEN.put(s_next, g_table[s_next] + self.h(s_next))
+                        OPEN.put(s_next, g_table[s_next] + self.h_table[s_next])
 
             if count == N:                                                   # expand needed CLOSED nodes
                 break

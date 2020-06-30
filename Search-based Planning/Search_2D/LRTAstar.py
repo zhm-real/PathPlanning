@@ -29,6 +29,11 @@ class LrtAstarN:
         self.N = N                                      # number of expand nodes each iteration
         self.visited = []                               # order of visited nodes in planning
         self.path = []                                  # path of each iteration
+        self.h_table = {}
+
+        for i in range(self.Env.x_range):
+            for j in range(self.Env.y_range):
+                self.h_table[(i, j)] = self.h((i, j))   # initialize h_value
 
     def searching(self):
         s_start = self.xI                               # initialize start node
@@ -41,6 +46,10 @@ class LrtAstarN:
                 break
 
             h_value = self.iteration(CLOSED)            # h_value table of CLOSED nodes
+
+            for x in h_value:
+                self.h_table[x] = h_value[x]
+
             s_start, path_k = self.extract_path_in_CLOSE(s_start, h_value)      # s_start -> expected node in OPEN set
             self.path.append(path_k)
 
@@ -56,7 +65,7 @@ class LrtAstarN:
                     if s_next in h_value:
                         h_list[s_next] = h_value[s_next]
                     else:
-                        h_list[s_next] = self.h(s_next)
+                        h_list[s_next] = self.h_table[s_next]
             s_key = min(h_list, key=h_list.get)                 # move to the smallest node with min h_value
             path.append(s_key)                                  # generate path
             s = s_key                                           # use end of this iteration as the start of next
@@ -78,7 +87,7 @@ class LrtAstarN:
                     s_next = tuple([s[i] + u[i] for i in range(2)])
                     if s_next not in self.obs:
                         if s_next not in CLOSED:
-                            h_list.append(self.get_cost(s, s_next) + self.h(s_next))
+                            h_list.append(self.get_cost(s, s_next) + self.h_table[s_next])
                         else:
                             h_list.append(self.get_cost(s, s_next) + h_value[s_next])
                 h_value[s] = min(h_list)                        # update h_value of current node
@@ -114,7 +123,7 @@ class LrtAstarN:
                     if new_cost < g_table[s_next]:                           # conditions for updating cost
                         g_table[s_next] = new_cost
                         PARENT[s_next] = s
-                        OPEN.put(s_next, g_table[s_next] + self.h(s_next))
+                        OPEN.put(s_next, g_table[s_next] + self.h_table[s_next])
 
             if count == N:                                                   # expand needed CLOSED nodes
                 break
@@ -171,7 +180,7 @@ def main():
     x_start = (10, 5)
     x_goal = (45, 25)
 
-    lrta = LrtAstarN(x_start, x_goal, 220, "euclidean")
+    lrta = LrtAstarN(x_start, x_goal, 100, "euclidean")
     plot = plotting.Plotting(x_start, x_goal)
     fig_name = "Learning Real-time A* (LRTA*)"
 

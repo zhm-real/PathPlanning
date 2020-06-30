@@ -20,26 +20,26 @@ class Env:
 
         x = self.x_range
         y = self.y_range
-        obs = []
+        obs = set()
 
         for i in range(x):
-            obs.append((i, 0))
+            obs.add((i, 0))
         for i in range(x):
-            obs.append((i, y - 1))
+            obs.add((i, y - 1))
 
         for i in range(y):
-            obs.append((0, i))
+            obs.add((0, i))
         for i in range(y):
-            obs.append((x - 1, i))
+            obs.add((x - 1, i))
 
         for i in range(10, 21):
-            obs.append((i, 15))
+            obs.add((i, 15))
         for i in range(15):
-            obs.append((20, i))
+            obs.add((20, i))
 
         for i in range(15, 30):
-            obs.append((30, i))
+            obs.add((30, i))
         for i in range(16):
-            obs.append((40, i))
+            obs.add((40, i))
 
         return obs

@@ -20,12 +20,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Search_2D/test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/LPAstar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/LPAstar.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/bfs.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/bfs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/queue.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/queue.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gif/BFS.gif" beforeDir="false" afterPath="$PROJECT_DIR$/gif/BFS.gif" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

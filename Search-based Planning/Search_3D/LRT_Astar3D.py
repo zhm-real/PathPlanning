@@ -33,18 +33,19 @@ class LRT_A_star2:
         return allchild
 
     def updateHeuristic(self):
-        # Initialize at infinity
+        # Initialize hvalues at infinity
         for strxi in self.Astar.CLOSED:
             self.Astar.h[strxi] = np.inf
-        # initialize difference
         Diff = True
-        while Diff:  # repeat until converge
+        while Diff:  # repeat DP until converge
             hvals, lasthvals = [], []
             for strxi in self.Astar.CLOSED:
                 xi = dehash(strxi)
                 lasthvals.append(self.Astar.h[strxi])
                 # update h values if they are smaller
-                minfval = min([cost(xi, xj, settings=0) + self.Astar.h[hash3D(xj)] for xj in self.Astar.children(xi)])
+                Children = self.Astar.children(xi)
+                minfval = min([cost(xi, xj, settings=0) + self.Astar.h[hash3D(xj)] for xj in Children])
+                # h(s) = h(s') if h(s) > c(s,s') + h(s') 
                 if self.Astar.h[strxi] >= minfval:
                     self.Astar.h[strxi] = minfval
                 hvals.append(self.Astar.h[strxi])
@@ -54,6 +55,7 @@ class LRT_A_star2:
         strst = self.Astar.x0
         st = self.Astar.start
         ind = 0
+        # find the lowest path down hill
         while strst in self.Astar.CLOSED:  # when minchild in CLOSED then continue, when minchild in OPEN, stop
             # strChildren = self.children(st)
             strChildren = [hash3D(i) for i in self.Astar.children(st)]
@@ -72,6 +74,7 @@ class LRT_A_star2:
                 break
         self.Astar.reset(st)
 
+    
     def run(self):
         while True:
             if self.Astar.run(N=self.N):
@@ -85,5 +88,5 @@ class LRT_A_star2:
 
 
 if __name__ == '__main__':
-    T = LRT_A_star2(resolution=0.5, N=1500)
+    T = LRT_A_star2(resolution=1, N=150)
     T.run()

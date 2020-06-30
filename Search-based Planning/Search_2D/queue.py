@@ -67,3 +67,11 @@ class QueuePrior:
 
     def enumerate(self):
         return self.queue
+
+    def check_remove(self, item):
+        for (p, x) in self.queue:
+            if item == x:
+                self.queue.remove((p, x))
+
+    def top_key(self):
+        return self.queue[0][0]

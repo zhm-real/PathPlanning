@@ -111,6 +111,8 @@ class Weighted_A_star(object):
         self.OPEN.put(self.x0, self.Space[self.x0] + self.h[self.x0])  # item, priority = g + h
         self.CLOSED = set()
 
+        # self.h = Heuristic(self.Space, self.goal)
+
 if __name__ == '__main__':
-    Astar = Weighted_A_star(0.5)
+    Astar = Weighted_A_star(1)
     Astar.run()

@@ -42,6 +42,7 @@ class Weighted_A_star(object):
         self.x0, self.xt = hash3D(self.start), hash3D(self.goal)
         self.OPEN = queue.QueuePrior()  # store [point,priority]
         self.OPEN.put(self.x0, self.Space[self.x0] + self.h[self.x0])  # item, priority = g + h
+        self.lastpoint = self.x0
 
     def children(self, x):
         allchild = []
@@ -56,8 +57,9 @@ class Weighted_A_star(object):
         while xt not in self.CLOSED and self.OPEN:  # while xt not reached and open is not empty
             strxi = self.OPEN.get()
             xi = dehash(strxi)
+            if strxi not in self.CLOSED:
+                self.V.append(xi)
             self.CLOSED.add(strxi)  # add the point in CLOSED set
-            self.V.append(xi)
             visualization(self)
             allchild = self.children(xi)
             for xj in allchild:
@@ -78,11 +80,12 @@ class Weighted_A_star(object):
             if N:
                 if len(self.CLOSED) % N == 0:
                     break
-            if self.ind % 100 == 0: print('iteration number = ' + str(self.ind))
+            if self.ind % 100 == 0: print('number node expanded = ' + str(len(self.V)))
             self.ind += 1
 
+        self.lastpoint = strxi
         # if the path finding is finished
-        if xt in self.CLOSED:
+        if xt in self.CLOSED and N is None:
             self.done = True
             self.Path = self.path()
             visualization(self)
@@ -90,15 +93,24 @@ class Weighted_A_star(object):
 
     def path(self):
         path = []
-        strx = hash3D(self.goal)
-        strstart = hash3D(self.start)
+        strx = self.lastpoint
+        #strstart = hash3D(getNearest(self.Space, self.env.start))
+        strstart = self.x0
         while strx != strstart:
             path.append([dehash(strx), self.Parent[strx]])
             strx = hash3D(self.Parent[strx])
         path = np.flip(path, axis=0)
         return path
 
+    # utility used in LRTA*
+    def reset(self,xj):
+        self.Space = StateSpace(self)  # key is the point, store g value
+        self.start = xj
+        self.Space[hash3D(getNearest(self.Space, self.start))] = 0  # set g(x0) = 0
+        self.x0 = hash3D(xj)
+        self.OPEN.put(self.x0, self.Space[self.x0] + self.h[self.x0])  # item, priority = g + h
+        self.CLOSED = set()
 
 if __name__ == '__main__':
-    Astar = Weighted_A_star(1)
+    Astar = Weighted_A_star(0.5)
     Astar.run()

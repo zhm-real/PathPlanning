@@ -14,6 +14,9 @@ def getAABB(blocks):
 def getDist(pos1, pos2):
     return np.sqrt(sum([(pos1[0] - pos2[0]) ** 2, (pos1[1] - pos2[1]) ** 2, (pos1[2] - pos2[2]) ** 2]))
 
+def getManDist(pos1, pos2):
+    return sum([abs(pos1[0] - pos2[0]),abs(pos1[1] - pos2[1]),abs(pos1[2] - pos2[2])])
+
 def getNearest(Space,pt):
     '''get the nearest point on the grid'''
     mindis,minpt = 1000,None
@@ -88,8 +91,20 @@ def isCollide(initparams, x, direc):
                 return True, child
     return False, child
 
-def cost(i,j):
-    return getDist(i,j)
+def obstacleFree(initparams,x):
+    for i in initparams.env.blocks:
+        if isinbound(i,x):
+            return False
+    for i in initparams.env.balls:
+        if isinball(i,x):
+            return False
+    return True
+
+def cost(i,j,settings=0):
+    if settings == 0:
+        return getDist(i,j)
+    if settings == 1:
+        return getManDist(i,j)
     
 if __name__ == "__main__":
     from env3D import env

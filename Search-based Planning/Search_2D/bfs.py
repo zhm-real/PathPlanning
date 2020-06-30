@@ -68,7 +68,7 @@ class BFS:
 
 def main():
     x_start = (5, 5)  # Starting node
-    x_goal = (49, 25)  # Goal node
+    x_goal = (45, 25)  # Goal node
 
     bfs = BFS(x_start, x_goal)
     plot = plotting.Plotting(x_start, x_goal)

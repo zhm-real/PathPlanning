@@ -91,7 +91,7 @@ import queue
 #         path = np.flip(path,axis=0)
 #         return path
 
-class LRT_A_star2():
+class LRT_A_star2:
     def __init__(self, resolution=0.5, N=7):
         self.N = N
         self.Astar = Astar3D.Weighted_A_star(resolution=resolution)

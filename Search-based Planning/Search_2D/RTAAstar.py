@@ -107,7 +107,7 @@ class RtaAstar:
 
     def Astar(self, x_start, N):
         OPEN = queue.QueuePrior()                               # OPEN set
-        OPEN.put(x_start, self.h(x_start))
+        OPEN.put(x_start, self.h_table[x_start])
         CLOSED = set()                                          # CLOSED set
         g_table = {x_start: 0, self.xG: float("inf")}           # cost to come
         PARENT = {x_start: x_start}                             # relations
@@ -190,7 +190,7 @@ def main():
     x_start = (10, 5)
     x_goal = (45, 25)
 
-    rtaa = RtaAstar(x_start, x_goal, 220, "euclidean")
+    rtaa = RtaAstar(x_start, x_goal, 150, "euclidean")
     plot = plotting.Plotting(x_start, x_goal)
     fig_name = "Real-time Adaptive A* (RTAA*)"
 

@@ -180,7 +180,7 @@ def main():
     x_start = (10, 5)
     x_goal = (45, 25)
 
-    lrta = LrtAstarN(x_start, x_goal, 100, "euclidean")
+    lrta = LrtAstarN(x_start, x_goal, 150, "euclidean")
     plot = plotting.Plotting(x_start, x_goal)
     fig_name = "Learning Real-time A* (LRTA*)"
 

@@ -21,8 +21,10 @@
   <component name="ChangeListManager">
     <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_3D/Astar3D.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_3D/Astar3D.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_3D/LRT_Astar3D.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_3D/LRT_Astar3D.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/LRTAstar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/LRTAstar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/RTAAstar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/RTAAstar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gif/LRTA_star.gif" beforeDir="false" afterPath="$PROJECT_DIR$/gif/LRTA_star.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gif/RTAA_star.gif" beforeDir="false" afterPath="$PROJECT_DIR$/gif/RTAA_star.gif" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -68,7 +70,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.LRT_Astar3D">
+  <component name="RunManager" selected="Python.RTAAstar">
     <configuration name="Astar3D" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Search-based Planning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -205,10 +207,10 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.LRT_Astar3D" />
-        <item itemvalue="Python.Astar3D" />
         <item itemvalue="Python.RTAAstar" />
         <item itemvalue="Python.LRTAstar" />
+        <item itemvalue="Python.LRT_Astar3D" />
+        <item itemvalue="Python.Astar3D" />
         <item itemvalue="Python.LPAstar" />
       </list>
     </recent_temporary>

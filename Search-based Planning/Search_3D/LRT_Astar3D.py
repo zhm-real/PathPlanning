@@ -106,15 +106,24 @@ class LRT_A_star2:
         return allchild
         
     def updateHeuristic(self):
+        # Initialize at infinity
         for strxi in self.Astar.CLOSED:
             self.Astar.h[strxi] = np.inf
-            xi = dehash(strxi)
-            minfval = min([cost(xi, xj, settings=1) + self.Astar.h[hash3D(xj)] for xj in self.Astar.children(xi)])
-            if self.Astar.h[strxi] >= minfval:
-                self.Astar.h[strxi] = minfval
+        # initialize difference
+        Diff = True
+        while Diff: # repeat until converge
+            hvals, lasthvals = [], []
+            for strxi in self.Astar.CLOSED:
+                xi = dehash(strxi)
+                lasthvals.append(self.Astar.h[strxi]) 
+                # update h values if they are smaller
+                minfval = min([cost(xi, xj, settings=1) + self.Astar.h[hash3D(xj)] for xj in self.Astar.children(xi)])
+                if self.Astar.h[strxi] >= minfval:
+                    self.Astar.h[strxi] = minfval
+                hvals.append(self.Astar.h[strxi]) 
+            if lasthvals == hvals: Diff = False
 
     def move(self):
-        #self.Astar.Parent[xj] = dehash(self.Astar.lastpoint)
         strst = self.Astar.x0
         st = self.Astar.start
         ind = 0
@@ -143,12 +152,15 @@ class LRT_A_star2:
             visualization(self.Astar)
             self.updateHeuristic()
             self.move()
-        self.Astar.Path = self.path
+        print(hash3D(self.Astar.goal) in self.Astar.CLOSED)
+        self.updateHeuristic()
+        self.move()
+        self.Astar.Path = self.path # previous path (determined from DP) + last path (determined from A*)
         self.Astar.done = True
         visualization(self.Astar)
         plt.show()
 
 
 if __name__ == '__main__':
-    T = LRT_A_star2(resolution=1, N=100)
+    T = LRT_A_star2(resolution=0.5, N=1)
     T.run()

@@ -1,4 +1,4 @@
-# this is the three dimensional near-sighted 1 neighborhood LRTA* algo
+# this is the three dimensional N>1 LRTA* algo
 # !/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -23,14 +23,6 @@ class LRT_A_star2:
         self.N = N
         self.Astar = Astar3D.Weighted_A_star(resolution=resolution)
         self.path = []
-
-    def children(self, x):
-        allchild = []
-        resolution = self.Astar.env.resolution
-        for direc in self.Astar.Alldirec:
-            child = np.array(list(map(np.add, x, np.multiply(direc, resolution))))
-            allchild.append(hash3D(child))
-        return allchild
 
     def updateHeuristic(self):
         # Initialize hvalues at infinity
@@ -74,7 +66,6 @@ class LRT_A_star2:
                 break
         self.Astar.reset(st)
 
-    
     def run(self):
         while True:
             if self.Astar.run(N=self.N):
@@ -88,5 +79,5 @@ class LRT_A_star2:
 
 
 if __name__ == '__main__':
-    T = LRT_A_star2(resolution=1, N=150)
+    T = LRT_A_star2(resolution=0.5, N=1)
     T.run()

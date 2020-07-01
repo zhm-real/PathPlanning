@@ -24,7 +24,7 @@ class BFS:
         self.u_set = self.Env.motions                       # feasible input set
         self.obs = self.Env.obs                             # position of obstacles
 
-        self.OPEN = queue.QueueFIFO()                       # OPEN set: visited nodes
+        self.OPEN = queue.QueueFIFO()                       # U set: visited nodes
         self.OPEN.put(self.xI)
         self.CLOSED = []                                    # CLOSED set: explored nodes
         self.PARENT = {self.xI: self.xI}                    # relations

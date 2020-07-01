@@ -26,7 +26,7 @@ class Astar:
         self.obs = self.Env.obs  # position of obstacles
 
         self.g = {self.xI: 0, self.xG: float("inf")}  # cost to come
-        self.OPEN = queue.QueuePrior()  # priority queue / OPEN set
+        self.OPEN = queue.QueuePrior()  # priority queue / U set
         self.OPEN.put(self.xI, self.fvalue(self.xI))
         self.CLOSED = set()  # closed set & visited
         self.VISITED = []

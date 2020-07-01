@@ -6,7 +6,6 @@ RTAAstar 2D (Real-time Adaptive A*)
 import os
 import sys
 import copy
-import matplotlib.pyplot as plt
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Search-based Planning/")
@@ -80,7 +79,7 @@ class RtaAstar:
             path.append(s_key)                                  # generate path
             s = s_key                                           # use end of this iteration as the start of next
 
-            if s_key == s_end:                            # reach the expected node in OPEN set
+            if s_key == s_end:                            # reach the expected node in U set
                 return s_start, list(reversed(path))
 
     def iteration(self, CLOSED):
@@ -106,7 +105,7 @@ class RtaAstar:
                 return h_value
 
     def Astar(self, x_start, N):
-        OPEN = queue.QueuePrior()                               # OPEN set
+        OPEN = queue.QueuePrior()                               # U set
         OPEN.put(x_start, self.h_table[x_start])
         CLOSED = set()                                          # CLOSED set
         g_table = {x_start: 0, self.xG: float("inf")}           # cost to come
@@ -190,7 +189,7 @@ def main():
     x_start = (10, 5)
     x_goal = (45, 25)
 
-    rtaa = RtaAstar(x_start, x_goal, 150, "euclidean")
+    rtaa = RtaAstar(x_start, x_goal, 200, "euclidean")
     plot = plotting.Plotting(x_start, x_goal)
     fig_name = "Real-time Adaptive A* (RTAA*)"
 

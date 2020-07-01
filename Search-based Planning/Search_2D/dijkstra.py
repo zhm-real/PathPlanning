@@ -25,7 +25,7 @@ class Dijkstra:
         self.obs = self.Env.obs                                     # position of obstacles
 
         self.g = {self.xI: 0, self.xG: float("inf")}                # cost to come
-        self.OPEN = queue.QueuePrior()                              # priority queue / OPEN set
+        self.OPEN = queue.QueuePrior()                              # priority queue / U set
         self.OPEN.put(self.xI, 0)
         self.CLOSED = []                                            # closed set & visited
         self.PARENT = {self.xI: self.xI}                            # relations

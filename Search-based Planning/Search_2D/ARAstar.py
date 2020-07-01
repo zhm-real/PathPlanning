@@ -26,7 +26,7 @@ class AraStar:
         self.e = e                                              # initial weight
         self.g = {self.xI: 0, self.xG: float("inf")}            # cost to come
 
-        self.OPEN = queue.QueuePrior()                          # priority queue / OPEN
+        self.OPEN = queue.QueuePrior()                          # priority queue / U
         self.CLOSED = set()                                     # closed set
         self.INCONS = []                                        # incons set
         self.PARENT = {self.xI: self.xI}                        # relations

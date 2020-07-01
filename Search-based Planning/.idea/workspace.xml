@@ -20,11 +20,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Search_2D/D_star_Lite.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Search_2D/LPAstar_backup.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/ARAstar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/ARAstar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/LPAstar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/LPAstar.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Search_2D/LRTAstar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/LRTAstar.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Search_2D/RTAAstar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/RTAAstar.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gif/LRTA_star.gif" beforeDir="false" afterPath="$PROJECT_DIR$/gif/LRTA_star.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gif/RTAA_star.gif" beforeDir="false" afterPath="$PROJECT_DIR$/gif/RTAA_star.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/astar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/astar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/bfs.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/bfs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/bidirectional_a_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/bidirectional_a_star.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/dfs.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/dfs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/dijkstra.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/dijkstra.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/queue.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/queue.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_3D/Astar3D.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_3D/Astar3D.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_3D/LRT_Astar3D.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_3D/LRT_Astar3D.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -70,7 +80,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.RTAAstar">
+  <component name="RunManager" selected="Python.LPAstar">
     <configuration name="Astar3D" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Search-based Planning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -207,11 +217,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.LPAstar" />
         <item itemvalue="Python.RTAAstar" />
         <item itemvalue="Python.LRTAstar" />
         <item itemvalue="Python.LRT_Astar3D" />
         <item itemvalue="Python.Astar3D" />
-        <item itemvalue="Python.LPAstar" />
       </list>
     </recent_temporary>
   </component>

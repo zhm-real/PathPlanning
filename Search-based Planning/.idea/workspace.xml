@@ -20,21 +20,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Search_2D/D_star_Lite.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Search_2D/LPAstar_backup.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/ARAstar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/ARAstar.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/LPAstar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/LPAstar.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/LRTAstar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/LRTAstar.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/RTAAstar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/RTAAstar.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/astar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/astar.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/bfs.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/bfs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/bidirectional_a_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/bidirectional_a_star.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/dfs.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/dfs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/dijkstra.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/dijkstra.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/queue.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/queue.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_3D/Astar3D.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_3D/Astar3D.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_3D/LRT_Astar3D.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_3D/LRT_Astar3D.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/D_star_Lite.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/D_star_Lite.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/LPAstar_backup.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -68,6 +56,11 @@
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Huiming Zhou\Desktop\path planning algorithms\Search-based Planning\Search_2D" />
+    </key>
+  </component>
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>
@@ -80,8 +73,8 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.LPAstar">
-    <configuration name="Astar3D" type="PythonConfigurationType" factoryName="Python" temporary="true">
+  <component name="RunManager" selected="Python.D_star_Lite">
+    <configuration name="D_star_Lite" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Search-based Planning" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -89,11 +82,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Search_3D" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Search_2D" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_3D/Astar3D.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/D_star_Lite.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -213,15 +206,15 @@
       <item itemvalue="Python.LRTAstar" />
       <item itemvalue="Python.RTAAstar" />
       <item itemvalue="Python.LRT_Astar3D" />
-      <item itemvalue="Python.Astar3D" />
+      <item itemvalue="Python.D_star_Lite" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.D_star_Lite" />
         <item itemvalue="Python.LPAstar" />
         <item itemvalue="Python.RTAAstar" />
         <item itemvalue="Python.LRTAstar" />
         <item itemvalue="Python.LRT_Astar3D" />
-        <item itemvalue="Python.Astar3D" />
       </list>
     </recent_temporary>
   </component>

@@ -26,7 +26,7 @@ class rrtstar():
         self.maxiter = 10000 # at least 4000 in this env
         self.stepsize = 0.5
         self.gamma = 500
-        self.eta = 1.1*self.stepsize
+        self.eta = 2*self.stepsize
         self.Path = []
         self.done = False
 
@@ -61,7 +61,7 @@ class rrtstar():
             if not isCollide(self,xnearest,xnew):
                 Xnear = near(self,xnew)
                 self.V.append(xnew) # add point
-                # visualization(self)
+                visualization(self)
                 # minimal path and minimal cost
                 xmin, cmin = xnearest, cost(self, xnearest) + getDist(xnearest, xnew)
                 # connecting along minimal cost path

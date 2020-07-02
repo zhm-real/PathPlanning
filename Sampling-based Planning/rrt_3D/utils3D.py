@@ -40,9 +40,9 @@ def sampleFree(initparams):
     if isinside(initparams, x):
         return sampleFree(initparams)
     else:
-        #if i < 0.05:
-        #    return initparams.env.goal+0.01
-        #else: return np.array(x)
+        if i < 0.05:
+           return initparams.env.goal+0.01
+        else: return np.array(x)
         return np.array(x)
 
 

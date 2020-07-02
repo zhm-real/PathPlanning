@@ -5,12 +5,6 @@ def getRay(x, y):
     direc = [y[0] - x[0], y[1] - x[1], y[2] - x[2]]
     return np.array([x, direc])
 
-def getAABB(blocks):
-    AABB = []
-    for i in blocks:
-        AABB.append(np.array([np.add(i[0:3], -0), np.add(i[3:6], 0)]))  # make AABBs alittle bit of larger
-    return AABB
-
 def getDist(pos1, pos2):
     return np.sqrt(sum([(pos1[0] - pos2[0]) ** 2, (pos1[1] - pos2[1]) ** 2, (pos1[2] - pos2[2]) ** 2]))
 
@@ -75,7 +69,7 @@ def isCollide(initparams, x, direc):
     ray , dist = getRay(x, child) ,  getDist(x, child)
     if not isinbound(initparams.env.boundary,child):
         return True, child
-    for i in initparams.AABB:
+    for i in initparams.env.AABB:
         shot = pyrr.geometric_tests.ray_intersect_aabb(ray, i)
         if shot is not None:
             dist_wall = getDist(x, shot)

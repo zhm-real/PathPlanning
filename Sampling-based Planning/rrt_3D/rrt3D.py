@@ -45,7 +45,7 @@ class rrtstar():
             if not isCollide(self, xnearest, xnew):
                 self.V.append(xnew)  # add point
                 self.wireup(xnew, xnearest)
-                # visualization(self)
+                visualization(self)
                 self.i += 1
             self.ind += 1
             if getDist(xnew, self.env.goal) <= 1:

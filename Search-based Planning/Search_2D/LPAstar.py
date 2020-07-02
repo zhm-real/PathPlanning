@@ -21,15 +21,15 @@ class LpaStar:
         self.xI, self.xG = x_start, x_goal
         self.heuristic_type = heuristic_type
 
-        self.Env = env.Env()  # class Env
+        self.Env = env.Env()
         self.Plot = plotting.Plotting(x_start, x_goal)
 
-        self.u_set = self.Env.motions  # feasible input set
-        self.obs = self.Env.obs  # position of obstacles
+        self.u_set = self.Env.motions
+        self.obs = self.Env.obs
         self.x = self.Env.x_range
         self.y = self.Env.y_range
 
-        self.U = queue.QueuePrior()  # priority queue / U set
+        self.U = queue.QueuePrior()
         self.g, self.rhs = {}, {}
 
         for i in range(self.Env.x_range):
@@ -39,9 +39,9 @@ class LpaStar:
 
         self.rhs[self.xI] = 0
         self.U.put(self.xI, self.Key(self.xI))
-
-    def searching(self):
         self.fig = plt.figure()
+
+    def run(self):
         self.Plot.plot_grid("Lifelong Planning A*")
 
         self.ComputePath()
@@ -62,9 +62,10 @@ class LpaStar:
             if (x, y) not in self.obs:
                 self.obs.add((x, y))
                 plt.plot(x, y, 'sk')
+                plt.pause(0.001)
                 self.rhs[(x, y)] = float("inf")
                 self.g[(x, y)] = float("inf")
-                for node in self.getSucc((x, y)):
+                for node in self.get_neighbor((x, y)):
                     self.UpdateVertex(node)
             else:
                 self.obs.remove((x, y))
@@ -86,54 +87,48 @@ class LpaStar:
             s = self.U.get()
             if self.g[s] > self.rhs[s]:
                 self.g[s] = self.rhs[s]
-                for x in self.getSucc(s):
-                    self.UpdateVertex(x)
             else:
                 self.g[s] = float("inf")
                 self.UpdateVertex(s)
-                for x in self.getSucc(s):
-                    self.UpdateVertex(x)
-
-    def getSucc(self, s):
-        nei_list = set()
-        for u in self.u_set:
-            s_next = tuple([s[i] + u[i] for i in range(2)])
-            if s_next not in self.obs and self.g[s_next] > self.g[s]:
-                nei_list.add(s_next)
-        return nei_list
-
-    def getPred(self, s):
-        nei_list = set()
-        for u in self.u_set:
-            s_next = tuple([s[i] + u[i] for i in range(2)])
-            if s_next not in self.obs and self.g[s_next] < self.g[s]:
-                nei_list.add(s_next)
-        return nei_list
+            for x in self.get_neighbor(s):
+                self.UpdateVertex(x)
 
     def UpdateVertex(self, s):
         if s != self.xI:
             u_min = float("inf")
-            for x in self.getPred(s):
-                u_min = min(u_min, self.g[x] + self.get_cost(x, s))
+            for x in self.get_neighbor(s):
+                u_min = min(u_min, self.g[x] + self.cost(x, s))
             self.rhs[s] = u_min
         self.U.remove(s)
         if self.g[s] != self.rhs[s]:
             self.U.put(s, self.Key(s))
 
-    def print_g(self):
-        print("he")
-        for k in range(self.Env.y_range):
-            j = self.Env.y_range - k - 1
-            string = ""
-            for i in range(self.Env.x_range):
-                if self.g[(i, j)] == float("inf"):
-                    string += ("00" + ', ')
-                else:
-                    if self.g[(i, j)] // 10 == 0:
-                        string += ("0" + str(self.g[(i, j)]) + ', ')
-                    else:
-                        string += (str(self.g[(i, j)]) + ', ')
-            print(string)
+    def get_neighbor(self, s):
+        nei_list = set()
+        for u in self.u_set:
+            s_next = tuple([s[i] + u[i] for i in range(2)])
+            if s_next not in self.obs:
+                nei_list.add(s_next)
+
+        return nei_list
+
+    def Key(self, s):
+        return [min(self.g[s], self.rhs[s]) + self.h(s),
+                min(self.g[s], self.rhs[s])]
+
+    def h(self, s):
+        heuristic_type = self.heuristic_type  # heuristic type
+        goal = self.xG  # goal node
+
+        if heuristic_type == "manhattan":
+            return abs(goal[0] - s[0]) + abs(goal[1] - s[1])
+        else:
+            return math.hypot(goal[0] - s[0], goal[1] - s[1])
+
+    def cost(self, s_start, s_end):
+        if s_start in self.obs or s_end in self.obs:
+            return float("inf")
+        return 1
 
     def extract_path(self):
         path = []
@@ -162,48 +157,28 @@ class LpaStar:
             path.append(s)
         return list(reversed(path))
 
-    def get_neighbor(self, s):
-        nei_list = set()
-        for u in self.u_set:
-            s_next = tuple([s[i] + u[i] for i in range(2)])
-            if s_next not in self.obs:
-                nei_list.add(s_next)
-
-        return nei_list
-
-    def Key(self, s):
-        return [min(self.g[s], self.rhs[s]) + self.h(s),
-                min(self.g[s], self.rhs[s])]
-
-    def h(self, s):
-        heuristic_type = self.heuristic_type  # heuristic type
-        goal = self.xG  # goal node
-
-        if heuristic_type == "manhattan":
-            return abs(goal[0] - s[0]) + abs(goal[1] - s[1])
-        else:
-            return math.hypot(goal[0] - s[0], goal[1] - s[1])
-
-    @staticmethod
-    def get_cost(s_start, s_end):
-        """
-        Calculate cost for this motion
-
-        :param s_start:
-        :param s_end:
-        :return:  cost for this motion
-        :note: cost function could be more complicate!
-        """
-
-        return 1
+    def print_g(self):
+        print("he")
+        for k in range(self.Env.y_range):
+            j = self.Env.y_range - k - 1
+            string = ""
+            for i in range(self.Env.x_range):
+                if self.g[(i, j)] == float("inf"):
+                    string += ("00" + ', ')
+                else:
+                    if self.g[(i, j)] // 10 == 0:
+                        string += ("0" + str(self.g[(i, j)]) + ', ')
+                    else:
+                        string += (str(self.g[(i, j)]) + ', ')
+            print(string)
 
 
 def main():
     x_start = (5, 5)
     x_goal = (45, 25)
 
-    lpastar = LpaStar(x_start, x_goal, "euclidean")
-    lpastar.searching()
+    lpastar = LpaStar(x_start, x_goal, "manhattan")
+    lpastar.run()
 
 
 if __name__ == '__main__':

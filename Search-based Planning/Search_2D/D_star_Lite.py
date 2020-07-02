@@ -16,7 +16,7 @@ from Search_2D import plotting
 from Search_2D import env
 
 
-class LpaStar:
+class DStar:
     def __init__(self, x_start, x_goal, heuristic_type):
         self.xI, self.xG = x_start, x_goal
         self.heuristic_type = heuristic_type
@@ -42,14 +42,11 @@ class LpaStar:
         self.U.put(self.xG, self.Key(self.xG))
         self.fig = plt.figure()
 
-    def searching(self):
-        self.Plot.plot_grid("Lifelong Planning A*")
-
+    def run(self):
+        self.Plot.plot_grid("Dynamic A* (D*)")
         self.ComputePath()
-        self.plot_path(self.extract_path_test())
-
-        # self.fig.canvas.mpl_connect('button_press_event', self.on_press)
-
+        self.plot_path(self.extract_path())
+        self.fig.canvas.mpl_connect('button_press_event', self.on_press)
         plt.show()
 
     def on_press(self, event):
@@ -59,20 +56,37 @@ class LpaStar:
         else:
             x, y = int(x), int(y)
             print("Change position: x =", x, ",", "y =", y)
-            if (x, y) not in self.obs:
-                self.obs.add((x, y))
-                plt.plot(x, y, 'sk')
-                self.rhs[(x, y)] = float("inf")
-                self.g[(x, y)] = float("inf")
-                for node in self.getSucc((x, y)):
-                    self.UpdateVertex(node)
-            else:
-                self.obs.remove((x, y))
-                plt.plot(x, y, marker='s', color='white')
-                self.UpdateVertex((x, y))
-            self.ComputePath()
-            self.plot_path(self.extract_path_test())
-            self.fig.canvas.draw_idle()
+
+            s_curr = self.xI
+            s_last = self.xI
+            i = 0
+            path = []
+
+            while s_curr != self.xG:
+                s_list = {}
+                for s in self.get_neighbor(s_curr):
+                    s_list[s] = self.g[s] + self.get_cost(s_curr, s)
+                s_curr = min(s_list, key=s_list.get)
+                path.append(s_curr)
+
+                if i < 1:
+                    self.km += self.h(s_last, s_curr)
+                    s_last = s_curr
+                    if (x, y) not in self.obs:
+                        self.obs.add((x, y))
+                        plt.plot(x, y, 'sk')
+                        self.g[(x, y)] = float("inf")
+                        self.rhs[(x, y)] = float("inf")
+                    else:
+                        self.obs.remove((x, y))
+                        plt.plot(x, y, marker='s', color='white')
+                        self.UpdateVertex((x, y))
+                    for s in self.get_neighbor((x, y)):
+                        self.UpdateVertex(s)
+                    i += 1
+                self.ComputePath()
+                self.plot_path(path)
+                self.fig.canvas.draw_idle()
 
     @staticmethod
     def plot_path(path):
@@ -81,88 +95,46 @@ class LpaStar:
         plt.plot(px, py, marker='o')
 
     def ComputePath(self):
-        count = 0
         while self.U.top_key() < self.Key(self.xI) or \
                 self.rhs[self.xI] != self.g[self.xI]:
-            count += 1
-            print(count)
             k_old = self.U.top_key()
             s = self.U.get()
             if k_old < self.Key(s):
                 self.U.put(s, self.Key(s))
             elif self.g[s] > self.rhs[s]:
                 self.g[s] = self.rhs[s]
-                for x in self.getPred(s):
+                for x in self.get_neighbor(s):
                     self.UpdateVertex(x)
             else:
                 self.g[s] = float("inf")
                 self.UpdateVertex(s)
-                for x in self.getPred(s):
+                for x in self.get_neighbor(s):
                     self.UpdateVertex(x)
-
-    def getSucc(self, s):
-        nei_list = set()
-        for u in self.u_set:
-            s_next = tuple([s[i] + u[i] for i in range(2)])
-            if s_next not in self.obs and self.g[s_next] >= self.g[s]:
-                nei_list.add(s_next)
-        return nei_list
-
-    def getPred(self, s):
-        nei_list = set()
-        for u in self.u_set:
-            s_next = tuple([s[i] + u[i] for i in range(2)])
-            if s_next not in self.obs and self.g[s_next] <= self.g[s]:
-                nei_list.add(s_next)
-        return nei_list
 
     def UpdateVertex(self, s):
         if s != self.xG:
             self.rhs[s] = float("inf")
-            for x in self.getSucc(s):
+            for x in self.get_neighbor(s):
                 self.rhs[s] = min(self.rhs[s], self.g[x] + self.get_cost(s, x))
         self.U.remove(s)
         if self.g[s] != self.rhs[s]:
             self.U.put(s, self.Key(s))
 
-    def extract_path_test(self):
-        path = []
-        s = self.xG
-
-        for k in range(100):
-            g_list = {}
-            for x in self.get_neighbor(s):
-                g_list[x] = self.g[x]
-            s = min(g_list, key=g_list.get)
-            if s == self.xI:
-                return list(reversed(path))
-            path.append(s)
-        return list(reversed(path))
-
     def Key(self, s):
-        return [min(self.g[s], self.rhs[s]) + self.h(s) + self.km,
+        return [min(self.g[s], self.rhs[s]) + self.h(self.xI, s) + self.km,
                 min(self.g[s], self.rhs[s])]
 
-    def h(self, s):
+    def h(self, s_start, s_goal):
         heuristic_type = self.heuristic_type            # heuristic type
-        s_start = self.xI                               # goal node
 
         if heuristic_type == "manhattan":
-            return abs(s[0] - s_start[0]) + abs(s[1] - s_start[1])
+            return abs(s_goal[0] - s_start[0]) + abs(s_goal[1] - s_start[1])
         else:
-            return math.hypot(s[0] - s_start[0], s[1] - s_start[1])
+            return math.hypot(s_goal[0] - s_start[0], s_goal[1] - s_start[1])
 
-    @staticmethod
-    def get_cost(s_start, s_end):
-        """
-        Calculate cost for this motion
-
-        :param s_start:
-        :param s_end:
-        :return:  cost for this motion
-        :note: cost function could be more complicate!
-        """
-
+    def get_cost(self, s_start, s_end):
+        if s_start in self.obs or s_end in self.obs:
+            return float("inf")
         return 1
 
     def get_neighbor(self, s):
@@ -176,14 +148,15 @@ class LpaStar:
 
     def extract_path(self):
         path = []
-        s = self.xG
-
+        s = self.xI
+        count = 0
         while True:
+            count += 1
             g_list = {}
             for x in self.get_neighbor(s):
                 g_list[x] = self.g[x]
             s = min(g_list, key=g_list.get)
-            if s == self.xI:
+            if s == self.xG or count > 100:
                 return list(reversed(path))
             path.append(s)
 
@@ -207,8 +180,8 @@ def main():
     x_start = (5, 5)
     x_goal = (45, 25)
 
-    lpastar = LpaStar(x_start, x_goal, "euclidean")
-    lpastar.searching()
+    dstar = DStar(x_start, x_goal, "euclidean")
+    dstar.run()
 
 
 if __name__ == '__main__':

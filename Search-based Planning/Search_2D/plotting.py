@@ -96,10 +96,10 @@ class Plotting:
 
     def plot_path(self, path, cl='r', flag=False):
         if self.xI in path:
-            path.remove(self.xI)
+            path.delete(self.xI)
 
         if self.xG in path:
-            path.remove(self.xG)
+            path.delete(self.xG)
 
         path_x = [path[i][0] for i in range(len(path))]
         path_y = [path[i][1] for i in range(len(path))]
@@ -113,10 +113,10 @@ class Plotting:
 
     def plot_visited_bi(self, v_fore, v_back):
         if self.xI in v_fore:
-            v_fore.remove(self.xI)
+            v_fore.delete(self.xI)
 
         if self.xG in v_back:
-            v_back.remove(self.xG)
+            v_back.delete(self.xG)
 
         len_fore, len_back = len(v_fore), len(v_back)
 

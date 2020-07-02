@@ -20,11 +20,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Search_2D/D_star.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Search-based Planning.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Search-based Planning.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Search_2D/D_star_Lite.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/D_star_Lite.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/LPAstar_backup.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/LPAstar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/LPAstar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/plotting.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/plotting.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/queue.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/queue.py" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -52,7 +56,7 @@
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../PythonRobotics-master/PathPlanning" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
@@ -61,19 +65,28 @@
       <recent name="C:\Users\Huiming Zhou\Desktop\path planning algorithms\Search-based Planning\Search_2D" />
     </key>
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
-  </component>
   <component name="RunManager" selected="Python.D_star_Lite">
+    <configuration name="D_star" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Search-based Planning" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Search_2D" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/D_star.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="D_star_Lite" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Search-based Planning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -116,48 +129,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="LRTAstar" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="Search-based Planning" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Search_2D" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/LRTAstar.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="LRT_Astar3D" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="Search-based Planning" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Search_3D" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_3D/LRT_Astar3D.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="RTAAstar" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Search-based Planning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -171,6 +142,27 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/RTAAstar.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="astar" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Search-based Planning" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Search_2D" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/astar.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -201,20 +193,20 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.dijkstra" />
-      <item itemvalue="Python.LPAstar" />
-      <item itemvalue="Python.LRTAstar" />
-      <item itemvalue="Python.RTAAstar" />
-      <item itemvalue="Python.LRT_Astar3D" />
+      <item itemvalue="Python.D_star" />
       <item itemvalue="Python.D_star_Lite" />
+      <item itemvalue="Python.LPAstar" />
+      <item itemvalue="Python.RTAAstar" />
+      <item itemvalue="Python.astar" />
+      <item itemvalue="Python.dijkstra" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.D_star_Lite" />
+        <item itemvalue="Python.D_star" />
+        <item itemvalue="Python.astar" />
         <item itemvalue="Python.LPAstar" />
         <item itemvalue="Python.RTAAstar" />
-        <item itemvalue="Python.LRTAstar" />
-        <item itemvalue="Python.LRT_Astar3D" />
       </list>
     </recent_temporary>
   </component>
@@ -236,40 +228,39 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
     <state x="2377" y="197" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1593282711181">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
     <state x="2377" y="197" key="#com.intellij.execution.impl.EditConfigurationsDialog/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593282711181" />
-    <state x="2700" y="297" width="424" height="482" key="FileChooserDialogImpl" timestamp="1593282670147">
+    <state x="2700" y="297" width="424" height="482" key="FileChooserDialogImpl" timestamp="1593631602696">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state x="2700" y="297" width="424" height="482" key="FileChooserDialogImpl/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593282670147" />
+    <state x="2700" y="297" width="424" height="482" key="FileChooserDialogImpl/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593631602696" />
     <state x="819" y="314" key="FileChooserDialogImpl/65.24.1855.1056/1920.0.1920.1080@65.24.1855.1056" timestamp="1592933974409" />
-    <state width="1832" height="206" key="GridCell.Tab.0.bottom" timestamp="1593282755222">
+    <state width="1832" height="125" key="GridCell.Tab.0.bottom" timestamp="1593677260010">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1832" height="206" key="GridCell.Tab.0.bottom/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593282755222" />
-    <state width="1832" height="206" key="GridCell.Tab.0.center" timestamp="1593282755222">
+    <state width="1832" height="125" key="GridCell.Tab.0.bottom/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593677260010" />
+    <state width="1832" height="125" key="GridCell.Tab.0.center" timestamp="1593677260010">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1832" height="206" key="GridCell.Tab.0.center/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593282755222" />
-    <state width="1832" height="206" key="GridCell.Tab.0.left" timestamp="1593282755222">
+    <state width="1832" height="125" key="GridCell.Tab.0.center/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593677260010" />
+    <state width="1832" height="125" key="GridCell.Tab.0.left" timestamp="1593677260010">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1832" height="206" key="GridCell.Tab.0.left/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593282755222" />
-    <state width="1832" height="206" key="GridCell.Tab.0.right" timestamp="1593282755222">
+    <state width="1832" height="125" key="GridCell.Tab.0.left/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593677260010" />
+    <state width="1832" height="125" key="GridCell.Tab.0.right" timestamp="1593677260010">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1832" height="206" key="GridCell.Tab.0.right/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593282755222" />
+    <state width="1832" height="125" key="GridCell.Tab.0.right/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1593677260010" />
     <state x="2406" y="174" key="SettingsEditor" timestamp="1593282573348">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>

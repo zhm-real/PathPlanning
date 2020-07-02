@@ -11,10 +11,14 @@ Directory Structure
             ├── ARAstar.py                              # Anytime Reparing A*
             ├── IDAstar.py                              # Iteratively Deepening A*
             ├── LRTAstar.py                             # Learning Real-time A*
-            └── RTAAstar.py                             # Real-time Adaptive A*
+            ├── RTAAstar.py                             # Real-time Adaptive A*
+            ├── LPAstar.py                              # Lifelong Planning A*
+            ├── D_star.py                               # D* (Dynamic A*)
+            └── D_star_Lite.py                          # D* Lite
         └── Search_3D
             ├── Astar3D.py                              # A*_3D
             ├── bidirectional_Astar3D.py                # Bidirectional A*_3D
+            ├── RTA_Astar3D.py                          # Real-time Adaptive A*_3D
             └── LRT_Astar3D.py                          # Learning Real-time A*_3D
         └── gif                                         # Animations
     └── Sampling-based Planning

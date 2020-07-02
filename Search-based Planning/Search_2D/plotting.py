@@ -88,7 +88,7 @@ class Plotting:
             elif count < len(visited) * 2 / 3:
                 length = 25
             else:
-                length = 35
+                length = 30
 
             if count % length == 0:
                 plt.pause(0.001)
@@ -96,10 +96,10 @@ class Plotting:
 
     def plot_path(self, path, cl='r', flag=False):
         if self.xI in path:
-            path.delete(self.xI)
+            path.remove(self.xI)
 
         if self.xG in path:
-            path.delete(self.xG)
+            path.remove(self.xG)
 
         path_x = [path[i][0] for i in range(len(path))]
         path_y = [path[i][1] for i in range(len(path))]
@@ -113,10 +113,10 @@ class Plotting:
 
     def plot_visited_bi(self, v_fore, v_back):
         if self.xI in v_fore:
-            v_fore.delete(self.xI)
+            v_fore.remove(self.xI)
 
         if self.xG in v_back:
-            v_back.delete(self.xG)
+            v_back.remove(self.xG)
 
         len_fore, len_back = len(v_fore), len(v_back)
 

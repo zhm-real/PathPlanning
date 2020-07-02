@@ -56,18 +56,32 @@ class Astar:
 
         return self.extract_path(self.PARENT), self.CLOSED
 
-    def repeated_searching(self, e):
+    def repeated_astar(self, e):
+        """
+        repeated a*.
+        :param e: weight of a*
+        :return: path and visited order
+        """
+
         path, visited = [], []
 
         while e >= 1:
-            p_k, v_k = self.repeated_Astar(self.s_start, self.s_goal, e)
+            p_k, v_k = self.repeated_searching(self.s_start, self.s_goal, e)
             path.append(p_k)
             visited.append(v_k)
             e -= 0.5
 
         return path, visited
 
-    def repeated_Astar(self, s_start, s_goal, e):
+    def repeated_searching(self, s_start, s_goal, e):
+        """
+        run a* with weight e.
+        :param s_start: starting state
+        :param s_goal: goal state
+        :param e: weight of a*
+        :return: path and visited order.
+        """
+
         g = {s_start: 0, s_goal: float("inf")}
         OPEN = queue.QueuePrior()
         OPEN.put(s_start, g[s_start] + e * self.Heuristic(s_start))
@@ -174,7 +188,7 @@ def main():
     path, visited = astar.searching()
     plot.animation(path, visited, "A*")                         # animation
 
-    # path, visited = astar.repeated_searching(2.5)               # initial weight e = 2.5
+    # path, visited = astar.repeated_astar(2.5)               # initial weight e = 2.5
     # plot.animation_ara_star(path, visited, "Repeated A*")
 
 

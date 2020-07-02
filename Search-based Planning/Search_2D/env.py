@@ -14,7 +14,6 @@ class Env:
     def obs_map(self):
         """
         Initialize obstacles' positions
-
         :return: map of obstacles
         """
 

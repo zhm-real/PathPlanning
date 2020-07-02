@@ -15,67 +15,83 @@ from Search_2D import env
 
 
 class BFS:
-    def __init__(self, x_start, x_goal):
-        self.xI, self.xG = x_start, x_goal
+    def __init__(self, s_start, s_goal):
+        self.s_start, self.s_goal = s_start, s_goal
 
         self.Env = env.Env()
-        self.plotting = plotting.Plotting(self.xI, self.xG)
+        self.plotting = plotting.Plotting(self.s_start, self.s_goal)
 
         self.u_set = self.Env.motions                       # feasible input set
         self.obs = self.Env.obs                             # position of obstacles
 
-        self.OPEN = queue.QueueFIFO()                       # OPEN set: visited nodes
-        self.OPEN.put(self.xI)
+        self.OPEN = queue.QueueFIFO()                       # U set: visited nodes
+        self.OPEN.put(self.s_start)
         self.CLOSED = []                                    # CLOSED set: explored nodes
-        self.PARENT = {self.xI: self.xI}                    # relations
+        self.PARENT = {self.s_start: self.s_start}
 
     def searching(self):
         """
-        :return: path, order of visited nodes in the planning
+        Breadth-first Searching.
+        :return: path, visited order
         """
 
-        while not self.OPEN.empty():
+        while self.OPEN:
             s = self.OPEN.get()
-            if s == self.xG:
+
+            if s == self.s_goal:
                 break
             self.CLOSED.append(s)
 
-            for u_next in self.u_set:                                       # explore neighborhoods
-                s_next = tuple([s[i] + u_next[i] for i in range(2)])
-                if s_next not in self.PARENT and s_next not in self.obs:    # node not visited and not in obstacles
-                    self.OPEN.put(s_next)
-                    self.PARENT[s_next] = s
+            for s_n in self.get_neighbor(s):
+                if s_n not in self.PARENT:    # node not explored
+                    self.OPEN.put(s_n)
+                    self.PARENT[s_n] = s
 
         return self.extract_path(), self.CLOSED
 
+    def get_neighbor(self, s):
+        """
+        find neighbors of state s that not in obstacles.
+        :param s: state
+        :return: neighbors
+        """
+
+        s_list = set()
+
+        for u in self.u_set:
+            s_next = tuple([s[i] + u[i] for i in range(2)])
+            if s_next not in self.obs:
+                s_list.add(s_next)
+
+        return s_list
+
     def extract_path(self):
         """
-        Extract the path based on the relationship of nodes.
+        Extract the path based on the PARENT set.
         :return: The planning path
         """
 
-        path = [self.xG]
-        s = self.xG
+        path = [self.s_goal]
+        s = self.s_goal
 
         while True:
             s = self.PARENT[s]
             path.append(s)
-            if s == self.xI:
+            if s == self.s_start:
                 break
 
         return list(path)
 
 
 def main():
-    x_start = (5, 5)  # Starting node
-    x_goal = (45, 25)  # Goal node
+    s_start = (5, 5)
+    s_goal = (45, 25)
 
-    bfs = BFS(x_start, x_goal)
-    plot = plotting.Plotting(x_start, x_goal)
-    fig_name = "Breadth-first Searching (BFS)"
+    bfs = BFS(s_start, s_goal)
+    plot = plotting.Plotting(s_start, s_goal)
 
     path, visited = bfs.searching()
-    plot.animation(path, visited, fig_name)  # animation
+    plot.animation(path, visited, "Breadth-first Searching (BFS)")
 
 
 if __name__ == '__main__':

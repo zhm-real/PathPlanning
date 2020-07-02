@@ -5,6 +5,7 @@ ARA_star 2D (Anytime Repairing A*)
 
 import os
 import sys
+import math
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Search-based Planning/")
@@ -15,8 +16,8 @@ from Search_2D import env
 
 
 class AraStar:
-    def __init__(self, x_start, x_goal, e, heuristic_type):
-        self.xI, self.xG = x_start, x_goal
+    def __init__(self, s_start, s_goal, e, heuristic_type):
+        self.s_start, self.s_goal = s_start, s_goal
         self.heuristic_type = heuristic_type
 
         self.Env = env.Env()                                    # class Env
@@ -24,17 +25,17 @@ class AraStar:
         self.u_set = self.Env.motions                           # feasible input set
         self.obs = self.Env.obs                                 # position of obstacles
         self.e = e                                              # initial weight
-        self.g = {self.xI: 0, self.xG: float("inf")}            # cost to come
+        self.g = {self.s_start: 0, self.s_goal: float("inf")}            # cost to come
 
-        self.OPEN = queue.QueuePrior()                          # priority queue / OPEN
+        self.OPEN = queue.QueuePrior()                          # priority queue / U
         self.CLOSED = set()                                     # closed set
         self.INCONS = []                                        # incons set
-        self.PARENT = {self.xI: self.xI}                        # relations
+        self.PARENT = {self.s_start: self.s_start}                        # relations
         self.path = []                                          # planning path
         self.visited = []                                       # order of visited nodes
 
     def searching(self):
-        self.OPEN.put(self.xI, self.fvalue(self.xI))
+        self.OPEN.put(self.s_start, self.fvalue(self.s_start))
         self.ImprovePath()
         self.path.append(self.extract_path())
 
@@ -42,7 +43,7 @@ class AraStar:
             self.e -= 0.5                                       # increase weight
             OPEN_mid = [x for (p, x) in self.OPEN.enumerate()] + self.INCONS        # combine two sets
             self.OPEN = queue.QueuePrior()
-            self.OPEN.put(self.xI, self.fvalue(self.xI))
+            self.OPEN.put(self.s_start, self.fvalue(self.s_start))
 
             for x in OPEN_mid:
                 self.OPEN.put(x, self.fvalue(x))                # update priority
@@ -61,93 +62,104 @@ class AraStar:
 
         visited_each = []
 
-        while (self.fvalue(self.xG) >
+        while (self.fvalue(self.s_goal) >
                min([self.fvalue(x) for (p, x) in self.OPEN.enumerate()])):
             s = self.OPEN.get()
 
             if s not in self.CLOSED:
                 self.CLOSED.add(s)
 
-            for u_next in self.u_set:
-                s_next = tuple([s[i] + u_next[i] for i in range(len(s))])
-                if s_next not in self.obs:
-                    new_cost = self.g[s] + self.get_cost(s, u_next)
-                    if s_next not in self.g or new_cost < self.g[s_next]:
-                        self.g[s_next] = new_cost
-                        self.PARENT[s_next] = s
-                        visited_each.append(s_next)
+            for s_n in self.get_neighbor(s):
+                new_cost = self.g[s] + self.cost(s, s_n)
+                if s_n not in self.g or new_cost < self.g[s_n]:
+                    self.g[s_n] = new_cost
+                    self.PARENT[s_n] = s
+                    visited_each.append(s_n)
 
-                        if s_next not in self.CLOSED:
-                            self.OPEN.put(s_next, self.fvalue(s_next))
-                        else:
-                            self.INCONS.append(s_next)
+                    if s_n not in self.CLOSED:
+                        self.OPEN.put(s_n, self.fvalue(s_n))
+                    else:
+                        self.INCONS.append(s_n)
 
         self.visited.append(visited_each)
+
+    def get_neighbor(self, s):
+        """
+        find neighbors of state s that not in obstacles.
+        :param s: state
+        :return: neighbors
+        """
+
+        s_list = set()
+
+        for u in self.u_set:
+            s_next = tuple([s[i] + u[i] for i in range(2)])
+            if s_next not in self.obs:
+                s_list.add(s_next)
+
+        return s_list
 
     def update_e(self):
         c_OPEN, c_INCONS = float("inf"), float("inf")
 
         if self.OPEN:
-            c_OPEN = min(self.g[x] + self.Heuristic(x) for (p, x) in self.OPEN.enumerate())
-
+            c_OPEN = min(self.g[x] +
+                         self.Heuristic(x) for (p, x) in self.OPEN.enumerate())
         if self.INCONS:
-            c_INCONS = min(self.g[x] + self.Heuristic(x) for x in self.INCONS)
-
+            c_INCONS = min(self.g[x] +
+                           self.Heuristic(x) for x in self.INCONS)
         if min(c_OPEN, c_INCONS) == float("inf"):
             return 1
 
-        return min(self.e, self.g[self.xG] / min(c_OPEN, c_INCONS))
+        return min(self.e, self.g[self.s_goal] / min(c_OPEN, c_INCONS))
 
     def fvalue(self, x):
         return self.g[x] + self.e * self.Heuristic(x)
 
     def extract_path(self):
         """
-        Extract the path based on the relationship of nodes.
-
+        Extract the path based on the PARENT set.
         :return: The planning path
         """
 
-        path_back = [self.xG]
-        x_current = self.xG
+        path = [self.s_goal]
+        s = self.s_goal
 
         while True:
-            x_current = self.PARENT[x_current]
-            path_back.append(x_current)
+            s = self.PARENT[s]
+            path.append(s)
 
-            if x_current == self.xI:
+            if s == self.s_start:
                 break
 
-        return list(path_back)
+        return list(path)
+
+    def Heuristic(self, s):
+        """
+        Calculate heuristic.
+        :param s: current node (state)
+        :return: heuristic function value
+        """
+
+        heuristic_type = self.heuristic_type                # heuristic type
+        goal = self.s_goal                                  # goal node
+
+        if heuristic_type == "manhattan":
+            return abs(goal[0] - s[0]) + abs(goal[1] - s[1])
+        else:
+            return math.hypot(goal[0] - s[0], goal[1] - s[1])
 
     @staticmethod
-    def get_cost(x, u):
+    def cost(s_start, s_goal):
         """
         Calculate cost for this motion
-        :param x: current node
-        :param u: input
+        :param s_start: starting node
+        :param s_goal: end node
         :return:  cost for this motion
         :note: cost function could be more complicate!
         """
 
         return 1
-
-    def Heuristic(self, state):
-        """
-        Calculate heuristic.
-        :param state: current node (state)
-        :return: heuristic
-        """
-
-        heuristic_type = self.heuristic_type
-        goal = self.xG
-
-        if heuristic_type == "manhattan":
-            return abs(goal[0] - state[0]) + abs(goal[1] - state[1])
-        elif heuristic_type == "euclidean":
-            return ((goal[0] - state[0]) ** 2 + (goal[1] - state[1]) ** 2) ** (1 / 2)
-        else:
-            print("Please choose right heuristic type!")
 
 
 def main():

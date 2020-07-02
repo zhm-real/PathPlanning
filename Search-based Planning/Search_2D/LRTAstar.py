@@ -6,7 +6,6 @@ LRTA_star 2D (Learning Real-time A*)
 import os
 import sys
 import copy
-import matplotlib.pyplot as plt
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Search-based Planning/")
@@ -39,7 +38,7 @@ class LrtAstarN:
         s_start = self.xI                               # initialize start node
 
         while True:
-            OPEN, CLOSED = self.Astar(s_start, self.N)  # OPEN, CLOSED sets in each iteration
+            OPEN, CLOSED = self.Astar(s_start, self.N)  # U, CLOSED sets in each iteration
 
             if OPEN == "FOUND":                         # reach the goal node
                 self.path.append(CLOSED)
@@ -50,7 +49,7 @@ class LrtAstarN:
             for x in h_value:
                 self.h_table[x] = h_value[x]
 
-            s_start, path_k = self.extract_path_in_CLOSE(s_start, h_value)      # s_start -> expected node in OPEN set
+            s_start, path_k = self.extract_path_in_CLOSE(s_start, h_value)      # s_start -> expected node in U set
             self.path.append(path_k)
 
     def extract_path_in_CLOSE(self, s_start, h_value):
@@ -70,7 +69,7 @@ class LrtAstarN:
             path.append(s_key)                                  # generate path
             s = s_key                                           # use end of this iteration as the start of next
 
-            if s_key not in h_value:                            # reach the expected node in OPEN set
+            if s_key not in h_value:                            # reach the expected node in U set
                 return s_key, path
 
     def iteration(self, CLOSED):
@@ -96,7 +95,7 @@ class LrtAstarN:
                 return h_value
 
     def Astar(self, x_start, N):
-        OPEN = queue.QueuePrior()                               # OPEN set
+        OPEN = queue.QueuePrior()                               # U set
         OPEN.put(x_start, self.h(x_start))
         CLOSED = set()                                          # CLOSED set
         g_table = {x_start: 0, self.xG: float("inf")}           # cost to come
@@ -180,7 +179,7 @@ def main():
     x_start = (10, 5)
     x_goal = (45, 25)
 
-    lrta = LrtAstarN(x_start, x_goal, 150, "euclidean")
+    lrta = LrtAstarN(x_start, x_goal, 200, "euclidean")
     plot = plotting.Plotting(x_start, x_goal)
     fig_name = "Learning Real-time A* (LRTA*)"
 

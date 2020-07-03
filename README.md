@@ -20,7 +20,6 @@ Directory Structure
             ├── bidirectional_Astar3D.py                # Bidirectional A*_3D
             ├── RTA_Astar3D.py                          # Real-time Adaptive A*_3D
             └── LRT_Astar3D.py                          # Learning Real-time A*_3D
-        └── gif                                         # Animations
     └── Sampling-based Planning
         └── rrt_2D
             ├── rrt.py                                  # rrt : goal-biased rrt

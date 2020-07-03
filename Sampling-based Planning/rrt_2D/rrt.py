@@ -24,16 +24,16 @@ class Node:
 
 
 class Rrt:
-    def __init__(self, x_start, x_goal, step_len, goal_sample_rate, iter_max):
-        self.xI = Node(x_start)
-        self.xG = Node(x_goal)
+    def __init__(self, s_start, s_goal, step_len, goal_sample_rate, iter_max):
+        self.s_start = Node(s_start)
+        self.s_goal = Node(s_goal)
         self.step_len = step_len
         self.goal_sample_rate = goal_sample_rate
         self.iter_max = iter_max
-        self.vertex = [self.xI]
+        self.vertex = [self.s_start]
 
         self.env = env.Env()
-        self.plotting = plotting.Plotting(x_start, x_goal)
+        self.plotting = plotting.Plotting(s_start, s_goal)
         self.utils = utils.Utils()
 
         self.x_range = self.env.x_range
@@ -50,10 +50,10 @@ class Rrt:
 
             if node_new and not self.utils.is_collision(node_near, node_new):
                 self.vertex.append(node_new)
-                dist, _ = self.get_distance_and_angle(node_new, self.xG)
+                dist, _ = self.get_distance_and_angle(node_new, self.s_goal)
 
                 if dist <= self.step_len:
-                    self.new_state(node_new, self.xG)
+                    self.new_state(node_new, self.s_goal)
                     return self.extract_path(node_new)
 
         return None
@@ -65,7 +65,7 @@ class Rrt:
             return Node((np.random.uniform(self.x_range[0] + delta, self.x_range[1] - delta),
                          np.random.uniform(self.y_range[0] + delta, self.y_range[1] - delta)))
 
-        return self.xG
+        return self.s_goal
 
     def nearest_neighbor(self, node_list, n):
         return self.vertex[int(np.argmin([math.hypot(nd.x - n.x, nd.y - n.y)
@@ -82,7 +82,7 @@ class Rrt:
         return node_new
 
     def extract_path(self, node_end):
-        path = [(self.xG.x, self.xG.y)]
+        path = [(self.s_goal.x, self.s_goal.y)]
         node_now = node_end
 
         while node_now.parent is not None:

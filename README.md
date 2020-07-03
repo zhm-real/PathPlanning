@@ -101,6 +101,7 @@ Directory Structure
 * [Focussed D*: ](http://robotics.caltech.edu/~jwb/courses/ME132/handouts/Dstar_ijcai95.pdf) by Anthony Stentz
 * [D* Lite: ](http://idm-lab.org/bib/abstracts/papers/aaai02b.pdf) by Sven Koenig and Maxim Likhachev
 * [Field D*: ](http://robots.stanford.edu/isrr-papers/draft/stentz.pdf) by Dave Ferguson and Anthony Stentz
+* [Anytime D*: ](http://www.cs.cmu.edu/~ggordon/likhachev-etal.anytime-dstar.pdf) by Maxim Likhachev, Dave Ferguson, Geoff Gordon, Anthony Stentz and Sebastian Thrun
 * [Theta* & AP Theta*: ](http://idm-lab.org/bib/abstracts/papers/aaai07a.pdf) by Alex Nash, Kenny Daniel and Sven Koenig
 * [Lazy Theta*: ](https://www.aaai.org/ocs/index.php/AAAI/AAAI10/paper/download/1930/1945) by Alex Nash, Sven Koenig and Craig Tovey
 * [Incremental Phi*: ](http://www.cs.cmu.edu/~maxim/files/inctheta_ijcai09.pdf) by Alex Nash, Sven Koenig and Maxim Likhachev

@@ -13,7 +13,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Search-based Planning/")
 from Search_3D.env3D import env
 from Search_3D import Astar3D
-from Search_3D.utils3D import getAABB, getDist, getRay, StateSpace, Heuristic, getNearest, isCollide, hash3D, dehash, \
+from Search_3D.utils3D import getDist, getRay, StateSpace, Heuristic, getNearest, isCollide, hash3D, dehash, \
     cost, obstacleFree
 from Search_3D.plot_util3D import visualization
 import queue
@@ -74,5 +74,5 @@ class RTA_A_star:
 
 
 if __name__ == '__main__':
-    T = RTA_A_star(resolution=0.5, N=500)
+    T = RTA_A_star(resolution=0.5, N=100)
     T.run()

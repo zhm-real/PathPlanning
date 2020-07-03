@@ -12,11 +12,11 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Search-based Planning/")
 from Search_3D.env3D import env
-from Search_3D.utils3D import getAABB, getDist, getRay, StateSpace, Heuristic, getNearest, isCollide, hash3D, dehash, \
+from Search_3D.utils3D import getDist, getRay, StateSpace, Heuristic, getNearest, isCollide, hash3D, dehash, \
     cost
 from Search_3D.plot_util3D import visualization
 import queue
-
+import time
 
 class Weighted_A_star(object):
     def __init__(self, resolution=0.5):
@@ -29,7 +29,7 @@ class Weighted_A_star(object):
         self.env = env(resolution=resolution)
         self.Space = StateSpace(self)  # key is the point, store g value
         self.start, self.goal = getNearest(self.Space, self.env.start), getNearest(self.Space, self.env.goal)
-        self.AABB = getAABB(self.env.blocks)
+        # self.AABB = getAABB(self.env.blocks)
         self.Space[hash3D(getNearest(self.Space, self.start))] = 0  # set g(x0) = 0
 
         self.h = Heuristic(self.Space, self.goal)
@@ -120,5 +120,7 @@ class Weighted_A_star(object):
 
 
 if __name__ == '__main__':
+    sta = time.time()
     Astar = Weighted_A_star(1)
     Astar.run()
+    print(time.time() - sta)

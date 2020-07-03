@@ -10,7 +10,6 @@ import math
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Search-based Planning/")
 
-from Search_2D import queue
 from Search_2D import plotting
 from Search_2D import env
 
@@ -20,37 +19,33 @@ class AraStar:
         self.s_start, self.s_goal = s_start, s_goal
         self.heuristic_type = heuristic_type
 
-        self.Env = env.Env()                                    # class Env
+        self.Env = env.Env()                                                # class Env
 
-        self.u_set = self.Env.motions                           # feasible input set
-        self.obs = self.Env.obs                                 # position of obstacles
-        self.e = e                                              # initial weight
-        self.g = {self.s_start: 0, self.s_goal: float("inf")}            # cost to come
+        self.u_set = self.Env.motions                                       # feasible input set
+        self.obs = self.Env.obs                                             # position of obstacles
+        self.e = e                                                          # initial weight
+        self.g = {self.s_start: 0, self.s_goal: float("inf")}               # cost to come
 
-        self.OPEN = queue.QueuePrior()                          # priority queue / U
-        self.CLOSED = set()                                     # closed set
-        self.INCONS = []                                        # incons set
-        self.PARENT = {self.s_start: self.s_start}                        # relations
-        self.path = []                                          # planning path
-        self.visited = []                                       # order of visited nodes
+        self.OPEN = {self.s_start: self.fvalue(self.s_start)}               # priority queue / OPEN set
+        self.CLOSED = set()                                                 # CLOSED set
+        self.INCONS = {}                                                    # INCONS set
+        self.PARENT = {self.s_start: self.s_start}                          # relations
+        self.path = []                                                      # planning path
+        self.visited = []                                                   # order of visited nodes
 
     def searching(self):
-        self.OPEN.put(self.s_start, self.fvalue(self.s_start))
         self.ImprovePath()
         self.path.append(self.extract_path())
 
-        while self.update_e() > 1:                              # continue condition
-            self.e -= 0.5                                       # increase weight
-            OPEN_mid = [x for (p, x) in self.OPEN.enumerate()] + self.INCONS        # combine two sets
-            self.OPEN = queue.QueuePrior()
-            self.OPEN.put(self.s_start, self.fvalue(self.s_start))
+        while self.update_e() > 1:                                          # continue condition
+            self.e -= 0.5                                                   # increase weight
+            self.OPEN.update(self.INCONS)
+            for s in self.OPEN:
+                self.OPEN[s] = self.fvalue(s)
 
-            for x in OPEN_mid:
-                self.OPEN.put(x, self.fvalue(x))                # update priority
-
-            self.INCONS = []
+            self.INCONS = {}
             self.CLOSED = set()
-            self.ImprovePath()                                  # improve path
+            self.ImprovePath()                                              # improve path
             self.path.append(self.extract_path())
 
         return self.path, self.visited
@@ -62,12 +57,11 @@ class AraStar:
 
         visited_each = []
 
-        while (self.fvalue(self.s_goal) >
-               min([self.fvalue(x) for (p, x) in self.OPEN.enumerate()])):
-            s = self.OPEN.get()
-
-            if s not in self.CLOSED:
-                self.CLOSED.add(s)
+        while True:
+            s, f_small = self.get_smallest_f()
+            if self.fvalue(self.s_goal) <= f_small:
+                break
+            self.CLOSED.add(s)
 
             for s_n in self.get_neighbor(s):
                 new_cost = self.g[s] + self.cost(s, s_n)
@@ -77,11 +71,25 @@ class AraStar:
                     visited_each.append(s_n)
 
                     if s_n not in self.CLOSED:
-                        self.OPEN.put(s_n, self.fvalue(s_n))
+                        self.OPEN[s_n] = self.fvalue(s_n)
                     else:
-                        self.INCONS.append(s_n)
+                        self.INCONS[s_n] = 0
 
         self.visited.append(visited_each)
+
+    def get_smallest_f(self):
+        """
+        :return: node with smallest f_value in OPEN set.
+        """
+        s_list = {}
+
+        for s in self.OPEN:
+            s_list[s] = self.fvalue(s)
+        s_small = min(s_list, key=s_list.get)
+
+        self.OPEN.pop(s_small)
+
+        return s_small, s_list[s_small]
 
     def get_neighbor(self, s):
         """
@@ -100,21 +108,17 @@ class AraStar:
         return s_list
 
     def update_e(self):
-        c_OPEN, c_INCONS = float("inf"), float("inf")
+        v = float("inf")
 
         if self.OPEN:
-            c_OPEN = min(self.g[x] +
-                         self.Heuristic(x) for (p, x) in self.OPEN.enumerate())
+            v = min(self.g[s] + self.h(s) for s in self.OPEN)
         if self.INCONS:
-            c_INCONS = min(self.g[x] +
-                           self.Heuristic(x) for x in self.INCONS)
-        if min(c_OPEN, c_INCONS) == float("inf"):
-            return 1
+            v = min(v, min(self.g[s] + self.h(s) for s in self.INCONS))
 
-        return min(self.e, self.g[self.s_goal] / min(c_OPEN, c_INCONS))
+        return min(self.e, self.g[self.s_goal] / v)
 
     def fvalue(self, x):
-        return self.g[x] + self.e * self.Heuristic(x)
+        return self.g[x] + self.e * self.h(x)
 
     def extract_path(self):
         """
@@ -134,15 +138,15 @@ class AraStar:
 
         return list(path)
 
-    def Heuristic(self, s):
+    def h(self, s):
         """
         Calculate heuristic.
         :param s: current node (state)
         :return: heuristic function value
         """
 
-        heuristic_type = self.heuristic_type                # heuristic type
-        goal = self.s_goal                                  # goal node
+        heuristic_type = self.heuristic_type                                # heuristic type
+        goal = self.s_goal                                                  # goal node
 
         if heuristic_type == "manhattan":
             return abs(goal[0] - s[0]) + abs(goal[1] - s[1])
@@ -163,16 +167,14 @@ class AraStar:
 
 
 def main():
-    x_start = (5, 5)  # Starting node
-    x_goal = (45, 25)  # Goal node
+    s_start = (5, 5)
+    s_goal = (45, 25)
 
-    arastar = AraStar(x_start, x_goal, 2.5, "manhattan")
-    plot = plotting.Plotting(x_start, x_goal)
+    arastar = AraStar(s_start, s_goal, 2.5, "euclidean")
+    plot = plotting.Plotting(s_start, s_goal)
 
-    fig_name = "Anytime Repairing A* (ARA*)"
     path, visited = arastar.searching()
-
-    plot.animation_ara_star(path, visited, fig_name)
+    plot.animation_ara_star(path, visited, "Anytime Repairing A* (ARA*)")
 
 
 if __name__ == '__main__':

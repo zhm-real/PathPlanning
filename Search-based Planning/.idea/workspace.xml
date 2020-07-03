@@ -20,20 +20,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../Sampling-based Planning/.idea/Sampling-based Planning.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../Sampling-based Planning/.idea/Sampling-based Planning.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Sampling-based Planning/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Sampling-based Planning/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Sampling-based Planning/rrt_2D/rrt_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Sampling-based Planning/rrt_2D/rrt_star.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Search-based Planning.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Search-based Planning.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Search_2D/ARAstar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/ARAstar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/D_star_Lite.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/D_star_Lite.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/IDAstar.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Search_2D/LPAstar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/LPAstar.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/astar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/astar.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/bfs.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/bfs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/bidirectional_a_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/bidirectional_a_star.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/dfs.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/dfs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/dijkstra.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/dijkstra.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/env.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/env.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/LRTAstar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/LRTAstar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/RTAAstar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/RTAAstar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/queue.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/queue.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_3D/Astar3D.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_3D/Astar3D.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,6 +59,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../Sampling-based Planning" />
     <property name="restartRequiresConfirmation" value="false" />
+    <property name="run.code.analysis.last.selected.profile" value="aDefault" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -83,7 +79,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.LPAstar">
+  <component name="RunManager" selected="Python.bidirectional_a_star">
     <configuration name="ARAstar" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Search-based Planning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -126,7 +122,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="astar" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="LRTAstar" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Search-based Planning" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -138,7 +134,28 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/astar.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/LRTAstar.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="RTAAstar" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Search-based Planning" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Search_2D" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/RTAAstar.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -160,27 +177,6 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/bidirectional_a_star.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="dfs" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="Search-based Planning" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Search_2D" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/dfs.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -212,19 +208,19 @@
     </configuration>
     <list>
       <item itemvalue="Python.dijkstra" />
-      <item itemvalue="Python.astar" />
-      <item itemvalue="Python.dfs" />
-      <item itemvalue="Python.bidirectional_a_star" />
       <item itemvalue="Python.ARAstar" />
       <item itemvalue="Python.LPAstar" />
+      <item itemvalue="Python.RTAAstar" />
+      <item itemvalue="Python.LRTAstar" />
+      <item itemvalue="Python.bidirectional_a_star" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.LPAstar" />
-        <item itemvalue="Python.ARAstar" />
         <item itemvalue="Python.bidirectional_a_star" />
-        <item itemvalue="Python.astar" />
-        <item itemvalue="Python.dfs" />
+        <item itemvalue="Python.ARAstar" />
+        <item itemvalue="Python.LPAstar" />
+        <item itemvalue="Python.RTAAstar" />
+        <item itemvalue="Python.LRTAstar" />
       </list>
     </recent_temporary>
   </component>

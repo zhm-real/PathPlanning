@@ -11,25 +11,24 @@ import matplotlib.pyplot as plt
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Search-based Planning/")
 
-from Search_2D import queue
 from Search_2D import plotting
 from Search_2D import env
 
 
 class LpaStar:
-    def __init__(self, x_start, x_goal, heuristic_type):
-        self.s_start, self.s_goal = x_start, x_goal
+    def __init__(self, s_start, s_goal, heuristic_type):
+        self.s_start, self.s_goal = s_start, s_goal
         self.heuristic_type = heuristic_type
 
         self.Env = env.Env()
-        self.Plot = plotting.Plotting(x_start, x_goal)
+        self.Plot = plotting.Plotting(self.s_start, self.s_goal)
 
         self.u_set = self.Env.motions
         self.obs = self.Env.obs
         self.x = self.Env.x_range
         self.y = self.Env.y_range
 
-        self.U = queue.QueuePrior()
+        self.U = {}
         self.g, self.rhs = {}, {}
 
         for i in range(self.Env.x_range):
@@ -38,7 +37,8 @@ class LpaStar:
                 self.g[(i, j)] = float("inf")
 
         self.rhs[self.s_start] = 0
-        self.U.put(self.s_start, self.Key(self.s_start))
+        self.U[self.s_start] = self.CalculateKey(self.s_start)
+
         self.fig = plt.figure()
 
     def run(self):
@@ -73,13 +73,16 @@ class LpaStar:
             self.fig.canvas.draw_idle()
 
     def ComputePath(self):
-        while self.U.top_key() < self.Key(self.s_goal) or \
-                self.rhs[self.s_goal] != self.g[self.s_goal]:
-            s = self.U.get()
+        while True:
+            s, v = self.TopKey()
+            if v >= self.CalculateKey(self.s_goal) and \
+                    self.rhs[self.s_goal] == self.g[self.s_goal]:
+                break
+            self.U.pop(s)
 
-            if self.g[s] > self.rhs[s]:                 # over-consistent: deleted obstacles
+            if self.g[s] > self.rhs[s]:                         # over-consistent: deleted obstacles
                 self.g[s] = self.rhs[s]
-            else:                                       # under-consistent: added obstacles
+            else:                                               # under-consistent: added obstacles
                 self.g[s] = float("inf")
                 self.UpdateVertex(s)
             for s_n in self.get_neighbor(s):
@@ -87,11 +90,25 @@ class LpaStar:
 
     def UpdateVertex(self, s):
         if s != self.s_start:
-            self.rhs[s] = min([self.g[s_n] + self.cost(s_n, s)
-                               for s_n in self.get_neighbor(s)])
-        self.U.remove(s)
+            self.rhs[s] = min(self.g[s_n] + self.cost(s_n, s)
+                              for s_n in self.get_neighbor(s))
+        if s in self.U:
+            self.U.pop(s)
+
         if self.g[s] != self.rhs[s]:
-            self.U.put(s, self.Key(s))
+            self.U[s] = self.CalculateKey(s)
+
+    def TopKey(self):
+        """
+        :return: return the min key and its value.
+        """
+
+        s = min(self.U, key=self.U.get)
+        return s, self.U[s]
+
+    def CalculateKey(self, s):
+        return [min(self.g[s], self.rhs[s]) + self.h(s),
+                min(self.g[s], self.rhs[s])]
 
     def get_neighbor(self, s):
         """
@@ -109,11 +126,13 @@ class LpaStar:
 
         return s_list
 
-    def Key(self, s):
-        return [min(self.g[s], self.rhs[s]) + self.h(s),
-                min(self.g[s], self.rhs[s])]
-
     def h(self, s):
+        """
+        Calculate heuristic.
+        :param s: current node (state)
+        :return: heuristic function value
+        """
+
         heuristic_type = self.heuristic_type  # heuristic type
         goal = self.s_goal  # goal node
 
@@ -123,11 +142,25 @@ class LpaStar:
             return math.hypot(goal[0] - s[0], goal[1] - s[1])
 
     def cost(self, s_start, s_end):
+        """
+        calculate edge cost: (s_start, s_end)
+        :param s_start: start node
+        :param s_end: end node
+        :return: cost
+        """
+
+        # if one of the vertex in obstacles: return infinity.
         if s_start in self.obs or s_end in self.obs:
             return float("inf")
+
         return 1
 
     def extract_path(self):
+        """
+        Extract the path based on the PARENT set.
+        :return: The planning path
+        """
+
         path = []
         s = self.s_goal
 
@@ -139,6 +172,7 @@ class LpaStar:
             if s == self.s_start:
                 break
             path.append(s)
+
         return list(reversed(path))
 
     @staticmethod
@@ -146,21 +180,6 @@ class LpaStar:
         px = [x[0] for x in path]
         py = [x[1] for x in path]
         plt.plot(px, py, marker='o')
-
-    def print_g(self):
-        print("he")
-        for k in range(self.Env.y_range):
-            j = self.Env.y_range - k - 1
-            string = ""
-            for i in range(self.Env.x_range):
-                if self.g[(i, j)] == float("inf"):
-                    string += ("00" + ', ')
-                else:
-                    if self.g[(i, j)] // 10 == 0:
-                        string += ("0" + str(self.g[(i, j)]) + ', ')
-                    else:
-                        string += (str(self.g[(i, j)]) + ', ')
-            print(string)
 
 
 def main():

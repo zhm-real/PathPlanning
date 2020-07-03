@@ -11,25 +11,24 @@ import matplotlib.pyplot as plt
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Search-based Planning/")
 
-from Search_2D import queue
 from Search_2D import plotting
 from Search_2D import env
 
 
 class DStar:
-    def __init__(self, x_start, x_goal, heuristic_type):
-        self.xI, self.xG = x_start, x_goal
+    def __init__(self, s_start, s_goal, heuristic_type):
+        self.s_start, self.s_goal = s_start, s_goal
         self.heuristic_type = heuristic_type
 
         self.Env = env.Env()  # class Env
-        self.Plot = plotting.Plotting(x_start, x_goal)
+        self.Plot = plotting.Plotting(s_start, s_goal)
 
         self.u_set = self.Env.motions  # feasible input set
         self.obs = self.Env.obs  # position of obstacles
         self.x = self.Env.x_range
         self.y = self.Env.y_range
 
-        self.U = queue.QueuePrior()  # priority queue / U set
+        self.U = {}
         self.g, self.rhs = {}, {}
         self.km = 0
 
@@ -38,8 +37,8 @@ class DStar:
                 self.rhs[(i, j)] = float("inf")
                 self.g[(i, j)] = float("inf")
 
-        self.rhs[self.xG] = 0
-        self.U.put(self.xG, self.Key(self.xG))
+        self.rhs[self.s_goal] = 0
+        self.U[self.s_goal] = self.CalculateKey(self.s_goal)
         self.fig = plt.figure()
 
     def run(self):
@@ -57,15 +56,15 @@ class DStar:
             x, y = int(x), int(y)
             print("Change position: x =", x, ",", "y =", y)
 
-            s_curr = self.xI
-            s_last = self.xI
+            s_curr = self.s_start
+            s_last = self.s_start
             i = 0
             path = []
 
-            while s_curr != self.xG:
+            while s_curr != self.s_goal:
                 s_list = {}
                 for s in self.get_neighbor(s_curr):
-                    s_list[s] = self.g[s] + self.get_cost(s_curr, s)
+                    s_list[s] = self.g[s] + self.cost(s_curr, s)
                 s_curr = min(s_list, key=s_list.get)
                 path.append(s_curr)
 
@@ -88,19 +87,18 @@ class DStar:
                 self.plot_path(path)
                 self.fig.canvas.draw_idle()
 
-    @staticmethod
-    def plot_path(path):
-        px = [x[0] for x in path]
-        py = [x[1] for x in path]
-        plt.plot(px, py, marker='o')
-
     def ComputePath(self):
-        while self.U.top_key() < self.Key(self.xI) or \
-                self.rhs[self.xI] != self.g[self.xI]:
-            k_old = self.U.top_key()
-            s = self.U.get()
-            if k_old < self.Key(s):
-                self.U.put(s, self.Key(s))
+        while True:
+            s, v = self.TopKey()
+            if v >= self.CalculateKey(self.s_start) and \
+                    self.rhs[self.s_start] == self.g[self.s_start]:
+                break
+
+            k_old = v
+            self.U.pop(s)
+
+            if k_old < self.CalculateKey(s):
+                self.U[s] = self.CalculateKey(s)
             elif self.g[s] > self.rhs[s]:
                 self.g[s] = self.rhs[s]
                 for x in self.get_neighbor(s):
@@ -112,29 +110,40 @@ class DStar:
                     self.UpdateVertex(x)
 
     def UpdateVertex(self, s):
-        if s != self.xG:
+        if s != self.s_goal:
             self.rhs[s] = float("inf")
             for x in self.get_neighbor(s):
-                self.rhs[s] = min(self.rhs[s], self.g[x] + self.get_cost(s, x))
-        self.U.remove(s)
-        if self.g[s] != self.rhs[s]:
-            self.U.put(s, self.Key(s))
+                self.rhs[s] = min(self.rhs[s], self.g[x] + self.cost(s, x))
+        if s in self.U:
+            self.U.pop(s)
 
-    def Key(self, s):
-        return [min(self.g[s], self.rhs[s]) + self.h(self.xI, s) + self.km,
+        if self.g[s] != self.rhs[s]:
+            self.U[s] = self.CalculateKey(s)
+
+    def CalculateKey(self, s):
+        return [min(self.g[s], self.rhs[s]) + self.h(self.s_start, s) + self.km,
                 min(self.g[s], self.rhs[s])]
 
+    def TopKey(self):
+        """
+        :return: return the min key and its value.
+        """
+
+        s = min(self.U, key=self.U.get)
+        return s, self.U[s]
+
     def h(self, s_start, s_goal):
-        heuristic_type = self.heuristic_type            # heuristic type
+        heuristic_type = self.heuristic_type  # heuristic type
 
         if heuristic_type == "manhattan":
             return abs(s_goal[0] - s_start[0]) + abs(s_goal[1] - s_start[1])
         else:
             return math.hypot(s_goal[0] - s_start[0], s_goal[1] - s_start[1])
 
-    def get_cost(self, s_start, s_end):
+    def cost(self, s_start, s_end):
         if s_start in self.obs or s_end in self.obs:
             return float("inf")
+
         return 1
 
     def get_neighbor(self, s):
@@ -148,7 +157,7 @@ class DStar:
 
     def extract_path(self):
         path = []
-        s = self.xI
+        s = self.s_start
         count = 0
         while True:
             count += 1
@@ -156,31 +165,22 @@ class DStar:
             for x in self.get_neighbor(s):
                 g_list[x] = self.g[x]
             s = min(g_list, key=g_list.get)
-            if s == self.xG or count > 100:
+            if s == self.s_goal or count > 100:
                 return list(reversed(path))
             path.append(s)
 
-    def print_g(self):
-        print("he")
-        for k in range(self.Env.y_range):
-            j = self.Env.y_range - k - 1
-            string = ""
-            for i in range(self.Env.x_range):
-                if self.g[(i, j)] == float("inf"):
-                    string += ("00" + ', ')
-                else:
-                    if self.g[(i, j)] // 10 == 0:
-                        string += ("0" + str(self.g[(i, j)]) + ', ')
-                    else:
-                        string += (str(self.g[(i, j)]) + ', ')
-            print(string)
+    @staticmethod
+    def plot_path(path):
+        px = [x[0] for x in path]
+        py = [x[1] for x in path]
+        plt.plot(px, py, marker='o')
 
 
 def main():
-    x_start = (5, 5)
-    x_goal = (45, 25)
+    s_start = (5, 5)
+    s_goal = (45, 25)
 
-    dstar = DStar(x_start, x_goal, "euclidean")
+    dstar = DStar(s_start, s_goal, "euclidean")
     dstar.run()
 
 

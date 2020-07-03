@@ -88,7 +88,7 @@ class Plotting:
             elif count < len(visited) * 2 / 3:
                 length = 25
             else:
-                length = 35
+                length = 30
 
             if count % length == 0:
                 plt.pause(0.001)

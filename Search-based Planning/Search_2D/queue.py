@@ -53,16 +53,15 @@ class QueuePrior:
         return len(self.queue) == 0
 
     def put(self, item, priority):
-        flag = 0
+        heapq.heappush(self.queue, (priority, item))  # reorder x using priority
+
+    def update(self, item, priority):
         count = 0
         for (p, x) in self.queue:
             if x == item:
                 self.queue[count] = (priority, item)
-                flag = 1
                 break
             count += 1
-        if flag == 0:
-            heapq.heappush(self.queue, (priority, item))  # reorder x using priority
 
     def get(self):
         return heapq.heappop(self.queue)[1]  # pop out the smallest item

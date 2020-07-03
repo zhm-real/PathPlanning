@@ -97,7 +97,7 @@ Directory Structure
 ### Papers
 * [Anytime Repairing A*: ](https://papers.nips.cc/paper/2382-ara-anytime-a-with-provable-bounds-on-sub-optimality.pdf) by Maxim Likhachev, Geoff Gordon and Sebastian Thrun
 * [Lifelong Planning A* ](https://www.cs.cmu.edu/~maxim/files/aij04.pdf) by Sven Koenig, Maxim Likhachev and David Furcy
-* [D*: ](https://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.15.3683) by Anthony Stentz and Is Carnegle Mellon
+* [D*: ](http://web.mit.edu/16.412j/www/html/papers/original_dstar_icra94.pdf) by Anthony Stentz and Is Carnegle Mellon
 * [Focussed D*: ](http://robotics.caltech.edu/~jwb/courses/ME132/handouts/Dstar_ijcai95.pdf) by Anthony Stentz
 * [D* Lite: ](http://idm-lab.org/bib/abstracts/papers/aaai02b.pdf) by Sven Koenig and Maxim Likhachev
 * [Field D*: ](http://robots.stanford.edu/isrr-papers/draft/stentz.pdf) by Dave Ferguson and Anthony Stentz

@@ -94,5 +94,16 @@ Directory Structure
 </table>
 </div>
 
+### Papers
+* [Anytime Repairing A*: ](https://papers.nips.cc/paper/2382-ara-anytime-a-with-provable-bounds-on-sub-optimality.pdf) by Maxim Likhachev, Geoff Gordon and Sebastian Thrun
+* [Lifelong Planning A* ](https://www.cs.cmu.edu/~maxim/files/aij04.pdf) by Sven Koenig, Maxim Likhachev and David Furcy
+* [D*: ](https://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.15.3683) by Anthony Stentz and Is Carnegle Mellon
+* [Focussed D*: ](http://robotics.caltech.edu/~jwb/courses/ME132/handouts/Dstar_ijcai95.pdf) by Anthony Stentz
+* [D* Lite: ](http://idm-lab.org/bib/abstracts/papers/aaai02b.pdf) by Sven Koenig and Maxim Likhachev
+* [Field D*: ](http://robots.stanford.edu/isrr-papers/draft/stentz.pdf) by Dave Ferguson and Anthony Stentz
+* [Theta* & AP Theta*: ](http://idm-lab.org/bib/abstracts/papers/aaai07a.pdf) by Alex Nash, Kenny Daniel and Sven Koenig
+* [Lazy Theta*: ](https://www.aaai.org/ocs/index.php/AAAI/AAAI10/paper/download/1930/1945) by Alex Nash, Sven Koenig and Craig Tovey
+* [Incremental Phi*: ](http://www.cs.cmu.edu/~maxim/files/inctheta_ijcai09.pdf) by Alex Nash, Sven Koenig and Maxim Likhachev
+
 ## License
 MIT License

@@ -68,8 +68,8 @@ class Dstar:
                         self.modify(s)
                         continue
                     s = self.PARENT[s]
-                self.path = self.extract_path(self.xI, self.xG)
-                self.plot_path(self.path)
+            self.path = self.extract_path(self.xI, self.xG)
+            self.plot_path(self.path)
             self.fig.canvas.draw_idle()
 
     def extract_path(self, s_start, s_end):

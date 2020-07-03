@@ -95,16 +95,16 @@ Directory Structure
 </div>
 
 ## Papers
-* [Anytime Repairing A*: ](https://papers.nips.cc/paper/2382-ara-anytime-a-with-provable-bounds-on-sub-optimality.pdf) by Maxim Likhachev, Geoff Gordon and Sebastian Thrun
-* [Lifelong Planning A* ](https://www.cs.cmu.edu/~maxim/files/aij04.pdf) by Sven Koenig, Maxim Likhachev and David Furcy
-* [D*: ](http://web.mit.edu/16.412j/www/html/papers/original_dstar_icra94.pdf) by Anthony Stentz and Is Carnegle Mellon
-* [Focussed D*: ](http://robotics.caltech.edu/~jwb/courses/ME132/handouts/Dstar_ijcai95.pdf) by Anthony Stentz
-* [D* Lite: ](http://idm-lab.org/bib/abstracts/papers/aaai02b.pdf) by Sven Koenig and Maxim Likhachev
-* [Field D*: ](http://robots.stanford.edu/isrr-papers/draft/stentz.pdf) by Dave Ferguson and Anthony Stentz
-* [Anytime D*: ](http://www.cs.cmu.edu/~ggordon/likhachev-etal.anytime-dstar.pdf) by Maxim Likhachev, Dave Ferguson, Geoff Gordon, Anthony Stentz and Sebastian Thrun
-* [Theta* & AP Theta*: ](http://idm-lab.org/bib/abstracts/papers/aaai07a.pdf) by Alex Nash, Kenny Daniel and Sven Koenig
-* [Lazy Theta*: ](https://www.aaai.org/ocs/index.php/AAAI/AAAI10/paper/download/1930/1945) by Alex Nash, Sven Koenig and Craig Tovey
-* [Incremental Phi*: ](http://www.cs.cmu.edu/~maxim/files/inctheta_ijcai09.pdf) by Alex Nash, Sven Koenig and Maxim Likhachev
+* [Anytime Repairing A*: ](https://papers.nips.cc/paper/2382-ara-anytime-a-with-provable-bounds-on-sub-optimality.pdf) ARA*: Anytime A* with Provable Bounds on Sub-Optimality
+* [Lifelong Planning A*: ](https://www.cs.cmu.edu/~maxim/files/aij04.pdf) Lifelong Planning A*
+* [D*: ](http://web.mit.edu/16.412j/www/html/papers/original_dstar_icra94.pdf) Optimal and Efficient Path Planning for Partially-Known Environments
+* [Focussed D*: ](http://robotics.caltech.edu/~jwb/courses/ME132/handouts/Dstar_ijcai95.pdf) The Focussed D* Algorithm for Real-Time Replanning
+* [D* Lite: ](http://idm-lab.org/bib/abstracts/papers/aaai02b.pdf) D* Lite
+* [Field D*: ](http://robots.stanford.edu/isrr-papers/draft/stentz.pdf) Field D*: An Interpolation-based Path Planner and Replanner
+* [Anytime D*: ](http://www.cs.cmu.edu/~ggordon/likhachev-etal.anytime-dstar.pdf) Anytime Dynamic A*: An Anytime, Replanning Algorithm
+* [Theta* & AP Theta*: ](http://idm-lab.org/bib/abstracts/papers/aaai07a.pdf) Theta*: Any-Angle Path Planning on Grids
+* [Lazy Theta*: ](https://www.aaai.org/ocs/index.php/AAAI/AAAI10/paper/download/1930/1945) Lazy Theta*: Any-Angle Path Planning and Path Length Analysis in 3D
+* [Incremental Phi*: ](http://www.cs.cmu.edu/~maxim/files/inctheta_ijcai09.pdf) Incremental Phi*: Incremental Any-Angle Path Planning on Grids
 
 ## License
 MIT License

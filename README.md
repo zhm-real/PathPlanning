@@ -94,7 +94,7 @@ Directory Structure
 </table>
 </div>
 
-### Papers
+## Papers
 * [Anytime Repairing A*: ](https://papers.nips.cc/paper/2382-ara-anytime-a-with-provable-bounds-on-sub-optimality.pdf) by Maxim Likhachev, Geoff Gordon and Sebastian Thrun
 * [Lifelong Planning A* ](https://www.cs.cmu.edu/~maxim/files/aij04.pdf) by Sven Koenig, Maxim Likhachev and David Furcy
 * [D*: ](http://web.mit.edu/16.412j/www/html/papers/original_dstar_icra94.pdf) by Anthony Stentz and Is Carnegle Mellon

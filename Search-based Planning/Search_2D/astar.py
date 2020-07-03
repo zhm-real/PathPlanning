@@ -37,7 +37,7 @@ class Astar:
         :return: path, order of visited nodes
         """
 
-        while not self.OPEN.empty():
+        while self.OPEN:
             s = self.OPEN.get()
             self.CLOSED.append(s)
 
@@ -45,14 +45,13 @@ class Astar:
                 break
 
             for s_n in self.get_neighbor(s):
-                if s_n not in self.CLOSED:
-                    new_cost = self.g[s] + self.cost(s, s_n)
-                    if s_n not in self.g:
-                        self.g[s_n] = float("inf")
-                    if new_cost < self.g[s_n]:                      # conditions for updating cost
-                        self.g[s_n] = new_cost
-                        self.PARENT[s_n] = s
-                        self.OPEN.put(s_n, self.fvalue(s_n))
+                new_cost = self.g[s] + self.cost(s, s_n)
+                if s_n not in self.g:
+                    self.g[s_n] = float("inf")
+                if new_cost < self.g[s_n]:  # conditions for updating cost
+                    self.g[s_n] = new_cost
+                    self.PARENT[s_n] = s
+                    self.OPEN.put(s_n, self.fvalue(s_n))
 
         return self.extract_path(self.PARENT), self.CLOSED
 
@@ -150,18 +149,6 @@ class Astar:
 
         return list(path)
 
-    @staticmethod
-    def cost(s_start, s_goal):
-        """
-        Calculate cost for this motion
-        :param s_start: starting node
-        :param s_goal: end node
-        :return:  cost for this motion
-        :note: cost function could be more complicate!
-        """
-
-        return 1
-
     def Heuristic(self, s):
         """
         Calculate heuristic.
@@ -176,6 +163,18 @@ class Astar:
             return abs(goal[0] - s[0]) + abs(goal[1] - s[1])
         else:
             return math.hypot(goal[0] - s[0], goal[1] - s[1])
+
+    @staticmethod
+    def cost(s_start, s_goal):
+        """
+        Calculate cost for this motion
+        :param s_start: starting node
+        :param s_goal: end node
+        :return:  cost for this motion
+        :note: cost function could be more complicate!
+        """
+
+        return 1
 
 
 def main():

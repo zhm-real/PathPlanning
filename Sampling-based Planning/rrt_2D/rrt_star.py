@@ -161,7 +161,7 @@ def main():
     x_start = (2, 2)  # Starting node
     x_goal = (49, 24)  # Goal node
 
-    rrt_star = RrtStar(x_start, x_goal, 8, 0.10, 20, 20000)
+    rrt_star = RrtStar(x_start, x_goal, 8, 0.10, 20, 10000)
     path = rrt_star.planning()
 
     if path:

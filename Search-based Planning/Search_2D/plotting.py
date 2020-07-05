@@ -79,35 +79,34 @@ class Plotting:
 
         for x in visited:
             count += 1
-            plt.plot(x[0], x[1], linewidth='3', color=cl, marker='o')
+            plt.plot(x[0], x[1], color=cl, marker='o')
             plt.gcf().canvas.mpl_connect('key_release_event',
                                          lambda event: [exit(0) if event.key == 'escape' else None])
 
             if count < len(visited) / 3:
-                length = 15
+                length = 20
             elif count < len(visited) * 2 / 3:
-                length = 25
-            else:
                 length = 30
+            else:
+                length = 40
+            #
+            # length = 15
 
             if count % length == 0:
                 plt.pause(0.001)
         plt.pause(0.01)
 
     def plot_path(self, path, cl='r', flag=False):
-        if self.xI in path:
-            path.remove(self.xI)
-
-        if self.xG in path:
-            path.remove(self.xG)
-
         path_x = [path[i][0] for i in range(len(path))]
         path_y = [path[i][1] for i in range(len(path))]
 
         if not flag:
-            plt.plot(path_x, path_y, linewidth='3', color='r', marker='o')
+            plt.plot(path_x, path_y, linewidth='3', color='r')
         else:
-            plt.plot(path_x, path_y, linewidth='3', color=cl, marker='o')
+            plt.plot(path_x, path_y, linewidth='3', color=cl)
+
+        plt.plot(self.xI[0], self.xI[1], "bs")
+        plt.plot(self.xG[0], self.xG[1], "gs")
 
         plt.pause(0.01)
 

@@ -5,6 +5,7 @@ D_star 2D
 
 import os
 import sys
+import math
 import matplotlib.pyplot as plt
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
@@ -15,11 +16,11 @@ from Search_2D import env
 
 
 class Dstar:
-    def __init__(self, x_start, x_goal):
-        self.xI, self.xG = x_start, x_goal
+    def __init__(self, s_start, s_goal):
+        self.s_start, self.s_goal = s_start, s_goal
 
         self.Env = env.Env()
-        self.Plot = plotting.Plotting(self.xI, self.xG)
+        self.Plot = plotting.Plotting(self.s_start, self.s_goal)
 
         self.u_set = self.Env.motions
         self.obs = self.Env.obs
@@ -30,15 +31,20 @@ class Dstar:
         self.OPEN = set()
         self.t = {}
         self.PARENT = {}
-        self.h = {self.xG: 0}
+        self.h = {}
         self.k = {}
         self.path = []
+        self.visited = []
+        self.count = 0
 
         for i in range(self.Env.x_range):
             for j in range(self.Env.y_range):
                 self.t[(i, j)] = 'NEW'
-                self.k[(i, j)] = 0
+                self.k[(i, j)] = 0.0
+                self.h[(i, j)] = float("inf")
                 self.PARENT[(i, j)] = None
+
+        self.h[self.s_goal] = 0.0
 
     def run(self, s_start, s_end):
         self.insert(s_end, 0)
@@ -61,28 +67,31 @@ class Dstar:
             print("Add obstacle at: x =", x, ",", "y =", y)
             self.obs.add((x, y))
             plt.plot(x, y, 'sk')
-            if (x, y) in self.path:
-                s = self.xI
-                while s != self.xG:
-                    if self.PARENT[s] in self.obs:
-                        self.modify(s)
-                        continue
-                    s = self.PARENT[s]
-            self.path = self.extract_path(self.xI, self.xG)
+            s = self.s_start
+            self.visited = []
+            while s != self.s_goal:
+                if self.is_collision(s, self.PARENT[s]):
+                    self.modify(s)
+                    continue
+                s = self.PARENT[s]
+            self.path = self.extract_path(self.s_start, self.s_goal)
+            self.plot_visited(self.visited)
             self.plot_path(self.path)
+            self.count += 1
             self.fig.canvas.draw_idle()
 
     def extract_path(self, s_start, s_end):
-        path = []
+        path = [s_start]
         s = s_start
         while True:
             s = self.PARENT[s]
+            path.append(s)
             if s == s_end:
                 return path
-            path.append(s)
 
     def process_state(self):
         s = self.min_state()
+        self.visited.append(s)
         if s is None:
             return -1
         k_old = self.get_k_min()
@@ -156,6 +165,7 @@ class Dstar:
 
     def get_neighbor(self, s):
         nei_list = set()
+
         for u in self.u_set:
             s_next = tuple([s[i] + u[i] for i in range(2)])
             if s_next not in self.obs:
@@ -163,16 +173,55 @@ class Dstar:
 
         return nei_list
 
-    def cost(self, s_start, s_end):
-        if s_start in self.obs or s_end in self.obs:
-            return float("inf")
-        return 1
+    def cost(self, s_start, s_goal):
+        """
+        Calculate cost for this motion
+        :param s_start: starting node
+        :param s_goal: end node
+        :return:  cost for this motion
+        :note: cost function could be more complicate!
+        """
 
-    @staticmethod
-    def plot_path(path):
+        if self.is_collision(s_start, s_goal):
+            return float("inf")
+
+        return math.hypot(s_goal[0] - s_start[0], s_goal[1] - s_start[1])
+
+    def is_collision(self, s_start, s_end):
+        if s_start in self.obs or s_end in self.obs:
+            return True
+
+        if s_start[0] != s_end[0] and s_start[1] != s_end[1]:
+            if s_end[0] - s_start[0] == s_start[1] - s_end[1]:
+                s1 = (min(s_start[0], s_end[0]), min(s_start[1], s_end[1]))
+                s2 = (max(s_start[0], s_end[0]), max(s_start[1], s_end[1]))
+            else:
+                s1 = (min(s_start[0], s_end[0]), max(s_start[1], s_end[1]))
+                s2 = (max(s_start[0], s_end[0]), min(s_start[1], s_end[1]))
+
+            if s1 in self.obs or s2 in self.obs:
+                return True
+
+        return False
+
+    def plot_path(self, path):
         px = [x[0] for x in path]
         py = [x[1] for x in path]
-        plt.plot(px, py, marker='o')
+        plt.plot(px, py, linewidth=2)
+        plt.plot(self.s_start[0], self.s_start[1], "bs")
+        plt.plot(self.s_goal[0], self.s_goal[1], "gs")
+
+    def plot_visited(self, visited):
+        color = ['gainsboro', 'lightgray', 'silver', 'darkgray',
+                 'bisque', 'navajowhite', 'moccasin', 'wheat',
+                 'powderblue', 'skyblue', 'lightskyblue', 'cornflowerblue']
+
+        if self.count >= len(color) - 1:
+            self.count = 0
+
+        for x in visited:
+            if x not in self.obs:
+                plt.plot(x[0], x[1], marker='s', color=color[self.count])
 
 
 def main():

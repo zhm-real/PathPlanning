@@ -28,8 +28,7 @@ class LpaStar:
         self.x = self.Env.x_range
         self.y = self.Env.y_range
 
-        self.U = {}
-        self.g, self.rhs = {}, {}
+        self.g, self.rhs, self.U = {}, {}, {}
 
         for i in range(self.Env.x_range):
             for j in range(self.Env.y_range):
@@ -38,13 +37,15 @@ class LpaStar:
 
         self.rhs[self.s_start] = 0
         self.U[self.s_start] = self.CalculateKey(self.s_start)
+        self.visited = []
+        self.count = 0
 
         self.fig = plt.figure()
 
     def run(self):
         self.Plot.plot_grid("Lifelong Planning A*")
 
-        self.ComputePath()
+        self.ComputeShortestPath()
         self.plot_path(self.extract_path())
         self.fig.canvas.mpl_connect('button_press_event', self.on_press)
 
@@ -57,6 +58,8 @@ class LpaStar:
         else:
             x, y = int(x), int(y)
             print("Change position: x =", x, ",", "y =", y)
+            self.visited = []
+            self.count += 1
             if (x, y) not in self.obs:
                 self.obs.add((x, y))
                 plt.plot(x, y, 'sk')
@@ -68,13 +71,15 @@ class LpaStar:
             for s_n in self.get_neighbor((x, y)):
                 self.UpdateVertex(s_n)
 
-            self.ComputePath()
+            self.ComputeShortestPath()
+            self.plot_visited(self.visited)
             self.plot_path(self.extract_path())
             self.fig.canvas.draw_idle()
 
-    def ComputePath(self):
+    def ComputeShortestPath(self):
         while True:
             s, v = self.TopKey()
+            self.visited.append(s)
             if v >= self.CalculateKey(self.s_goal) and \
                     self.rhs[self.s_goal] == self.g[self.s_goal]:
                 break
@@ -141,19 +146,36 @@ class LpaStar:
         else:
             return math.hypot(goal[0] - s[0], goal[1] - s[1])
 
-    def cost(self, s_start, s_end):
+    def cost(self, s_start, s_goal):
         """
-        calculate edge cost: (s_start, s_end)
-        :param s_start: start node
-        :param s_end: end node
-        :return: cost
+        Calculate cost for this motion
+        :param s_start: starting node
+        :param s_goal: end node
+        :return:  cost for this motion
+        :note: cost function could be more complicate!
         """
 
-        # if one of the vertex in obstacles: return infinity.
-        if s_start in self.obs or s_end in self.obs:
+        if self.is_collision(s_start, s_goal):
             return float("inf")
 
-        return 1
+        return math.hypot(s_goal[0] - s_start[0], s_goal[1] - s_start[1])
+
+    def is_collision(self, s_start, s_end):
+        if s_start in self.obs or s_end in self.obs:
+            return True
+
+        if s_start[0] != s_end[0] and s_start[1] != s_end[1]:
+            if s_end[0] - s_start[0] == s_start[1] - s_end[1]:
+                s1 = (min(s_start[0], s_end[0]), min(s_start[1], s_end[1]))
+                s2 = (max(s_start[0], s_end[0]), max(s_start[1], s_end[1]))
+            else:
+                s1 = (min(s_start[0], s_end[0]), max(s_start[1], s_end[1]))
+                s2 = (max(s_start[0], s_end[0]), min(s_start[1], s_end[1]))
+
+            if s1 in self.obs or s2 in self.obs:
+                return True
+
+        return False
 
     def extract_path(self):
         """
@@ -161,32 +183,46 @@ class LpaStar:
         :return: The planning path
         """
 
-        path = []
+        path = [self.s_goal]
         s = self.s_goal
 
         for k in range(100):
             g_list = {}
             for x in self.get_neighbor(s):
-                g_list[x] = self.g[x]
+                if not self.is_collision(s, x):
+                    g_list[x] = self.g[x]
             s = min(g_list, key=g_list.get)
+            path.append(s)
             if s == self.s_start:
                 break
-            path.append(s)
 
         return list(reversed(path))
 
-    @staticmethod
-    def plot_path(path):
+    def plot_path(self, path):
         px = [x[0] for x in path]
         py = [x[1] for x in path]
-        plt.plot(px, py, marker='o')
+        plt.plot(px, py, linewidth=2)
+        plt.plot(self.s_start[0], self.s_start[1], "bs")
+        plt.plot(self.s_goal[0], self.s_goal[1], "gs")
+
+    def plot_visited(self, visited):
+        color = ['gainsboro', 'lightgray', 'silver', 'darkgray',
+                 'bisque', 'navajowhite', 'moccasin', 'wheat',
+                 'powderblue', 'skyblue', 'lightskyblue', 'cornflowerblue']
+
+        if self.count >= len(color) - 1:
+            self.count = 0
+
+        for x in visited:
+            if x not in self.obs:
+                plt.plot(x[0], x[1], marker='s', color=color[self.count])
 
 
 def main():
     x_start = (5, 5)
     x_goal = (45, 25)
 
-    lpastar = LpaStar(x_start, x_goal, "manhattan")
+    lpastar = LpaStar(x_start, x_goal, "Euclidean")
     lpastar.run()
 
 

@@ -113,14 +113,43 @@ class Astar:
         :return: neighbors
         """
 
-        s_list = set()
+        s_list = []
 
         for u in self.u_set:
-            s_next = tuple([s[i] + u[i] for i in range(2)])
-            if s_next not in self.obs:
-                s_list.add(s_next)
+            s_list.append(tuple([s[i] + u[i] for i in range(2)]))
 
         return s_list
+
+    def cost(self, s_start, s_goal):
+        """
+        Calculate cost for this motion
+        :param s_start: starting node
+        :param s_goal: end node
+        :return:  cost for this motion
+        :note: cost function could be more complicate!
+        """
+
+        if self.is_collision(s_start, s_goal):
+            return float("inf")
+
+        return math.hypot(s_goal[0] - s_start[0], s_goal[1] - s_start[1])
+
+    def is_collision(self, s_start, s_end):
+        if s_start in self.obs or s_end in self.obs:
+            return True
+
+        if s_start[0] != s_end[0] and s_start[1] != s_end[1]:
+            if s_end[0] - s_start[0] == s_start[1] - s_end[1]:
+                s1 = (min(s_start[0], s_end[0]), min(s_start[1], s_end[1]))
+                s2 = (max(s_start[0], s_end[0]), max(s_start[1], s_end[1]))
+            else:
+                s1 = (min(s_start[0], s_end[0]), max(s_start[1], s_end[1]))
+                s2 = (max(s_start[0], s_end[0]), min(s_start[1], s_end[1]))
+
+            if s1 in self.obs or s2 in self.obs:
+                return True
+
+        return False
 
     def fvalue(self, x):
         """
@@ -163,18 +192,6 @@ class Astar:
             return abs(goal[0] - s[0]) + abs(goal[1] - s[1])
         else:
             return math.hypot(goal[0] - s[0], goal[1] - s[1])
-
-    @staticmethod
-    def cost(s_start, s_goal):
-        """
-        Calculate cost for this motion
-        :param s_start: starting node
-        :param s_goal: end node
-        :return:  cost for this motion
-        :note: cost function could be more complicate!
-        """
-
-        return 1
 
 
 def main():

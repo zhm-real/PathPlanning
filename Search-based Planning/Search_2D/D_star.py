@@ -34,7 +34,7 @@ class Dstar:
         self.h = {}
         self.k = {}
         self.path = []
-        self.visited = []
+        self.visited = set()
         self.count = 0
 
         for i in range(self.Env.x_range):
@@ -68,16 +68,18 @@ class Dstar:
             self.obs.add((x, y))
             plt.plot(x, y, 'sk')
             s = self.s_start
-            self.visited = []
+            self.visited = set()
+            self.count += 1
+
             while s != self.s_goal:
                 if self.is_collision(s, self.PARENT[s]):
                     self.modify(s)
                     continue
                 s = self.PARENT[s]
+
             self.path = self.extract_path(self.s_start, self.s_goal)
             self.plot_visited(self.visited)
             self.plot_path(self.path)
-            self.count += 1
             self.fig.canvas.draw_idle()
 
     def extract_path(self, s_start, s_end):
@@ -91,7 +93,7 @@ class Dstar:
 
     def process_state(self):
         s = self.min_state()
-        self.visited.append(s)
+        self.visited.add(s)
         if s is None:
             return -1
         k_old = self.get_k_min()
@@ -220,8 +222,7 @@ class Dstar:
             self.count = 0
 
         for x in visited:
-            if x not in self.obs:
-                plt.plot(x[0], x[1], marker='s', color=color[self.count])
+            plt.plot(x[0], x[1], marker='s', color=color[self.count])
 
 
 def main():

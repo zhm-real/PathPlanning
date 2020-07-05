@@ -37,7 +37,7 @@ class LpaStar:
 
         self.rhs[self.s_start] = 0
         self.U[self.s_start] = self.CalculateKey(self.s_start)
-        self.visited = []
+        self.visited = set()
         self.count = 0
 
         self.fig = plt.figure()
@@ -58,7 +58,7 @@ class LpaStar:
         else:
             x, y = int(x), int(y)
             print("Change position: x =", x, ",", "y =", y)
-            self.visited = []
+            self.visited = set()
             self.count += 1
             if (x, y) not in self.obs:
                 self.obs.add((x, y))
@@ -79,11 +79,12 @@ class LpaStar:
     def ComputeShortestPath(self):
         while True:
             s, v = self.TopKey()
-            self.visited.append(s)
+
             if v >= self.CalculateKey(self.s_goal) and \
                     self.rhs[self.s_goal] == self.g[self.s_goal]:
                 break
             self.U.pop(s)
+            self.visited.add(s)
 
             if self.g[s] > self.rhs[s]:                         # over-consistent: deleted obstacles
                 self.g[s] = self.rhs[s]
@@ -214,8 +215,7 @@ class LpaStar:
             self.count = 0
 
         for x in visited:
-            if x not in self.obs:
-                plt.plot(x[0], x[1], marker='s', color=color[self.count])
+            plt.plot(x[0], x[1], marker='s', color=color[self.count])
 
 
 def main():

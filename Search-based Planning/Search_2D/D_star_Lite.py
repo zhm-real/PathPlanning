@@ -28,8 +28,7 @@ class DStar:
         self.x = self.Env.x_range
         self.y = self.Env.y_range
 
-        self.U = {}
-        self.g, self.rhs = {}, {}
+        self.g, self.rhs, self.U = {}, {}, {}
         self.km = 0
 
         for i in range(self.Env.x_range):
@@ -37,12 +36,14 @@ class DStar:
                 self.rhs[(i, j)] = float("inf")
                 self.g[(i, j)] = float("inf")
 
-        self.rhs[self.s_goal] = 0
+        self.rhs[self.s_goal] = 0.0
         self.U[self.s_goal] = self.CalculateKey(self.s_goal)
+        self.visited = set()
+        self.count = 0
         self.fig = plt.figure()
 
     def run(self):
-        self.Plot.plot_grid("Dynamic A* (D*)")
+        self.Plot.plot_grid("D* Lite")
         self.ComputePath()
         self.plot_path(self.extract_path())
         self.fig.canvas.mpl_connect('button_press_event', self.on_press)
@@ -63,6 +64,7 @@ class DStar:
 
             while s_curr != self.s_goal:
                 s_list = {}
+
                 for s in self.get_neighbor(s_curr):
                     s_list[s] = self.g[s] + self.cost(s_curr, s)
                 s_curr = min(s_list, key=s_list.get)
@@ -83,9 +85,13 @@ class DStar:
                     for s in self.get_neighbor((x, y)):
                         self.UpdateVertex(s)
                     i += 1
-                self.ComputePath()
-                self.plot_path(path)
-                self.fig.canvas.draw_idle()
+
+                    self.count += 1
+                    self.visited = set()
+                    self.ComputePath()
+            self.plot_visited(self.visited)
+            self.plot_path(path)
+            self.fig.canvas.draw_idle()
 
     def ComputePath(self):
         while True:
@@ -96,6 +102,7 @@ class DStar:
 
             k_old = v
             self.U.pop(s)
+            self.visited.add(s)
 
             if k_old < self.CalculateKey(s):
                 self.U[s] = self.CalculateKey(s)
@@ -140,11 +147,36 @@ class DStar:
         else:
             return math.hypot(s_goal[0] - s_start[0], s_goal[1] - s_start[1])
 
-    def cost(self, s_start, s_end):
-        if s_start in self.obs or s_end in self.obs:
+    def cost(self, s_start, s_goal):
+        """
+        Calculate cost for this motion
+        :param s_start: starting node
+        :param s_goal: end node
+        :return:  cost for this motion
+        :note: cost function could be more complicate!
+        """
+
+        if self.is_collision(s_start, s_goal):
             return float("inf")
 
-        return 1
+        return math.hypot(s_goal[0] - s_start[0], s_goal[1] - s_start[1])
+
+    def is_collision(self, s_start, s_end):
+        if s_start in self.obs or s_end in self.obs:
+            return True
+
+        if s_start[0] != s_end[0] and s_start[1] != s_end[1]:
+            if s_end[0] - s_start[0] == s_start[1] - s_end[1]:
+                s1 = (min(s_start[0], s_end[0]), min(s_start[1], s_end[1]))
+                s2 = (max(s_start[0], s_end[0]), max(s_start[1], s_end[1]))
+            else:
+                s1 = (min(s_start[0], s_end[0]), max(s_start[1], s_end[1]))
+                s2 = (max(s_start[0], s_end[0]), min(s_start[1], s_end[1]))
+
+            if s1 in self.obs or s2 in self.obs:
+                return True
+
+        return False
 
     def get_neighbor(self, s):
         nei_list = set()
@@ -163,17 +195,30 @@ class DStar:
             count += 1
             g_list = {}
             for x in self.get_neighbor(s):
-                g_list[x] = self.g[x]
+                if not self.is_collision(s, x):
+                    g_list[x] = self.g[x]
             s = min(g_list, key=g_list.get)
             if s == self.s_goal or count > 100:
                 return list(reversed(path))
             path.append(s)
 
-    @staticmethod
-    def plot_path(path):
+    def plot_path(self, path):
         px = [x[0] for x in path]
         py = [x[1] for x in path]
-        plt.plot(px, py, marker='o')
+        plt.plot(px, py, linewidth=2)
+        plt.plot(self.s_start[0], self.s_start[1], "bs")
+        plt.plot(self.s_goal[0], self.s_goal[1], "gs")
+
+    def plot_visited(self, visited):
+        color = ['gainsboro', 'lightgray', 'silver', 'darkgray',
+                 'bisque', 'navajowhite', 'moccasin', 'wheat',
+                 'powderblue', 'skyblue', 'lightskyblue', 'cornflowerblue']
+
+        if self.count >= len(color) - 1:
+            self.count = 0
+
+        for x in visited:
+            plt.plot(x[0], x[1], marker='s', color=color[self.count])
 
 
 def main():

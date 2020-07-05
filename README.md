@@ -70,6 +70,12 @@ Directory Structure
     <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Search-based%20Planning/gif/RTAA_star.gif" alt="rtaastar" width="400"/></a></td>
   </tr>
 </table>
+<table>
+  <tr>
+    <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Search-based%20Planning/gif/D_star.gif" alt="dstar" width="400"/></a></td>
+    <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Search-based%20Planning/gif/LPAstar.gif" alt="lpastar" width="400"/></a></td>
+  </tr>
+</table>
 </div>
 
 ### Value/Policy/Q-value/Q-policy Iteration

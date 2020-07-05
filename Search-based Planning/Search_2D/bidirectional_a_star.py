@@ -28,10 +28,10 @@ class BidirectionalAstar:
         self.g_fore = {self.s_start: 0, self.s_goal: float("inf")}          # cost to come: from s_start
         self.g_back = {self.s_goal: 0, self.s_start: float("inf")}          # cost to come: form s_goal
 
-        self.OPEN_fore = queue.QueuePrior()                                 # U set for foreward searching
+        self.OPEN_fore = queue.QueuePrior()                                 # OPEN set for foreward searching
         self.OPEN_fore.put(self.s_start,
                            self.g_fore[self.s_start] + self.h(self.s_start, self.s_goal))
-        self.OPEN_back = queue.QueuePrior()                                 # U set for backward searching
+        self.OPEN_back = queue.QueuePrior()                                 # OPEN set for backward searching
         self.OPEN_back.put(self.s_goal,
                            self.g_back[self.s_goal] + self.h(self.s_goal, self.s_start))
 

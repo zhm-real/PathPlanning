@@ -87,7 +87,7 @@ class RtaAstar:
                 return h_value
 
     def Astar(self, x_start, N):
-        OPEN = queue.QueuePrior()                               # U set
+        OPEN = queue.QueuePrior()                               # OPEN set
         OPEN.put(x_start, self.h_table[x_start])
         CLOSED = []                                             # CLOSED set
         g_table = {x_start: 0, self.s_goal: float("inf")}       # cost to come
@@ -149,7 +149,7 @@ class RtaAstar:
             path.append(s_key)                                  # generate path
             s = s_key                                           # use end of this iteration as the start of next
 
-            if s_key == s_end:                            # reach the expected node in U set
+            if s_key == s_end:                            # reach the expected node in OPEN set
                 return s_start, list(reversed(path))
 
     def extract_path(self, x_start, parent):

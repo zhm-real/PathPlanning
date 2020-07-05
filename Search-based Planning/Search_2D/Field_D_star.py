@@ -28,20 +28,35 @@ class FieldDStar:
         self.x = self.Env.x_range
         self.y = self.Env.y_range
 
-        self.g, self.rhs, self.U = {}, {}, {}
+        self.g, self.rhs, self.OPEN = {}, {}, {}
         self.parent = {}
+        self.cknbr = {}
+        self.ccknbr = {}
+        self.bptr = {}
+        self.init_table()
 
         for i in range(self.Env.x_range):
             for j in range(self.Env.y_range):
                 self.rhs[(i, j)] = float("inf")
                 self.g[(i, j)] = float("inf")
-                self.parent[(i, j)] = (0, 0)
+                self.bptr[(i, j)] = (0, 0)
 
         self.rhs[self.s_goal] = 0.0
-        self.U[self.s_goal] = self.CalculateKey(self.s_goal)
+        self.OPEN[self.s_goal] = self.CalculateKey(self.s_goal)
         self.visited = set()
         self.count = 0
         self.fig = plt.figure()
+
+    def init_table(self):
+        for i in range(1, self.Env.x_range - 1):
+            for j in range(1, self.Env.y_range - 1):
+                s_neighbor = self.get_neighbor_pure((i, j))
+                s_neighbor.append(s_neighbor[0])
+                for k in range(8):
+                    self.cknbr[((i, j), s_neighbor[k])] = s_neighbor[k + 1]
+                s_neighbor = list(reversed(s_neighbor))
+                for k in range(8):
+                    self.ccknbr[((i, j), s_neighbor[k])] = s_neighbor[k + 1]
 
     def run(self):
         self.Plot.plot_grid("Field D*")
@@ -62,13 +77,19 @@ class FieldDStar:
             if (x, y) not in self.obs:
                 self.obs.add((x, y))
                 plt.plot(x, y, 'sk')
+                sn_list = self.get_neighbor((x, y))
             else:
                 self.obs.remove((x, y))
                 plt.plot(x, y, marker='s', color='white')
-                self.UpdateVertex((x, y))
+                sn_list = [(x, y)]
+                sn_list += self.get_neighbor((x, y))
 
-            for s_n in self.get_neighbor((x, y)):
-                self.UpdateVertex(s_n)
+            for s in sn_list:
+                v_list = []
+                for sn in self.get_neighbor(s):
+                    v_list.append(self.ComputeCost(s, sn, self.ccknbr[(s, sn)]))
+                self.rhs[s] = min(v_list)
+                self.UpdateVertex(s)
 
             self.ComputeShortestPath()
             self.plot_visited(self.visited)
@@ -82,40 +103,35 @@ class FieldDStar:
                     self.rhs[self.s_start] == self.g[self.s_start]:
                 break
 
-            k_old = v
-            self.U.pop(s)
-            self.visited.add(s)
-
-            if k_old < self.CalculateKey(s):
-                self.U[s] = self.CalculateKey(s)
-            elif self.g[s] > self.rhs[s]:
+            if self.g[s] > self.rhs[s]:
                 self.g[s] = self.rhs[s]
-                for x in self.get_neighbor(s):
-                    self.UpdateVertex(x)
+                self.OPEN.pop(s)
+                for sn in self.get_neighbor(s):
+                    if self.rhs[sn] > self.ComputeCost(sn, s, self.ccknbr[(sn, s)]):
+                        self.rhs[sn] = self.ComputeCost(sn, s, self.ccknbr[(sn, s)])
+                        self.bptr[sn] = s
+                    if self.rhs[sn] > self.ComputeCost(sn, s, self.cknbr[(sn, s)]):
+                        self.rhs[sn] = self.ComputeCost(sn, self.cknbr[(sn, s)], s)
+                        self.bptr[sn] = self.cknbr[(sn, s)]
+                    self.UpdateVertex(sn)
             else:
                 self.g[s] = float("inf")
+                for sn in self.get_neighbor(s):
+                    if self.bptr[sn] == s or self.bptr[sn] == self.cknbr[(sn, s)]:
+                        v_list = []
+                        ssn_list = self.get_neighbor(sn)
+                        for ssn in ssn_list:
+                            v_list.append(self.ComputeCost(sn, ssn, self.ccknbr[(sn, ssn)]))
+                        self.rhs[sn] = min(v_list)
+                        self.bptr[sn] = ssn_list[v_list.index(min(v_list))]
+                        self.UpdateVertex(sn)
                 self.UpdateVertex(s)
-                for x in self.get_neighbor(s):
-                    self.UpdateVertex(x)
 
     def UpdateVertex(self, s):
-        if s != self.s_goal:
-            value = []
-            s_plist = []
-            sn_list = self.get_neighbor_pure(s)
-            sn_list.append(sn_list[0])
-            for k in range(8):
-                v, sp = self.ComputeCost(s, sn_list[k], sn_list[k + 1])
-                value.append(v)
-                s_plist.append(sp)
-            self.rhs[s] = min(value)
-            self.parent[s] = s_plist[value.index(min(value))]
-
-        if s in self.U:
-            self.U.pop(s)
-
         if self.g[s] != self.rhs[s]:
-            self.U[s] = self.CalculateKey(s)
+            self.OPEN[s] = self.CalculateKey(s)
+        elif s in self.OPEN:
+            self.OPEN.pop(s)
 
     def get_neighbor_pure(self, s):
         s_list = []
@@ -138,7 +154,6 @@ class FieldDStar:
 
         c = self.cost(s, s2)
         b = self.cost(s, s1)
-        y = 0
 
         if min(c, b) == float("inf"):
             vs = float("inf")
@@ -149,6 +164,7 @@ class FieldDStar:
             if f <= b:
                 if c <= f:
                     vs = math.sqrt(2) * c + self.g[s2]
+                    print("test loop!")
                 else:
                     y = min(f / (math.sqrt(c ** 2 - f ** 2)), 1)
                     vs = c * math.sqrt(1 + y ** 2) + f * (1 - y) + self.g[s2]
@@ -159,17 +175,15 @@ class FieldDStar:
                     x = 1 - min(b / (math.sqrt(c ** 2 - b ** 2)), 1)
                     vs = c * math.sqrt(1 + (1 - x) ** 2) + b * x + self.g[s2]
 
-        ss = (y * s1[0] + (1 - y) * s2[0], y * s1[1] + (1 - y) * s2[1])
-
-        return vs, ss
+        return vs
 
     def TopKey(self):
         """
         :return: return the min key and its value.
         """
 
-        s = min(self.U, key=self.U.get)
-        return s, self.U[s]
+        s = min(self.OPEN, key=self.OPEN.get)
+        return s, self.OPEN[s]
 
     def h(self, s_start, s_goal):
         heuristic_type = self.heuristic_type  # heuristic type
@@ -225,12 +239,7 @@ class FieldDStar:
         count = 0
         while True:
             count += 1
-            g_list = {}
-            for x in self.get_neighbor(s):
-                if not self.is_collision(s, x):
-                    g_list[x] = self.g[x]
-            ss = self.parent[s]
-            s = min(g_list, key=g_list.get)
+            s = self.bptr[s]
             path.append(s)
 
             if s == self.s_goal or count > 100:

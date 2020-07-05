@@ -48,7 +48,7 @@ class LRT_A_star2:
         st = self.Astar.start
         ind = 0
         # find the lowest path down hill
-        while strst in self.Astar.CLOSED:  # when minchild in CLOSED then continue, when minchild in U, stop
+        while strst in self.Astar.CLOSED:  # when minchild in CLOSED then continue, when minchild in OPEN, stop
             # strChildren = self.children(st)
             strChildren = [hash3D(i) for i in self.Astar.children(st)]
             minh, minchild = np.inf, None

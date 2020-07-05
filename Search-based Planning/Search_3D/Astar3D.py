@@ -75,7 +75,7 @@ class Weighted_A_star(object):
                             # update priority of xj
                             self.OPEN.put(strxj, a + 1 * self.h[strxj])
                         else:
-                            # add xj in to U set
+                            # add xj in to OPEN set
                             self.OPEN.put(strxj, a + 1 * self.h[strxj])
             # For specified expanded nodes, used primarily in LRTA*
             if N:

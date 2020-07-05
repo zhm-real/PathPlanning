@@ -19,7 +19,18 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="" />
+    <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/D_star_Lite.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/D_star_Lite.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/Field_D_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/Field_D_star.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/LRTAstar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/LRTAstar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/RTAAstar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/RTAAstar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/bfs.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/bfs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/bidirectional_a_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/bidirectional_a_star.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/dijkstra.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/dijkstra.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_3D/Astar3D.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_3D/Astar3D.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_3D/LRT_Astar3D.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_3D/LRT_Astar3D.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,7 +59,7 @@
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../PythonRobotics-master/PathPlanning" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="aDefault" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
@@ -209,8 +220,8 @@
       <list>
         <item itemvalue="Python.Field_D_star" />
         <item itemvalue="Python.D_star_Lite" />
-        <item itemvalue="Python.D_star" />
         <item itemvalue="Python.LPAstar" />
+        <item itemvalue="Python.D_star" />
         <item itemvalue="Python.ARAstar" />
       </list>
     </recent_temporary>

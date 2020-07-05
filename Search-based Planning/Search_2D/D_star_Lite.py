@@ -31,8 +31,8 @@ class DStar:
         self.g, self.rhs, self.U = {}, {}, {}
         self.km = 0
 
-        for i in range(self.Env.x_range):
-            for j in range(self.Env.y_range):
+        for i in range(1, self.Env.x_range - 1):
+            for j in range(1, self.Env.y_range - 1):
                 self.rhs[(i, j)] = float("inf")
                 self.g[(i, j)] = float("inf")
 
@@ -60,7 +60,7 @@ class DStar:
             s_curr = self.s_start
             s_last = self.s_start
             i = 0
-            path = []
+            path = [self.s_start]
 
             while s_curr != self.s_goal:
                 s_list = {}
@@ -188,19 +188,25 @@ class DStar:
         return nei_list
 
     def extract_path(self):
-        path = []
+        """
+        Extract the path based on the PARENT set.
+        :return: The planning path
+        """
+
+        path = [self.s_start]
         s = self.s_start
-        count = 0
-        while True:
-            count += 1
+
+        for k in range(100):
             g_list = {}
             for x in self.get_neighbor(s):
                 if not self.is_collision(s, x):
                     g_list[x] = self.g[x]
             s = min(g_list, key=g_list.get)
-            if s == self.s_goal or count > 100:
-                return list(reversed(path))
             path.append(s)
+            if s == self.s_goal:
+                break
+
+        return list(path)
 
     def plot_path(self, path):
         px = [x[0] for x in path]

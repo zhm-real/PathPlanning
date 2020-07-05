@@ -39,7 +39,7 @@ class LrtAstarN:
         s_start = self.s_start                               # initialize start node
 
         while True:
-            OPEN, CLOSED = self.Astar(s_start, self.N)  # U, CLOSED sets in each iteration
+            OPEN, CLOSED = self.Astar(s_start, self.N)  # OPEN, CLOSED sets in each iteration
 
             if OPEN == "FOUND":                         # reach the goal node
                 self.path.append(CLOSED)
@@ -50,7 +50,7 @@ class LrtAstarN:
             for x in h_value:
                 self.h_table[x] = h_value[x]
 
-            s_start, path_k = self.extract_path_in_CLOSE(s_start, h_value)      # s_start -> expected node in U set
+            s_start, path_k = self.extract_path_in_CLOSE(s_start, h_value)      # s_start -> expected node in OPEN set
             self.path.append(path_k)
 
     def extract_path_in_CLOSE(self, s_start, h_value):
@@ -68,7 +68,7 @@ class LrtAstarN:
             path.append(s_key)                                  # generate path
             s = s_key                                           # use end of this iteration as the start of next
 
-            if s_key not in h_value:                            # reach the expected node in U set
+            if s_key not in h_value:                            # reach the expected node in OPEN set
                 return s_key, path
 
     def iteration(self, CLOSED):
@@ -92,7 +92,7 @@ class LrtAstarN:
                 return h_value
 
     def Astar(self, x_start, N):
-        OPEN = queue.QueuePrior()                               # U set
+        OPEN = queue.QueuePrior()                               # OPEN set
         OPEN.put(x_start, self.h(x_start))
         CLOSED = []                                             # CLOSED set
         g_table = {x_start: 0, self.s_goal: float("inf")}           # cost to come

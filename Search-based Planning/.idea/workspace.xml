@@ -21,9 +21,7 @@
   <component name="ChangeListManager">
     <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/D_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/D_star.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/D_star_Lite.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/D_star_Lite.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/LPAstar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/LPAstar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/FieldD_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/Field_D_star.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -75,7 +73,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.D_star_Lite">
+  <component name="RunManager" selected="Python.Field_D_star">
     <configuration name="ARAstar" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Search-based Planning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -139,6 +137,27 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="Field_D_star" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Search-based Planning" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Search_2D" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/Field_D_star.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="LPAstar" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Search-based Planning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -152,27 +171,6 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/LPAstar.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="RTAAstar" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="Search-based Planning" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Search_2D" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/RTAAstar.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -204,19 +202,19 @@
     </configuration>
     <list>
       <item itemvalue="Python.dijkstra" />
-      <item itemvalue="Python.RTAAstar" />
       <item itemvalue="Python.ARAstar" />
       <item itemvalue="Python.D_star" />
       <item itemvalue="Python.LPAstar" />
       <item itemvalue="Python.D_star_Lite" />
+      <item itemvalue="Python.Field_D_star" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.Field_D_star" />
         <item itemvalue="Python.D_star_Lite" />
         <item itemvalue="Python.D_star" />
         <item itemvalue="Python.LPAstar" />
         <item itemvalue="Python.ARAstar" />
-        <item itemvalue="Python.RTAAstar" />
       </list>
     </recent_temporary>
   </component>

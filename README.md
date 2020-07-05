@@ -108,6 +108,3 @@ Directory Structure
 * [Theta* & AP Theta*: ](http://idm-lab.org/bib/abstracts/papers/aaai07a.pdf) Theta*: Any-Angle Path Planning on Grids
 * [Lazy Theta*: ](https://www.aaai.org/ocs/index.php/AAAI/AAAI10/paper/download/1930/1945) Lazy Theta*: Any-Angle Path Planning and Path Length Analysis in 3D
 * [Incremental Phi*: ](http://www.cs.cmu.edu/~maxim/files/inctheta_ijcai09.pdf) Incremental Phi*: Incremental Any-Angle Path Planning on Grids
-
-## License
-MIT License

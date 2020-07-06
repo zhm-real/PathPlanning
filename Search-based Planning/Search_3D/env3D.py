@@ -54,7 +54,6 @@ class env():
         self.blocks = np.vstack([self.blocks,newblock])
         self.AABB = getAABB(self.blocks)
 
-
 if __name__ == '__main__':
     newenv = env()
     print(newenv.balls)

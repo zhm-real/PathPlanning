@@ -39,7 +39,7 @@ class FieldDStar:
             for j in range(self.Env.y_range):
                 self.rhs[(i, j)] = float("inf")
                 self.g[(i, j)] = float("inf")
-                self.bptr[(i, j)] = (0, 0)
+                self.bptr[(i, j)] = (i, j)
 
         self.rhs[self.s_goal] = 0.0
         self.OPEN[self.s_goal] = self.CalculateKey(self.s_goal)
@@ -74,6 +74,7 @@ class FieldDStar:
             print("Change position: x =", x, ",", "y =", y)
             self.visited = set()
             self.count += 1
+
             if (x, y) not in self.obs:
                 self.obs.add((x, y))
                 plt.plot(x, y, 'sk')
@@ -155,6 +156,9 @@ class FieldDStar:
         c = self.cost(s, s2)
         b = self.cost(s, s1)
 
+        if c != float("inf"):
+            c = c / math.sqrt(2)
+
         if min(c, b) == float("inf"):
             vs = float("inf")
         elif self.g[s1] <= self.g[s2]:
@@ -164,7 +168,6 @@ class FieldDStar:
             if f <= b:
                 if c <= f:
                     vs = math.sqrt(2) * c + self.g[s2]
-                    print("test loop!")
                 else:
                     y = min(f / (math.sqrt(c ** 2 - f ** 2)), 1)
                     vs = c * math.sqrt(1 + y ** 2) + f * (1 - y) + self.g[s2]

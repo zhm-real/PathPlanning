@@ -39,6 +39,8 @@ class Env:
 
         for i in range(15, 30):
             obs.add((30, i))
+        # for i in range(15, 25):
+        #     obs.add((30, i))
         for i in range(16):
             obs.add((40, i))
 

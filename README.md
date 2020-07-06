@@ -98,6 +98,7 @@ Directory Structure
 </div>
 
 ## Papers
+* [Potential Field, ](https://journals.sagepub.com/doi/abs/10.1177/027836498600500106) [[PPT]: ](https://www.cs.cmu.edu/~motionplanning/lecture/Chap4-Potential-Field_howie.pdf) Real-Time Obstacle Avoidance for Manipulators and Mobile Robots
 * [Hybrid A*: ](https://ai.stanford.edu/~ddolgov/papers/dolgov_gpp_stair08.pdf) Practical Search Techniques in Path Planning for Autonomous Driving
 * [Anytime Repairing A*: ](https://papers.nips.cc/paper/2382-ara-anytime-a-with-provable-bounds-on-sub-optimality.pdf) ARA*: Anytime A* with Provable Bounds on Sub-Optimality
 * [Lifelong Planning A*: ](https://www.cs.cmu.edu/~maxim/files/aij04.pdf) Lifelong Planning A*

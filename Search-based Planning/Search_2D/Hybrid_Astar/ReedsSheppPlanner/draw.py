@@ -4,7 +4,7 @@ import os
 import sys
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
-                "/../../../../ReedsSheppPlanner/")
+                "/../../../../Search-based Planning/")
 
 from Search_2D.Hybrid_Astar.ReedsSheppPlanner.utils import *
 import Search_2D.Hybrid_Astar.ReedsSheppPlanner.ReedsShepp as rs

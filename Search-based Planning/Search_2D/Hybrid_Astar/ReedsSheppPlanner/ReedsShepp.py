@@ -8,7 +8,7 @@ import sys
 from enum import Enum
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
-                "/../../../../ReedsSheppPlanner/")
+                "/../../../../Search-based Planning/")
 
 from Search_2D.Hybrid_Astar.ReedsSheppPlanner.utils import *
 

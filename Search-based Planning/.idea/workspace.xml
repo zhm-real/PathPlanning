@@ -20,11 +20,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Search_2D/Hybrid_Astar/ReedsSheppPlanner/draw.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Search_2D/Hybrid_Astar/ReedsSheppPlanner/simulation.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Search_2D/Hybrid_Astar/ReedsSheppPlanner/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/Hybrid_Astar.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/Hybrid_Astar/ReedsSheppPlanner/ReedsShepp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/Hybrid_Astar/ReedsSheppPlanner/ReedsShepp.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/Hybrid_Astar/ReedsSheppPlanner/ReedsShepp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/Hybrid_Astar/ReedsSheppPlanner/draw.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/Hybrid_Astar/ReedsSheppPlanner/draw.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/Hybrid_Astar/ReedsSheppPlanner/simulation.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/Hybrid_Astar/ReedsSheppPlanner/simulation.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

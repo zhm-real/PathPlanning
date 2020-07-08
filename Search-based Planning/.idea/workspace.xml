@@ -21,9 +21,6 @@
   <component name="ChangeListManager">
     <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/Hybrid_Astar/ReedsSheppPlanner/ReedsShepp.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/Hybrid_Astar/ReedsSheppPlanner/ReedsShepp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/Hybrid_Astar/ReedsSheppPlanner/draw.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/Hybrid_Astar/ReedsSheppPlanner/draw.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_2D/Hybrid_Astar/ReedsSheppPlanner/simulation.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/Hybrid_Astar/ReedsSheppPlanner/simulation.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -75,7 +72,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.simulation">
+  <component name="RunManager" selected="Python.D_star">
     <configuration name="D_star" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Search-based Planning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -212,9 +209,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.D_star" />
         <item itemvalue="Python.simulation" />
         <item itemvalue="Python.ReedsShepp" />
-        <item itemvalue="Python.D_star" />
         <item itemvalue="Python.Field_D_star" />
         <item itemvalue="Python.Potential_Field" />
       </list>

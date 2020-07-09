@@ -74,12 +74,17 @@ class D_star(object):
         # if empty, returns None and -1
         # it also removes this min value form the OPEN set.
         if self.OPEN:
-            mink = -1
-            minv = np.inf
-            for v, k in enumerate(self.OPEN):
-                if v < minv:
-                    mink, minv = k, v
-            return mink, self.OPEN.pop(mink)
+            mink = min(self.OPEN, key=self.OPEN.get)
+            minv = self.OPEN[mink]
+            _ = self.OPEN.pop(mink)
+        #     #
+        #     mink = -1
+        #     minv = np.inf
+        #     for v, k in enumerate(self.OPEN):
+        #         if v < minv:
+        #             mink, minv = k, v
+        #     return mink, self.OPEN.pop(mink)
+            return mink, minv
         return None, -1
 
     def insert(self, x, h_new):
@@ -98,7 +103,8 @@ class D_star(object):
         x, kold = self.min_state()
         self.tag[x] = 'Closed'
         self.V.add(x)
-        if x == None: return -1
+        if x is None:
+            return -1
         if kold < self.h[x]:  # raised states
             for y in children(self, x):
                 a = self.h[y] + cost(self, y, x)
@@ -175,16 +181,9 @@ class D_star(object):
         for i in range(2):
             self.env.move_block(a=[0, 0, -1], s=0.5, block_to_move=1, mode='translation')
             visualization(self)
-            plt.pause(0.2)
-
             s = tuple(self.env.start)
 
-            count = 0
-            count_obs = 0
             while s != self.xt:
-                count += 1
-                print(count)
-
                 if s == tuple(self.env.start):
                     sparent = self.b[self.x0]
                 else:
@@ -193,20 +192,12 @@ class D_star(object):
 
                 if cost(self, s, sparent) == np.inf:
                     # print(s, "   ", sparent)
-                    count_obs += 1
-                    print(count_obs)
-
                     self.modify(s)
                     continue
-
                 self.ind += 1
                 s = sparent
-
-            print("test")
-
             self.Path = self.path()
             visualization(self)
-            plt.pause(0.2)
         plt.show()
 
 

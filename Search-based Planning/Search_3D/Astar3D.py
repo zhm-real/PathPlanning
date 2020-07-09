@@ -12,7 +12,7 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Search-based Planning/")
 from Search_3D.env3D import env
-from Search_3D.utils3D import getDist, getRay, StateSpace, Heuristic, getNearest, isCollide, hash3D, dehash, \
+from Search_3D.utils3D import getDist, getRay, g_Space, Heuristic, getNearest, isCollide, hash3D, dehash, \
     cost
 from Search_3D.plot_util3D import visualization
 import queue
@@ -27,7 +27,7 @@ class Weighted_A_star(object):
                                   [1, -1, -1], [-1, 1, -1], [-1, -1, 1], [1, 1, -1], [1, -1, 1], [-1, 1, 1]])
 
         self.env = env(resolution=resolution)
-        self.Space = StateSpace(self)  # key is the point, store g value
+        self.Space = g_Space(self)  # key is the point, store g value
         self.start, self.goal = getNearest(self.Space, self.env.start), getNearest(self.Space, self.env.goal)
         # self.AABB = getAABB(self.env.blocks)
         self.Space[hash3D(getNearest(self.Space, self.start))] = 0  # set g(x0) = 0
@@ -109,7 +109,7 @@ class Weighted_A_star(object):
 
     # utility used in LRTA*
     def reset(self, xj):
-        self.Space = StateSpace(self)  # key is the point, store g value
+        self.Space = g_Space(self)  # key is the point, store g value
         self.start = xj
         self.Space[hash3D(getNearest(self.Space, self.start))] = 0  # set g(x0) = 0
         self.x0 = hash3D(xj)

@@ -7,7 +7,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Search-based Planning/")
 from Search_3D.env3D import env
 from Search_3D import Astar3D
-from Search_3D.utils3D import getDist, getRay, StateSpace, Heuristic, getNearest, isinbound, isinball, hash3D, dehash, \
+from Search_3D.utils3D import getDist, getRay, g_Space, Heuristic, getNearest, isinbound, isinball, hash3D, dehash, \
     cost, obstacleFree
 from Search_3D.plot_util3D import visualization
 import queue
@@ -23,10 +23,10 @@ class Lifelong_Astar(object):
                                   [1, -1, 0], [-1, 1, 0], [1, 0, -1], [-1, 0, 1], [0, 1, -1], [0, -1, 1],
                                   [1, -1, -1], [-1, 1, -1], [-1, -1, 1], [1, 1, -1], [1, -1, 1], [-1, 1, 1]])
         self.env = env(resolution=resolution)
-        self.g = StateSpace(self)
+        self.g = g_Space(self)
         self.start, self.goal = getNearest(self.g, self.env.start), getNearest(self.g, self.env.goal)
         self.x0, self.xt = hash3D(self.start), hash3D(self.goal)
-        self.v = StateSpace(self) # rhs(.) = g(.) = inf
+        self.v = g_Space(self) # rhs(.) = g(.) = inf
         self.v[hash3D(self.start)] = 0 # rhs(x0) = 0
         self.h = Heuristic(self.g, self.goal)
         

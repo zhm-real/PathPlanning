@@ -13,7 +13,7 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Search-based Planning/")
 from Search_3D.env3D import env
-from Search_3D.utils3D import getAABB, getDist, getRay, StateSpace, Heuristic, getNearest, isCollide, hash3D, dehash, cost
+from Search_3D.utils3D import getDist, getRay, g_Space, Heuristic, getNearest, isCollide, hash3D, dehash, cost
 from Search_3D.plot_util3D import visualization
 import queue
 
@@ -25,9 +25,8 @@ class Weighted_A_star(object):
                       [1,-1,0],[-1,1,0],[1,0,-1],[-1,0, 1],[0,1, -1],[0, -1,1],\
                       [1,-1,-1],[-1,1,-1],[-1,-1,1],[1,1,-1],[1,-1,1],[-1,1,1]])
         self.env = env(resolution = resolution)
-        self.Space = StateSpace(self) # key is the point, store g value
+        self.Space = g_Space(self) # key is the point, store g value
         self.start, self.goal = getNearest(self.Space,self.env.start), getNearest(self.Space,self.env.goal)
-        self.AABB = getAABB(self.env.blocks)
         self.Space[hash3D(self.start)] = 0 # set g(x0) = 0
         self.Space[hash3D(self.goal)] = 0 # set g(x0) = 0
         self.OPEN1 = queue.QueuePrior() # store [point,priority]
@@ -60,7 +59,7 @@ class Weighted_A_star(object):
             self.CLOSED2.add(strxi2)
             self.V.append(xi1)
             self.V.append(xi2)
-            # visualization(self)
+            visualization(self)
             allchild1,  allchild2 = self.children(xi1), self.children(xi2)
             self.evaluation(allchild1,strxi1,xi1,conf=1)
             self.evaluation(allchild2,strxi2,xi2,conf=2)

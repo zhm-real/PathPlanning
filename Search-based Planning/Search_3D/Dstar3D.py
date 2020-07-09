@@ -8,24 +8,9 @@ from collections import defaultdict
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Search-based Planning/")
 from Search_3D.env3D import env
 from Search_3D import Astar3D
-from Search_3D.utils3D import getDist, getRay, isinbound, isinball
+from Search_3D.utils3D import StateSpace, getDist, getRay, isinbound, isinball
 import pyrr
 
-def StateSpace(env, factor = 0):
-    boundary = env.boundary
-    resolution = env.resolution
-    xmin,xmax = boundary[0]+factor*resolution,boundary[3]-factor*resolution
-    ymin,ymax = boundary[1]+factor*resolution,boundary[4]-factor*resolution
-    zmin,zmax = boundary[2]+factor*resolution,boundary[5]-factor*resolution
-    xarr = np.arange(xmin,xmax,resolution).astype(float)
-    yarr = np.arange(ymin,ymax,resolution).astype(float)
-    zarr = np.arange(zmin,zmax,resolution).astype(float)
-    g = set()
-    for x in xarr:
-        for y in yarr:
-            for z in zarr:
-                g.add((x,y,z))
-    return g
 
 def getNearest(Space,pt):
     '''get the nearest point on the grid'''

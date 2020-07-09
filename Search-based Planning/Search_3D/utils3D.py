@@ -44,23 +44,30 @@ def isinball(i, x):
         return True
     return False
 
-def StateSpace(initparams,factor=0):
-    '''This function is used to get nodes and discretize the space.
-       State space is by x*y*z,3 where each 3 is a point in 3D.'''
-    boundary = initparams.env.boundary
-    resolution = initparams.env.resolution
+def StateSpace(env, factor = 0):
+    boundary = env.boundary
+    resolution = env.resolution
     xmin,xmax = boundary[0]+factor*resolution,boundary[3]-factor*resolution
     ymin,ymax = boundary[1]+factor*resolution,boundary[4]-factor*resolution
     zmin,zmax = boundary[2]+factor*resolution,boundary[5]-factor*resolution
     xarr = np.arange(xmin,xmax,resolution).astype(float)
     yarr = np.arange(ymin,ymax,resolution).astype(float)
     zarr = np.arange(zmin,zmax,resolution).astype(float)
-    V = np.meshgrid(xarr,yarr,zarr)
-    VV = np.reshape(V,[3,len(xarr)*len(yarr)*len(zarr)]) # all points in 3D
-    Space = {}
-    for v in VV.T:
-        Space[hash3D(v)] = np.inf # this hashmap initialize all g values at inf
+    Space = set()
+    for x in xarr:
+        for y in yarr:
+            for z in zarr:
+                Space.add((x,y,z))
     return Space
+
+def g_Space(initparams):
+    '''This function is used to get nodes and discretize the space.
+       State space is by x*y*z,3 where each 3 is a point in 3D.'''
+    g = {}
+    Space = StateSpace(initparams.env)
+    for v in Space:
+        g[hash3D(v)] = np.inf # this hashmap initialize all g values at inf
+    return g
 
 def isCollide(initparams, x, direc):
     '''see if line intersects obstacle'''

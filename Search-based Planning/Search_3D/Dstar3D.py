@@ -33,8 +33,18 @@ class D_star(object):
         self.ind = 0
         self.Path = []
         self.done = False
+        self.Obstaclemap = {}
 
         
+    def update_obs(self):
+        for xi in self.X:
+            print('xi')
+            self.Obstaclemap[xi] = False
+            for aabb in self.env.blocks:
+                self.Obstaclemap[xi] = isinbound(aabb, xi)
+            if self.Obstaclemap[xi] == False:
+                for ball in self.env.balls:
+                    self.Obstaclemap[xi] = isinball(ball, xi)
 
     def initH(self):
         # h set, all initialzed h vals are 0 for all states.
@@ -79,7 +89,7 @@ class D_star(object):
         if self.tag[x] == 'New':
             kx = h_new
         if self.tag[x] == 'Open':
-            kx = min(self.OPEN[x],h_new)
+            kx = min(self.OPEN[x], h_new)
         if self.tag[x] == 'Closed':
             kx = min(self.h[x], h_new)
         self.OPEN[x] = kx
@@ -95,7 +105,7 @@ class D_star(object):
                 a = self.h[y] + cost(self,y,x)
                 if self.h[y] <= kold and self.h[x] > a:
                     self.b[x], self.h[x] = y , a
-        elif kold == self.h[x]:# lower
+        if kold == self.h[x]:# lower
             for y in children(self,x):
                 bb = self.h[x] + cost(self,x,y)
                 if self.tag[y] == 'New' or \
@@ -119,14 +129,15 @@ class D_star(object):
                             self.insert(y, self.h[y])
         return self.get_kmin()
 
-    def modify_cost(self,x,y,cval):
+    def modify_cost(self,x):
         # TODO: implement own function
         # self.c[x][y] = cval
-        # if self.tag[x] == 'Closed': self.insert(x,self.h[x])
+        xparent = self.b[x]
+        if self.tag[x] == 'Closed': self.insert(x , self.h[xparent] + cost(self,x,xparent))
         # return self.get_kmin()
-        pass
 
     def modify(self, x):
+        self.modify_cost(x)
         while True:
             kmin = self.process_state()
             if kmin >= self.h[x]: break
@@ -156,19 +167,29 @@ class D_star(object):
         self.Path = self.path()
         self.done = True
         visualization(self)
+        plt.pause(0.5)
         # plt.show()
         # when the environemnt changes over time
         s = tuple(self.env.start)
         while s != self.xt:
+            
             if s == tuple(self.env.start):
-                s = self.b[self.x0]
+                sparent = self.b[self.x0]
             else: 
-                s = self.b[s]
-            self.modify(s)
+                sparent = self.b[s]
+            
             self.env.move_block(a=[0,0,-0.1],s=0.5,block_to_move=1,mode='translation')
-            self.Path = self.path(s)
-            visualization(self)
+            # self.update_obs()
+            print('updated')
+            if cost(self,s, sparent) == np.inf:
+                self.modify(s)
+            print('modified')
             self.ind += 1
+        
+        self.Path = self.path()
+        visualization(self)
+        plt.show()
+            
         
 
         

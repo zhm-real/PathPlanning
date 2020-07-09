@@ -13,7 +13,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Search-based Planning/")
 from Search_3D.env3D import env
 from Search_3D.utils3D import getDist, getRay, g_Space, Heuristic, getNearest, isCollide, \
-    cost
+    cost, children, StateSpace
 from Search_3D.plot_util3D import visualization
 import queue
 import time
@@ -27,6 +27,7 @@ class Weighted_A_star(object):
                                   [1, -1, -1], [-1, 1, -1], [-1, -1, 1], [1, 1, -1], [1, -1, 1], [-1, 1, 1]])
 
         self.env = env(resolution=resolution)
+        self.X = StateSpace(self.env)
         self.g = g_Space(self)  # key is the point, store g value
         self.start, self.goal = getNearest(self.g, self.env.start), getNearest(self.g, self.env.goal)
         # self.AABB = getAABB(self.env.blocks)
@@ -44,13 +45,13 @@ class Weighted_A_star(object):
         self.OPEN.put(self.x0, self.g[self.x0] + self.h[self.x0])  # item, priority = g + h
         self.lastpoint = self.x0
 
-    def children(self, x):
-        allchild = []
-        for j in self.Alldirec:
-            collide, child = isCollide(self, x, j)
-            if not collide:
-                allchild.append(child)
-        return allchild
+    # def children(self, x):
+    #     allchild = []
+    #     for j in self.Alldirec:
+    #         collide, child = isCollide(self, x, j)
+    #         if not collide:
+    #             allchild.append(child)
+    #     return allchild
 
     def run(self, N=None):
         xt = self.xt
@@ -60,12 +61,12 @@ class Weighted_A_star(object):
             if xi not in self.CLOSED:
                 self.V.append(np.array(xi))
             self.CLOSED.add(xi)  # add the point in CLOSED set
-            visualization(self)
-            allchild = self.children(xi)
+            # visualization(self)
+            allchild = children(self,xi)
             for xj in allchild:
                 if xj not in self.CLOSED:
                     gi, gj = self.g[xi], self.g[xj]
-                    a = gi + cost(xi, xj)
+                    a = gi + cost(self, xi, xj)
                     if a < gj:
                         self.g[xj] = a
                         self.Parent[xj] = xi
@@ -87,9 +88,9 @@ class Weighted_A_star(object):
         if xt in self.CLOSED:
             self.done = True
             self.Path = self.path()
-            if N is None:
-                visualization(self)
-                plt.show()
+            # if N is None:
+            #     visualization(self)
+            #     plt.show()
             return True
 
         return False
@@ -118,6 +119,6 @@ class Weighted_A_star(object):
 
 if __name__ == '__main__':
     sta = time.time()
-    Astar = Weighted_A_star(1)
+    Astar = Weighted_A_star(0.5)
     Astar.run()
     print(time.time() - sta)

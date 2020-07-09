@@ -3,63 +3,13 @@ import matplotlib.pyplot as plt
 
 import os
 import sys
-from collections import defaultdict
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Search-based Planning/")
 from Search_3D.env3D import env
 from Search_3D import Astar3D
-from Search_3D.utils3D import StateSpace, getDist, getRay, isinbound, isinball
+from Search_3D.utils3D import StateSpace, getDist, getNearest, getRay, isinbound, isinball, isCollide, children, cost, initcost
 import pyrr
 
-
-
-def isCollide(initparams, x, child):
-    '''see if line intersects obstacle'''
-    ray , dist = getRay(x, child) ,  getDist(x, child)
-    if not isinbound(initparams.env.boundary,child):
-        return True, dist
-    for i in initparams.env.AABB:
-        shot = pyrr.geometric_tests.ray_intersect_aabb(ray, i)
-        if shot is not None:
-            dist_wall = getDist(x, shot)
-            if dist_wall <= dist:  # collide
-                return True, dist
-    for i in initparams.env.balls:
-        if isinball(i, child):
-            return True, dist
-        shot = pyrr.geometric_tests.ray_intersect_sphere(ray, i)
-        if shot != []:
-            dists_ball = [getDist(x, j) for j in shot]
-            if all(dists_ball <= dist):  # collide
-                return True, dist
-    return False, dist
-
-def children(initparams, x):
-    # get the neighbor of a specific state
-    allchild = []
-    resolution = initparams.env.resolution
-    for direc in initparams.Alldirec:
-        child = tuple(map(np.add,x,np.multiply(direc,resolution)))
-        if isinbound(initparams.env.boundary,child):
-            allchild.append(child)
-    return allchild
-
-def cost(initparams, x, y):
-    # get the cost between two points, 
-    # do collision check here
-    collide, dist = isCollide(initparams,x,y)
-    if collide: return np.inf
-    else: return dist
-
-def initcost(initparams):
-    # initialize cost dictionary, could be modifed lateron
-    c = defaultdict(lambda: defaultdict(dict)) # two key dicionary
-    for xi in initparams.X:
-        cdren = children(initparams, xi)
-        for child in cdren:
-            c[xi][child] = cost(initparams, xi, child)
-    return c
-    
 
 class D_star(object):
     def __init__(self,resolution = 1):

@@ -14,7 +14,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Search-base
 from Search_3D.env3D import env
 from Search_3D import Astar3D
 from Search_3D.utils3D import getDist, getRay, g_Space, Heuristic, getNearest, isCollide, \
-    cost, obstacleFree
+    cost, obstacleFree, children
 from Search_3D.plot_util3D import visualization
 import queue
 
@@ -48,7 +48,7 @@ class RTA_A_star:
         while sthval < maxhval:
             parentsvals , parents = [] , []
             # find the max child
-            for xi in self.Astar.children(st):
+            for xi in children(self.Astar,st):
                 if xi in self.Astar.CLOSED:
                     parents.append(xi)
                     parentsvals.append(self.Astar.h[xi])

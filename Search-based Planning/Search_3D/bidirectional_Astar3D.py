@@ -13,7 +13,7 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Search-based Planning/")
 from Search_3D.env3D import env
-from Search_3D.utils3D import getDist, getRay, g_Space, Heuristic, getNearest, isCollide, cost
+from Search_3D.utils3D import getDist, getRay, g_Space, Heuristic, getNearest, isCollide, cost, children
 from Search_3D.plot_util3D import visualization
 import queue
 
@@ -39,14 +39,6 @@ class Weighted_A_star(object):
         self.done = False
         self.Path = []
 
-    def children(self,x):
-        allchild = []
-        for j in self.Alldirec:
-            collide,child = isCollide(self,x,j)
-            if not collide:
-                allchild.append(child)
-        return allchild
-
     def run(self):
         x0, xt = self.start, self.goal
         self.OPEN1.put(x0, self.g[x0] + self.h1[x0]) # item, priority = g + h
@@ -59,7 +51,7 @@ class Weighted_A_star(object):
             self.V.append(xi1)
             self.V.append(xi2)
             visualization(self)
-            allchild1,  allchild2 = self.children(xi1), self.children(xi2)
+            allchild1,  allchild2 = children(self,xi1), children(self,xi2)
             self.evaluation(allchild1,xi1,conf=1)
             self.evaluation(allchild2,xi2,conf=2)
             if self.ind % 100 == 0: print('iteration number = '+ str(self.ind))
@@ -75,7 +67,7 @@ class Weighted_A_star(object):
             if conf == 1:
                 if xj not in self.CLOSED1:
                     gi, gj = self.g[xi], self.g[xj]
-                    a = gi + cost(xi,xj)
+                    a = gi + cost(self,xi,xj)
                     if a < gj:
                         self.g[xj] = a
                         self.Parent1[xj] = xi
@@ -86,7 +78,7 @@ class Weighted_A_star(object):
             if conf == 2:
                 if xj not in self.CLOSED2:
                     gi, gj = self.g[xi], self.g[xj]
-                    a = gi + cost(xi,xj)
+                    a = gi + cost(self,xi,xj)
                     if a < gj:
                         self.g[xj] = a
                         self.Parent2[xj] = xi

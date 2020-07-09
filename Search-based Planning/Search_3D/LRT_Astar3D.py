@@ -14,7 +14,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Search-base
 from Search_3D.env3D import env
 from Search_3D import Astar3D
 from Search_3D.utils3D import getDist, getRay, g_Space, Heuristic, getNearest, isCollide, \
-    cost, obstacleFree
+    cost, obstacleFree, children
 from Search_3D.plot_util3D import visualization
 import queue
 
@@ -34,8 +34,8 @@ class LRT_A_star2:
             for xi in self.Astar.CLOSED:
                 lasthvals.append(self.Astar.h[xi])
                 # update h values if they are smaller
-                Children = self.Astar.children(xi)
-                minfval = min([cost(xi, xj, settings=0) + self.Astar.h[xj] for xj in Children])
+                Children = children(self.Astar,xi)
+                minfval = min([cost(self.Astar,xi, xj, settings=0) + self.Astar.h[xj] for xj in Children])
                 # h(s) = h(s') if h(s) > c(s,s') + h(s') 
                 if self.Astar.h[xi] >= minfval:
                     self.Astar.h[xi] = minfval
@@ -47,9 +47,13 @@ class LRT_A_star2:
         ind = 0
         # find the lowest path down hill
         while st in self.Astar.CLOSED:  # when minchild in CLOSED then continue, when minchild in OPEN, stop
-            Children = [i for i in self.Astar.children(st)]
+            Children = children(self.Astar,st)
             minh, minchild = np.inf, None
             for child in Children:
+                # check collision here, not a supper efficient
+                collide, _ = isCollide(self.Astar,st, child)
+                if collide:
+                    continue
                 h = self.Astar.h[child]
                 if h <= minh:
                     minh, minchild = h, child
@@ -76,5 +80,5 @@ class LRT_A_star2:
 
 
 if __name__ == '__main__':
-    T = LRT_A_star2(resolution=0.5, N=150)
+    T = LRT_A_star2(resolution=0.5, N=100)
     T.run()

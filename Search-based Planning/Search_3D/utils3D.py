@@ -1,5 +1,6 @@
 import numpy as np
 import pyrr
+from collections import defaultdict
 
 def getRay(x, y):
     direc = [y[0] - x[0], y[1] - x[1], y[2] - x[2]]
@@ -43,6 +44,31 @@ def isinball(i, x):
         return True
     return False
 
+def lineSphere(p0,p1,ball):
+    # https://cseweb.ucsd.edu/classes/sp19/cse291-d/Files/CSE291_13_CollisionDetection.pdf
+    c, r= ball[0:3],ball[-1]
+    line = [p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2]]
+    d1 = [c[0] - p0[0], c[1] - p0[1], c[2] - p0[2]]
+    t = (1 / (line[0]*line[0] + line[1]*line[1] + line[2]*line[2])) * (line[0]*d1[0] + line[1]*d1[1] + line[2]*d1[2])
+    if t <= 0: 
+        if (d1[0] * d1[0] + d1[1] * d1[1] + d1[2] * d1[2]) <= r ** 2: return True
+    elif t >= 1: 
+        d2 = [c[0] - p1[0], c[1] - p1[1], c[2] - p1[2]]
+        if (d2[0] * d2[0] + d2[1] * d2[1] + d2[2] * d2[2]) <= r ** 2: return True
+    elif 0 < t < 1: 
+        x = [p0[0] + t * line[0], p0[1] + t * line[1], p0[2] + t * line[2]]
+        k = [c[0] - x[0], c[1] - x[1], c[2] - x[2]]
+        if (k[0] * k[0] + k[1] * k[1] + k[2] * k[2]) <= r**2: return True
+    return False
+    
+def lineAABB(p0,p1,dist,AABB):
+    #https://www.gamasutra.com/view/feature/131790/simple_intersection_tests_for_games.php?print=1
+    P = [(p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2, (p0[2] + p1[2]) / 2] # mid point
+    D = [(p1[0] - p0[0]) / dist, (p1[1] - p0[1]) / dist, (p1[2] - p0[2]) / dist] # unit direction
+    t = dist / 2 # radius
+    # TODO: implement this
+
+
 def StateSpace(env, factor = 0):
     boundary = env.boundary
     resolution = env.resolution
@@ -68,28 +94,37 @@ def g_Space(initparams):
         g[v] = np.inf # this hashmap initialize all g values at inf
     return g
 
-def isCollide(initparams, x, direc):
+def isCollide(initparams, x, child):
     '''see if line intersects obstacle'''
-    resolution = initparams.env.resolution
-    child = tuple(map(np.add,x,np.multiply(direc,resolution)))
     ray , dist = getRay(x, child) ,  getDist(x, child)
     if not isinbound(initparams.env.boundary,child):
-        return True, child
+        return True, dist
     for i in initparams.env.AABB:
         shot = pyrr.geometric_tests.ray_intersect_aabb(ray, i)
         if shot is not None:
             dist_wall = getDist(x, shot)
             if dist_wall <= dist:  # collide
-                return True, child
+                return True, dist
     for i in initparams.env.balls:
         if isinball(i, child):
-            return True, child
-        shot = pyrr.geometric_tests.ray_intersect_sphere(ray, i)
-        if shot != []:
-            dists_ball = [getDist(x, j) for j in shot]
-            if all(dists_ball <= dist):  # collide
-                return True, child
-    return False, child
+            return True, dist
+        # shot = pyrr.geometric_tests.ray_intersect_sphere(ray, i)
+        # if shot != []:
+        #     dists_ball = [getDist(x, j) for j in shot]
+        #     if all(dists_ball <= dist):  # collide
+        #         return True, dist
+        if lineSphere(x, child, i): return True, dist
+    return False, dist
+
+def children(initparams, x):
+    # get the neighbor of a specific state
+    allchild = []
+    resolution = initparams.env.resolution
+    for direc in initparams.Alldirec:
+        child = tuple(map(np.add,x,np.multiply(direc,resolution)))
+        if isinbound(initparams.env.boundary,child):
+            allchild.append(child)
+    return allchild
 
 def obstacleFree(initparams,x):
     for i in initparams.env.blocks:
@@ -100,11 +135,24 @@ def obstacleFree(initparams,x):
             return False
     return True
 
-def cost(i,j,settings=0):
+def cost(initparams, i,j,settings=0):
+    collide, dist = isCollide(initparams,i,j)
     if settings == 0:
-        return getDist(i,j)
+        if collide: return np.inf
+        else: return dist
     if settings == 1:
-        return getManDist(i,j)
+        if collide: return np.inf
+        else: return getManDist(i,j)
+
+def initcost(initparams):
+    # initialize cost dictionary, could be modifed lateron
+    c = defaultdict(lambda: defaultdict(dict)) # two key dicionary
+    for xi in initparams.X:
+        cdren = children(initparams, xi)
+        for child in cdren:
+            c[xi][child] = cost(initparams, xi, child)
+    return c
     
 if __name__ == "__main__":
-    from env3D import env
+    a = [10,2.5,1,1]
+    lineAABB([0,0,0],[1,1,1],)

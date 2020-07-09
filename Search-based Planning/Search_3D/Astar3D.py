@@ -61,7 +61,7 @@ class Weighted_A_star(object):
             if xi not in self.CLOSED:
                 self.V.append(np.array(xi))
             self.CLOSED.add(xi)  # add the point in CLOSED set
-            # visualization(self)
+            visualization(self)
             allchild = children(self,xi)
             for xj in allchild:
                 if xj not in self.CLOSED:
@@ -88,9 +88,9 @@ class Weighted_A_star(object):
         if xt in self.CLOSED:
             self.done = True
             self.Path = self.path()
-            # if N is None:
-            #     visualization(self)
-            #     plt.show()
+            if N is None:
+                visualization(self)
+                plt.show()
             return True
 
         return False

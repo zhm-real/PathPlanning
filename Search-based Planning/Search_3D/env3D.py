@@ -22,12 +22,12 @@ def getblocks():
         Obstacles.append([j for j in i])
     return np.array(Obstacles)
 
-def getAABB(blocks):
-    # used for Pyrr package for detecting collision
-    AABB = []
-    for i in blocks:
-        AABB.append(np.array([np.add(i[0:3], -0), np.add(i[3:6], 0)]))  # make AABBs alittle bit of larger
-    return AABB
+# def getAABB(blocks):
+#     # used for Pyrr package for detecting collision
+#     AABB = []
+#     for i in blocks:
+#         AABB.append(np.array([np.add(i[0:3], -0), np.add(i[3:6], 0)]))  # make AABBs alittle bit of larger
+#     return AABB
 
 class aabb(object):
     def __init__(self,AABB):
@@ -60,11 +60,56 @@ class env():
         self.balls = getballs()
         self.start = np.array([0.5, 2.5, 5.5])
         self.goal = np.array([19.0, 2.5, 5.5])
+        self.t = 0 # time 
 
-    def change(self):
+    def New_block(self):
         newblock = add_block()
         self.blocks = np.vstack([self.blocks,newblock])
-        self.AABB = getAABB(self.blocks)
+        self.AABB = getAABB2(self.blocks)
+
+    def move_start(self, x):
+        self.start = x
+
+    def move_block(self, a = [0,0,0], s = 0, v = [0.1,0,0], G = None, block_to_move = 0, mode = 'uniform'):
+        # t is time , v is velocity in R3, a is acceleration in R3, s is increment ini time, 
+        # G is an orthorgonal transform in R3*3, in the Galilean transformation
+        # (x',t') = (x + tv, t) is uniform transformation
+        if mode == 'uniform':
+            ori = self.blocks[block_to_move]
+            self.blocks[block_to_move] = \
+                np.array([ori[0] + self.t * v[0],\
+                    ori[1] + self.t * v[1],\
+                    ori[2] + self.t * v[2],\
+                    ori[3] + self.t * v[0],\
+                    ori[4] + self.t * v[1],\
+                    ori[5] + self.t * v[2]])
+
+            self.AABB[block_to_move].P = \
+            [self.AABB[block_to_move].P[0] + self.t * v[0], \
+            self.AABB[block_to_move].P[1] + self.t * v[1], \
+            self.AABB[block_to_move].P[2] + self.t * v[2]]
+        # (x',t') = (x + a, t + s) is a translation
+        if mode == 'translation':
+            ori = self.blocks[block_to_move]
+            self.blocks[block_to_move] = \
+                np.array([ori[0] + a[0],\
+                    ori[1] + a[1],\
+                    ori[2] + a[2],\
+                    ori[3] + a[0],\
+                    ori[4] + a[1],\
+                    ori[5] + a[2]])
+
+            self.AABB[block_to_move].P = \
+            [self.AABB[block_to_move].P[0] + a[0], \
+            self.AABB[block_to_move].P[1] + a[1], \
+            self.AABB[block_to_move].P[2] + a[2]]
+            self.t += s
+        # (x',t') = (Gx, t)
+        if mode == 'rotation': # this makes AABB become a OBB
+            #TODO: implement this with rotation matrix
+            pass
+          
+
 
 if __name__ == '__main__':
     newenv = env()

@@ -167,7 +167,7 @@ class Lifelong_Astar(object):
         plt.pause(2)
 
     def change_env(self):
-        self.env.change()
+        self.env.New_block()
         self.done = False
         self.Path = []
         self.CLOSED = set()

@@ -53,7 +53,7 @@ def draw_line(ax,SET,visibility=1,color=None):
 
 def visualization(initparams):
     if initparams.ind % 20 == 0 or initparams.done:
-        V = np.array(initparams.V)
+        V = np.array(list(initparams.V))
         # E = initparams.E
         Path = np.array(initparams.Path)
         start = initparams.env.start

@@ -14,8 +14,7 @@ def getManDist(pos1, pos2):
 def getNearest(Space,pt):
     '''get the nearest point on the grid'''
     mindis,minpt = 1000,None
-    for strpts in Space.keys(): 
-        pts = dehash(strpts)
+    for pts in Space: 
         dis = getDist(pts,pt)
         if dis < mindis:
             mindis,minpt = dis,pts
@@ -25,7 +24,7 @@ def Heuristic(Space,t):
     '''Max norm distance'''
     h = {}
     for k in Space.keys():
-        h[k] = max(abs(t-dehash(k)))
+        h[k] = max(abs(np.array([t[0]-k[0],t[1]-k[1],t[2]-k[2]])))
     return h
 
 def hash3D(x):
@@ -66,13 +65,13 @@ def g_Space(initparams):
     g = {}
     Space = StateSpace(initparams.env)
     for v in Space:
-        g[hash3D(v)] = np.inf # this hashmap initialize all g values at inf
+        g[v] = np.inf # this hashmap initialize all g values at inf
     return g
 
 def isCollide(initparams, x, direc):
     '''see if line intersects obstacle'''
     resolution = initparams.env.resolution
-    child = np.array(list(map(np.add,x,np.multiply(direc,resolution))))
+    child = tuple(map(np.add,x,np.multiply(direc,resolution)))
     ray , dist = getRay(x, child) ,  getDist(x, child)
     if not isinbound(initparams.env.boundary,child):
         return True, child

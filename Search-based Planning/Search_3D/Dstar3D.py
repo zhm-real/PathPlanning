@@ -12,14 +12,6 @@ from Search_3D.utils3D import StateSpace, getDist, getRay, isinbound, isinball
 import pyrr
 
 
-def getNearest(Space,pt):
-    '''get the nearest point on the grid'''
-    mindis,minpt = 1000,None
-    for pts in Space: 
-        dis = getDist(pts,pt)
-        if dis < mindis:
-            mindis,minpt = dis,pts
-    return minpt
 
 def isCollide(initparams, x, child):
     '''see if line intersects obstacle'''

@@ -13,7 +13,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Search-based Planning/")
 from Search_3D.env3D import env
 from Search_3D import Astar3D
-from Search_3D.utils3D import getDist, getRay, g_Space, Heuristic, getNearest, isCollide, hash3D, dehash, \
+from Search_3D.utils3D import getDist, getRay, g_Space, Heuristic, getNearest, isCollide, \
     cost, obstacleFree
 from Search_3D.plot_util3D import visualization
 import queue
@@ -23,43 +23,40 @@ class RTA_A_star:
         self.N = N # node to expand 
         self.Astar = Astar3D.Weighted_A_star(resolution=resolution) # initialize A star
         self.path = [] # empty path
-        self.strst = []
+        self.st = []
         self.localhvals = []
 
     def updateHeuristic(self):
         # Initialize hvalues at infinity
         self.localhvals = []
         nodeset, vals = [], []
-        for (_,strxi) in self.Astar.OPEN.enumerate():
-            nodeset.append(strxi)
-            vals.append(self.Astar.Space[strxi] + self.Astar.h[strxi])
-        strj, fj = nodeset[np.argmin(vals)], min(vals)
-        self.strst = strj
+        for (_,xi) in self.Astar.OPEN.enumerate():
+            nodeset.append(xi)
+            vals.append(self.Astar.g[xi] + self.Astar.h[xi])
+        j, fj = nodeset[np.argmin(vals)], min(vals)
+        self.st = j
         # single pass update of hvals
-        for strxi in self.Astar.CLOSED:
-            # xi = dehash(strxi)
-            self.Astar.h[strxi] = fj - self.Astar.Space[strxi]
-            self.localhvals.append(self.Astar.h[strxi])
+        for xi in self.Astar.CLOSED:
+            self.Astar.h[xi] = fj - self.Astar.g[xi]
+            self.localhvals.append(self.Astar.h[xi])
         
     def move(self):
-        strst, localhvals = self.strst, self.localhvals
+        st, localhvals = self.st, self.localhvals
         maxhval = max(localhvals)
-        st = dehash(strst)
-        sthval = self.Astar.h[strst]
+        sthval = self.Astar.h[st]
         # find the lowest path up hill
         while sthval < maxhval:
             parentsvals , parents = [] , []
             # find the max child
             for xi in self.Astar.children(st):
-                strxi = hash3D(xi)
-                if strxi in self.Astar.CLOSED:
+                if xi in self.Astar.CLOSED:
                     parents.append(xi)
-                    parentsvals.append(self.Astar.h[strxi])
+                    parentsvals.append(self.Astar.h[xi])
             lastst = st            
-            st, strst = parents[np.argmax(parentsvals)], hash3D(st)
+            st = parents[np.argmax(parentsvals)]
             self.path.append([st,lastst]) # add to path
-            sthval = self.Astar.h[strst]
-        self.Astar.reset(dehash(self.strst))
+            sthval = self.Astar.h[st]
+        self.Astar.reset(self.st)
 
     def run(self):
         while True:
@@ -74,5 +71,5 @@ class RTA_A_star:
 
 
 if __name__ == '__main__':
-    T = RTA_A_star(resolution=0.5, N=100)
+    T = RTA_A_star(resolution=1, N=100)
     T.run()

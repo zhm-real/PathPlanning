@@ -25,9 +25,9 @@ class Lifelong_Astar(object):
         self.env = env(resolution=resolution)
         self.g = g_Space(self)
         self.start, self.goal = getNearest(self.g, self.env.start), getNearest(self.g, self.env.goal)
-        self.x0, self.xt = hash3D(self.start), hash3D(self.goal)
+        self.x0, self.xt = self.start, self.goal
         self.v = g_Space(self) # rhs(.) = g(.) = inf
-        self.v[hash3D(self.start)] = 0 # rhs(x0) = 0
+        self.v[self.start] = 0 # rhs(x0) = 0
         self.h = Heuristic(self.g, self.goal)
         
         self.OPEN = queue.QueuePrior()  # store [point,priority]
@@ -50,26 +50,25 @@ class Lifelong_Astar(object):
 
     def costset(self):
         NodeToChange = set()
-        for strxi in self.CHILDREN.keys():
-            children = self.CHILDREN[strxi]
-            xi = dehash(strxi)
+        for xi in self.CHILDREN.keys():
+            children = self.CHILDREN[xi]
             toUpdate = [self.cost(xj,xi) for xj in children]
-            if strxi in self.COST:
+            if xi in self.COST:
                 # if the old cost not equal to new cost
-                diff = np.not_equal(self.COST[strxi],toUpdate)
+                diff = np.not_equal(self.COST[xi],toUpdate)
                 cd = np.array(children)[diff]
                 for i in cd:
-                    NodeToChange.add(hash3D(i))
-                self.COST[strxi] = toUpdate
+                    NodeToChange.add(tuple(i))
+                self.COST[xi] = toUpdate
             else:
-                self.COST[strxi] = toUpdate
+                self.COST[xi] = toUpdate
         return NodeToChange
 
-    def getCOSTset(self,strxi,xj):
-        ind, children = 0, self.CHILDREN[strxi]
+    def getCOSTset(self,xi,xj):
+        ind, children = 0, self.CHILDREN[xi]
         for i in children:
-            if all(i == xj):
-                return self.COST[strxi][ind]
+            if i == xj:
+                return self.COST[xi][ind]
             ind += 1
             
 
@@ -77,15 +76,14 @@ class Lifelong_Astar(object):
         allchild = []
         resolution = self.env.resolution
         for direc in self.Alldirec:
-            child = np.array(list(map(np.add,x,np.multiply(direc,resolution))))
+            child = tuple(map(np.add,x,np.multiply(direc,resolution)))
             if isinbound(self.env.boundary,child):
                 allchild.append(child)
         return allchild
 
     def getCHILDRENset(self):
-        for strxi in self.g.keys():
-            xi = dehash(strxi)
-            self.CHILDREN[strxi] = self.children(xi)
+        for xi in self.g.keys():
+            self.CHILDREN[xi] = self.children(xi)
         
     def isCollide(self, x, child):
         ray , dist = getRay(x, child) ,  getDist(x, child)
@@ -112,56 +110,54 @@ class Lifelong_Astar(object):
         if collide: return np.inf
         else: return dist
             
-    def key(self,strxi,epsilion = 1):
-        return [min(self.g[strxi],self.v[strxi]) + epsilion*self.h[strxi],min(self.g[strxi],self.v[strxi])]
+    def key(self,xi,epsilion = 1):
+        return [min(self.g[xi],self.v[xi]) + epsilion*self.h[xi],min(self.g[xi],self.v[xi])]
 
     def path(self):
         path = []
-        strx = self.xt
-        strstart = self.x0
+        x = self.xt
+        start = self.x0
         ind = 0
-        while strx != strstart:
-            j = dehash(strx)
-            nei = self.CHILDREN[strx]
-            gset = [self.g[hash3D(xi)] for xi in nei]
+        while x != start:
+            j = x
+            nei = self.CHILDREN[x]
+            gset = [self.g[xi] for xi in nei]
             # collision check and make g cost inf
             for i in range(len(nei)):
                 if self.isCollide(nei[i],j)[0]:
                     gset[i] = np.inf
             parent = nei[np.argmin(gset)]
-            path.append([dehash(strx), parent])
-            strx = hash3D(parent)
+            path.append([x, parent])
+            x = parent
             if ind > 100:
                 break
             ind += 1
         return path
 
     #------------------Lifelong Plannning A* 
-    def UpdateMembership(self,strxi, xi, xparent=None):
-        if strxi != self.x0:
-            self.v[strxi] = min([self.g[hash3D(j)] + self.getCOSTset(strxi,j) for j in self.CHILDREN[strxi]])
-        self.OPEN.check_remove(strxi)
-        if self.g[strxi] != self.v[strxi]:
-            self.OPEN.put(strxi,self.key(strxi))
+    def UpdateMembership(self, xi, xparent=None):
+        if xi != self.x0:
+            self.v[xi] = min([self.g[j] + self.getCOSTset(xi,j) for j in self.CHILDREN[xi]])
+        self.OPEN.check_remove(xi)
+        if self.g[xi] != self.v[xi]:
+            self.OPEN.put(xi,self.key(xi))
     
     def ComputePath(self):
         print('computing path ...')
         while self.key(self.xt) > self.OPEN.top_key() or self.v[self.xt] != self.g[self.xt]:
-            strxi = self.OPEN.get()
-            xi = dehash(strxi)
+            xi = self.OPEN.get()
             # if g > rhs, overconsistent
-            if self.g[strxi] > self.v[strxi]: 
-                self.g[strxi] = self.v[strxi]
+            if self.g[xi] > self.v[xi]: 
+                self.g[xi] = self.v[xi]
                 # add xi to expanded node set
-                if strxi not in self.CLOSED:
+                if xi not in self.CLOSED:
                     self.V.append(xi)
-                self.CLOSED.add(strxi)
+                self.CLOSED.add(xi)
             else: # underconsistent and consistent
-                self.g[strxi] = np.inf
-                self.UpdateMembership(strxi, xi)
-            for xj in self.CHILDREN[strxi]:
-                strxj = hash3D(xj)
-                self.UpdateMembership(strxj, xj)
+                self.g[xi] = np.inf
+                self.UpdateMembership(xi)
+            for xj in self.CHILDREN[xi]:
+                self.UpdateMembership(xj)
 
             # visualization(self)
             self.ind += 1
@@ -176,9 +172,8 @@ class Lifelong_Astar(object):
         self.Path = []
         self.CLOSED = set()
         N = self.costset()
-        for strxi in N:
-            xi = dehash(strxi)
-            self.UpdateMembership(strxi,xi)
+        for xi in N:
+            self.UpdateMembership(xi)
 
 if __name__ == '__main__':
     sta = time.time()

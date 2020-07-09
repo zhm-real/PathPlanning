@@ -13,7 +13,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Search-based Planning/")
 from Search_3D.env3D import env
 from Search_3D import Astar3D
-from Search_3D.utils3D import getDist, getRay, g_Space, Heuristic, getNearest, isCollide, hash3D, dehash, \
+from Search_3D.utils3D import getDist, getRay, g_Space, Heuristic, getNearest, isCollide, \
     cost, obstacleFree
 from Search_3D.plot_util3D import visualization
 import queue
@@ -26,40 +26,37 @@ class LRT_A_star2:
 
     def updateHeuristic(self):
         # Initialize hvalues at infinity
-        for strxi in self.Astar.CLOSED:
-            self.Astar.h[strxi] = np.inf
+        for xi in self.Astar.CLOSED:
+            self.Astar.h[xi] = np.inf
         Diff = True
         while Diff:  # repeat DP until converge
             hvals, lasthvals = [], []
-            for strxi in self.Astar.CLOSED:
-                xi = dehash(strxi)
-                lasthvals.append(self.Astar.h[strxi])
+            for xi in self.Astar.CLOSED:
+                lasthvals.append(self.Astar.h[xi])
                 # update h values if they are smaller
                 Children = self.Astar.children(xi)
-                minfval = min([cost(xi, xj, settings=0) + self.Astar.h[hash3D(xj)] for xj in Children])
+                minfval = min([cost(xi, xj, settings=0) + self.Astar.h[xj] for xj in Children])
                 # h(s) = h(s') if h(s) > c(s,s') + h(s') 
-                if self.Astar.h[strxi] >= minfval:
-                    self.Astar.h[strxi] = minfval
-                hvals.append(self.Astar.h[strxi])
+                if self.Astar.h[xi] >= minfval:
+                    self.Astar.h[xi] = minfval
+                hvals.append(self.Astar.h[xi])
             if lasthvals == hvals: Diff = False
 
     def move(self):
-        strst = self.Astar.x0
-        st = self.Astar.start
+        st = self.Astar.x0
         ind = 0
         # find the lowest path down hill
-        while strst in self.Astar.CLOSED:  # when minchild in CLOSED then continue, when minchild in OPEN, stop
-            # strChildren = self.children(st)
-            strChildren = [hash3D(i) for i in self.Astar.children(st)]
+        while st in self.Astar.CLOSED:  # when minchild in CLOSED then continue, when minchild in OPEN, stop
+            Children = [i for i in self.Astar.children(st)]
             minh, minchild = np.inf, None
-            for child in strChildren:
+            for child in Children:
                 h = self.Astar.h[child]
                 if h <= minh:
-                    minh, minchild = h, dehash(child)
+                    minh, minchild = h, child
             self.path.append([st, minchild])
-            strst, st = hash3D(minchild), minchild
-            for (_, strp) in self.Astar.OPEN.enumerate():
-                if strp == strst:
+            st = minchild
+            for (_, p) in self.Astar.OPEN.enumerate():
+                if p == st:
                     break
             ind += 1
             if ind > 1000:

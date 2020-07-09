@@ -126,9 +126,16 @@ class D_star(object):
         # return self.get_kmin()
         pass
 
-    def path(self):
+    def modify(self, x):
+        while True:
+            kmin = self.process_state()
+            if kmin >= self.h[x]: break
+
+    def path(self, goal = None):
         path = []
-        x = self.x0
+        if not goal:
+            x = self.x0
+        else: x = goal
         start = self.xt
         while x != start:
             path.append([np.array(x), np.array(self.b[x])])
@@ -157,9 +164,9 @@ class D_star(object):
                 s = self.b[self.x0]
             else: 
                 s = self.b[s]
-            self.process_state()
-            self.env.move_block(a=[0,0,0.1],s=0.5,mode='translation')
-            self.Path = self.path()
+            self.modify(s)
+            self.env.move_block(a=[0,0,-0.1],s=0.5,block_to_move=1,mode='translation')
+            self.Path = self.path(s)
             visualization(self)
             self.ind += 1
         

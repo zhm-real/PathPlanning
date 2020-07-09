@@ -73,7 +73,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.D_star">
+  <component name="RunManager" selected="Python.Dstar3D">
     <configuration name="D_star" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Search-based Planning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -210,8 +210,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.D_star" />
         <item itemvalue="Python.Dstar3D" />
+        <item itemvalue="Python.D_star" />
         <item itemvalue="Python.simulation" />
         <item itemvalue="Python.ReedsShepp" />
         <item itemvalue="Python.Field_D_star" />

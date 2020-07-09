@@ -29,6 +29,18 @@ def getAABB(blocks):
         AABB.append(np.array([np.add(i[0:3], -0), np.add(i[3:6], 0)]))  # make AABBs alittle bit of larger
     return AABB
 
+class aabb(object):
+    def __init__(self,AABB):
+        self.P = [(AABB[3] + AABB[0])/2, (AABB[4] + AABB[1])/2, (AABB[5] + AABB[2])/2]# center point
+        self.E = [(AABB[3] - AABB[0])/2, (AABB[4] - AABB[1])/2, (AABB[5] - AABB[2])/2]# extents
+
+def getAABB2(blocks):
+    # used in lineAABB
+    AABB = []
+    for i in blocks:
+        AABB.append(aabb(i))
+    return AABB
+
 def getballs():
     spheres = [[16,2.5,4,2],[10,2.5,1,1]]
     Obstacles = []
@@ -44,7 +56,7 @@ class env():
         self.resolution = resolution
         self.boundary = np.array([xmin, ymin, zmin, xmax, ymax, zmax]) 
         self.blocks = getblocks()
-        self.AABB = getAABB(self.blocks)
+        self.AABB = getAABB2(self.blocks)
         self.balls = getballs()
         self.start = np.array([0.5, 2.5, 5.5])
         self.goal = np.array([19.0, 2.5, 5.5])

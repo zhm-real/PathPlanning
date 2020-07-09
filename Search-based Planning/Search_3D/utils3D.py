@@ -61,13 +61,30 @@ def lineSphere(p0,p1,ball):
         if (k[0] * k[0] + k[1] * k[1] + k[2] * k[2]) <= r**2: return True
     return False
     
-def lineAABB(p0,p1,dist,AABB):
+def lineAABB(p0,p1,dist,aabb):
     #https://www.gamasutra.com/view/feature/131790/simple_intersection_tests_for_games.php?print=1
-    P = [(p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2, (p0[2] + p1[2]) / 2] # mid point
-    D = [(p1[0] - p0[0]) / dist, (p1[1] - p0[1]) / dist, (p1[2] - p0[2]) / dist] # unit direction
-    t = dist / 2 # radius
-    # TODO: implement this
+    mid = [(p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2, (p0[2] + p1[2]) / 2] # mid point
+    I = [(p1[0] - p0[0]) / dist, (p1[1] - p0[1]) / dist, (p1[2] - p0[2]) / dist] # unit direction
+    hl = dist / 2 # radius
+    P = aabb.P#center of the AABB
+    E = aabb.E# extents of AABB
+    T = [P[0] - mid[0], P[1] - mid[1], P[2] - mid[2]]
+    # do any of the principal axis form a separting axis?
+    if abs(T[0]) > (E[0] + hl * abs(I[0])): return False
+    if abs(T[1]) > (E[1] + hl * abs(I[1])): return False
+    if abs(T[2]) > (E[2] + hl * abs(I[2])): return False
+    # I.cross(x axis) ?
+    r = E[1] * abs(I[2]) + E[2] * abs(I[1])
+    if abs(T[1] * I[2] - T[2] * I[1]) > r: return False
+    # I.cross(y axis) ?
+    r = E[0] * abs(I[2]) + E[2] * abs(I[0])
+    if abs(T[2] * I[0] - T[0] * I[2]) > r: return False
+    # I.cross(z axis) ?
+    r = E[0] * abs(I[1]) + E[1] * abs(I[0])
+    if abs(T[0] * I[1] - T[1] * I[0]) > r: return False
 
+    return True
+    
 
 def StateSpace(env, factor = 0):
     boundary = env.boundary
@@ -96,18 +113,17 @@ def g_Space(initparams):
 
 def isCollide(initparams, x, child):
     '''see if line intersects obstacle'''
-    ray , dist = getRay(x, child) ,  getDist(x, child)
-    if not isinbound(initparams.env.boundary,child):
-        return True, dist
+    dist = getDist(x, child)
+    if not isinbound(initparams.env.boundary,child): return True, dist
     for i in initparams.env.AABB:
-        shot = pyrr.geometric_tests.ray_intersect_aabb(ray, i)
-        if shot is not None:
-            dist_wall = getDist(x, shot)
-            if dist_wall <= dist:  # collide
-                return True, dist
+        # shot = pyrr.geometric_tests.ray_intersect_aabb(ray, i)
+        # if shot is not None:
+        #     dist_wall = getDist(x, shot)
+        #     if dist_wall <= dist:  # collide
+        #         return True, dist
+        if lineAABB(x, child, dist, i):return True, dist
     for i in initparams.env.balls:
-        if isinball(i, child):
-            return True, dist
+        if isinball(i, child):return True, dist
         # shot = pyrr.geometric_tests.ray_intersect_sphere(ray, i)
         # if shot != []:
         #     dists_ball = [getDist(x, j) for j in shot]
@@ -154,5 +170,5 @@ def initcost(initparams):
     return c
     
 if __name__ == "__main__":
-    a = [10,2.5,1,1]
-    lineAABB([0,0,0],[1,1,1],)
+    a = '()'
+    print(list(a))

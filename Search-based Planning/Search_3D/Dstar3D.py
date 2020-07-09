@@ -74,17 +74,12 @@ class D_star(object):
         # if empty, returns None and -1
         # it also removes this min value form the OPEN set.
         if self.OPEN:
-            mink = min(self.OPEN, key=self.OPEN.get)
-            minv = self.OPEN[mink]
-            _ = self.OPEN.pop(mink)
-        #     #
-        #     mink = -1
-        #     minv = np.inf
-        #     for v, k in enumerate(self.OPEN):
-        #         if v < minv:
-        #             mink, minv = k, v
-        #     return mink, self.OPEN.pop(mink)
-            return mink, minv
+            mink = -1
+            minv = np.inf
+            for v, k in enumerate(self.OPEN):
+                if v < minv:
+                    mink, minv = k, v
+            return mink, self.OPEN.pop(mink)
         return None, -1
 
     def insert(self, x, h_new):
@@ -167,7 +162,7 @@ class D_star(object):
         while True:
             # TODO: self.x0 =
             self.process_state()
-            visualization(self)
+            # visualization(self)
             if self.tag[self.x0] == "Closed":
                 break
             self.ind += 1
@@ -178,29 +173,29 @@ class D_star(object):
         # plt.show()
         # when the environemnt changes over time
 
-        for i in range(2):
-            self.env.move_block(a=[0, 0, -1], s=0.5, block_to_move=1, mode='translation')
-            visualization(self)
-            s = tuple(self.env.start)
-
-            while s != self.xt:
-                if s == tuple(self.env.start):
-                    sparent = self.b[self.x0]
-                else:
-                    sparent = self.b[s]
-                # self.update_obs()
-
-                if cost(self, s, sparent) == np.inf:
-                    # print(s, "   ", sparent)
-                    self.modify(s)
-                    continue
-                self.ind += 1
-                s = sparent
-            self.Path = self.path()
-            visualization(self)
+        # for i in range(2):
+        #     self.env.move_block(a=[0, 0, -1], s=0.5, block_to_move=1, mode='translation')
+        #     visualization(self)
+        #     s = tuple(self.env.start)
+        #
+        #     while s != self.xt:
+        #         if s == tuple(self.env.start):
+        #             sparent = self.b[self.x0]
+        #         else:
+        #             sparent = self.b[s]
+        #         # self.update_obs()
+        #
+        #         if cost(self, s, sparent) == np.inf:
+        #             # print(s, "   ", sparent)
+        #             self.modify(s)
+        #             continue
+        #         self.ind += 1
+        #         s = sparent
+        #     self.Path = self.path()
+        #     visualization(self)
         plt.show()
 
 
 if __name__ == '__main__':
-    D = D_star(1)
+    D = D_star(0.5)
     D.run()

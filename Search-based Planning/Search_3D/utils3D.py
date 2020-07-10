@@ -120,22 +120,18 @@ def g_Space(initparams):
 def isCollide(initparams, x, child):
     '''see if line intersects obstacle'''
     dist = getDist(x, child)
-    if not isinbound(initparams.env.boundary, child): return True, dist
-    for i in initparams.env.AABB:
-        # shot = pyrr.geometric_tests.ray_intersect_aabb(ray, i)
-        # if shot is not None:
-        #     dist_wall = getDist(x, shot)
-        #     if dist_wall <= dist:  # collide
-        #         return True, dist
-        if lineAABB(x, child, dist, i): return True, dist
+    if not isinbound(initparams.env.boundary, child): 
+        return True, dist
+    for i in range(len(initparams.env.AABB)):
+        # if isinbound(initparams.env.blocks[i], child): 
+        #     return True, dist
+        if lineAABB(x, child, dist, initparams.env.AABB[i]): 
+            return True, dist
     for i in initparams.env.balls:
-        if isinball(i, child): return True, dist
-        # shot = pyrr.geometric_tests.ray_intersect_sphere(ray, i)
-        # if shot != []:
-        #     dists_ball = [getDist(x, j) for j in shot]
-        #     if all(dists_ball <= dist):  # collide
-        #         return True, dist
-        if lineSphere(x, child, i): return True, dist
+        # if isinball(i, child): 
+        #     return True, dist
+        if lineSphere(x, child, i): 
+            return True, dist
     return False, dist
 
 
@@ -145,6 +141,10 @@ def children(initparams, x):
     resolution = initparams.env.resolution
     for direc in initparams.Alldirec:
         child = tuple(map(np.add, x, np.multiply(direc, resolution)))
+        if any([isinball(i ,child) for i in initparams.env.balls]):
+            continue
+        if any([isinbound(i ,child) for i in initparams.env.blocks]):
+            continue
         if isinbound(initparams.env.boundary, child):
             allchild.append(child)
     return allchild

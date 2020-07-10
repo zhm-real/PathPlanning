@@ -135,11 +135,13 @@ class D_star(object):
         xparent = self.b[x]
         if self.tag[x] == 'Closed':
             self.insert(x, self.h[xparent] + cost(self, x, xparent))
-
+            # self.insert(x, self.h[xparent])
     def modify(self, x):
         self.modify_cost(x)
+        self.V = set()
         while True:
             kmin = self.process_state()
+            # visualization(self)
             if kmin >= self.h[x]:
                 break
 
@@ -162,7 +164,7 @@ class D_star(object):
         while True:
             # TODO: self.x0 =
             self.process_state()
-            # visualization(self)
+            visualization(self)
             if self.tag[self.x0] == "Closed":
                 break
             self.ind += 1
@@ -173,29 +175,29 @@ class D_star(object):
         # plt.show()
         # when the environemnt changes over time
 
-        # for i in range(2):
-        #     self.env.move_block(a=[0, 0, -1], s=0.5, block_to_move=1, mode='translation')
-        #     visualization(self)
-        #     s = tuple(self.env.start)
-        #
-        #     while s != self.xt:
-        #         if s == tuple(self.env.start):
-        #             sparent = self.b[self.x0]
-        #         else:
-        #             sparent = self.b[s]
-        #         # self.update_obs()
-        #
-        #         if cost(self, s, sparent) == np.inf:
-        #             # print(s, "   ", sparent)
-        #             self.modify(s)
-        #             continue
-        #         self.ind += 1
-        #         s = sparent
-        #     self.Path = self.path()
-        #     visualization(self)
+        for i in range(2):
+            self.env.move_block(a=[0, 0, -1], s=0.5, block_to_move=1, mode='translation')
+            visualization(self)
+            s = tuple(self.env.start)
+        
+            while s != self.xt:
+                if s == tuple(self.env.start):
+                    sparent = self.b[self.x0]
+                else:
+                    sparent = self.b[s]
+                # self.update_obs()
+        
+                if cost(self, s, sparent) == np.inf:
+                    # print(s, "   ", sparent)
+                    self.modify(s)
+                    continue
+                self.ind += 1
+                s = sparent
+            self.Path = self.path()
+            visualization(self)
         plt.show()
 
 
 if __name__ == '__main__':
-    D = D_star(0.5)
+    D = D_star(0.75)
     D.run()

@@ -66,7 +66,7 @@ class D_star(object):
         # get the minimum of the k val in OPEN
         # -1 if it does not exist
         if self.OPEN:
-            return min([x for x in self.OPEN.values()])
+            return min(self.OPEN.values())
         return -1
 
     def min_state(self):
@@ -74,12 +74,10 @@ class D_star(object):
         # if empty, returns None and -1
         # it also removes this min value form the OPEN set.
         if self.OPEN:
-            mink = -1
-            minv = np.inf
-            for v, k in enumerate(self.OPEN):
-                if v < minv:
-                    mink, minv = k, v
-            return mink, self.OPEN.pop(mink)
+            minvalue = min(self.OPEN.values())
+            for k in self.OPEN.keys():
+                if self.OPEN[k] == minvalue:
+                    return k, self.OPEN.pop(k)
         return None, -1
 
     def insert(self, x, h_new):
@@ -130,12 +128,9 @@ class D_star(object):
         return self.get_kmin()
 
     def modify_cost(self, x):
-        # TODO: implement own function
-        # self.c[x][y] = cval
         xparent = self.b[x]
         if self.tag[x] == 'Closed':
             self.insert(x, self.h[xparent] + cost(self, x, xparent))
-            # self.insert(x, self.h[xparent])
     def modify(self, x):
         self.modify_cost(x)
         self.V = set()
@@ -164,7 +159,7 @@ class D_star(object):
         while True:
             # TODO: self.x0 =
             self.process_state()
-            visualization(self)
+            # visualization(self)
             if self.tag[self.x0] == "Closed":
                 break
             self.ind += 1
@@ -175,20 +170,18 @@ class D_star(object):
         # plt.show()
         # when the environemnt changes over time
 
-        for i in range(2):
-            self.env.move_block(a=[0, 0, -1], s=0.5, block_to_move=1, mode='translation')
-            visualization(self)
+        for i in range(5):
+            self.env.move_block(a=[0.25, 0, 0], s=0.5, block_to_move=1, mode='translation')
+            self.env.move_block(a=[0, 0, -0.25], s=0.5, block_to_move=0, mode='translation')
+            # travel from end to start
             s = tuple(self.env.start)
-        
             while s != self.xt:
                 if s == tuple(self.env.start):
                     sparent = self.b[self.x0]
                 else:
                     sparent = self.b[s]
-                # self.update_obs()
-        
+                # if there is a change of cost, or a collision.
                 if cost(self, s, sparent) == np.inf:
-                    # print(s, "   ", sparent)
                     self.modify(s)
                     continue
                 self.ind += 1
@@ -199,5 +192,5 @@ class D_star(object):
 
 
 if __name__ == '__main__':
-    D = D_star(0.75)
+    D = D_star(1)
     D.run()

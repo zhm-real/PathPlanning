@@ -22,12 +22,12 @@ def getblocks():
         Obstacles.append([j for j in i])
     return np.array(Obstacles)
 
-# def getAABB(blocks):
-#     # used for Pyrr package for detecting collision
-#     AABB = []
-#     for i in blocks:
-#         AABB.append(np.array([np.add(i[0:3], -0), np.add(i[3:6], 0)]))  # make AABBs alittle bit of larger
-#     return AABB
+def getAABB(blocks):
+    # used for Pyrr package for detecting collision
+    AABB = []
+    for i in blocks:
+        AABB.append(np.array([np.add(i[0:3], -0), np.add(i[3:6], 0)]))  # make AABBs alittle bit of larger
+    return AABB
 
 class aabb(object):
     def __init__(self,AABB):
@@ -57,6 +57,7 @@ class env():
         self.boundary = np.array([xmin, ymin, zmin, xmax, ymax, zmax]) 
         self.blocks = getblocks()
         self.AABB = getAABB2(self.blocks)
+        self.AABB_pyrr = getAABB(self.blocks)
         self.balls = getballs()
         self.start = np.array([0.5, 2.5, 5.5])
         self.goal = np.array([19.0, 2.5, 5.5])
@@ -66,6 +67,7 @@ class env():
         newblock = add_block()
         self.blocks = np.vstack([self.blocks,newblock])
         self.AABB = getAABB2(self.blocks)
+        self.AABB_pyrr = getAABB(self.blocks)
 
     def move_start(self, x):
         self.start = x

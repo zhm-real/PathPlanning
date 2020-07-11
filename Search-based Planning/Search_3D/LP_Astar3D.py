@@ -7,7 +7,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Search-based Planning/")
 from Search_3D.env3D import env
 from Search_3D import Astar3D
-from Search_3D.utils3D import getDist, getRay, g_Space, Heuristic, getNearest, isinbound, isinball, hash3D, dehash, \
+from Search_3D.utils3D import getDist, getRay, g_Space, Heuristic, getNearest, isinbound, isinball, \
     cost, obstacleFree
 from Search_3D.plot_util3D import visualization
 import queue
@@ -89,7 +89,7 @@ class Lifelong_Astar(object):
         ray , dist = getRay(x, child) ,  getDist(x, child)
         if not isinbound(self.env.boundary,child):
             return True, dist
-        for i in self.env.AABB:
+        for i in self.env.AABB_pyrr:
             shot = pyrr.geometric_tests.ray_intersect_aabb(ray, i)
             if shot is not None:
                 dist_wall = getDist(x, shot)
@@ -177,7 +177,7 @@ class Lifelong_Astar(object):
 
 if __name__ == '__main__':
     sta = time.time()
-    Astar = Lifelong_Astar(1)
+    Astar = Lifelong_Astar(0.5)
     Astar.ComputePath()
     Astar.change_env()
     Astar.ComputePath()

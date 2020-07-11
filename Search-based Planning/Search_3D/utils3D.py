@@ -30,9 +30,13 @@ def Heuristic(Space, t):
     '''Max norm distance'''
     h = {}
     for k in Space.keys():
-        h[k] = max(abs(np.array([t[0] - k[0], t[1] - k[1], t[2] - k[2]])))
+        h[k] = max([abs(t[0] - k[0]), abs(t[1] - k[1]), abs(t[2] - k[2])])
     return h
 
+def heuristic_fun(initparams, k, t=None):
+    if t is None:
+        t = initparams.goal
+    return max([abs(t[0] - k[0]), abs(t[1] - k[1]), abs(t[2] - k[2])])
 
 def isinbound(i, x):
     if i[0] <= x[0] < i[3] and i[1] <= x[1] < i[4] and i[2] <= x[2] < i[5]:
@@ -117,9 +121,11 @@ def g_Space(initparams):
     return g
 
 
-def isCollide(initparams, x, child):
+def isCollide(initparams, x, child, dist):
     '''see if line intersects obstacle'''
-    dist = getDist(x, child)
+    '''specified for expansion in A* 3D lookup table'''
+    if dist==None:
+        dist = getDist(x, child)
     if not isinbound(initparams.env.boundary, child): 
         return True, dist
     for i in range(len(initparams.env.AABB)):
@@ -147,6 +153,7 @@ def children(initparams, x):
             continue
         if isinbound(initparams.env.boundary, child):
             allchild.append(child)
+            # initparams.Alldirec[direc]*resolution
     return allchild
 
 
@@ -160,8 +167,9 @@ def obstacleFree(initparams, x):
     return True
 
 
-def cost(initparams, i, j, settings=0):
-    collide, dist = isCollide(initparams, i, j)
+def cost(initparams, i, j, dist=None, settings=0):
+    collide, dist = isCollide(initparams, i, j, dist)
+    # collide, dist= False, getDist(i, j)
     if settings == 0:
         if collide:
             return np.inf

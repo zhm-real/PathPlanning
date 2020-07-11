@@ -17,11 +17,15 @@ import time
 
 class Lifelong_Astar(object):
     def __init__(self,resolution = 1):
-        self.Alldirec = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 1, 0], [1, 0, 1], [0, 1, 1], [1, 1, 1],
-                                  [-1, 0, 0], [0, -1, 0], [0, 0, -1], [-1, -1, 0], [-1, 0, -1], [0, -1, -1],
-                                  [-1, -1, -1],
-                                  [1, -1, 0], [-1, 1, 0], [1, 0, -1], [-1, 0, 1], [0, 1, -1], [0, -1, 1],
-                                  [1, -1, -1], [-1, 1, -1], [-1, -1, 1], [1, 1, -1], [1, -1, 1], [-1, 1, 1]])
+        self.Alldirec = {(1, 0, 0): 1, (0, 1, 0): 1, (0, 0, 1): 1, \
+                        (-1, 0, 0): 1, (0, -1, 0): 1, (0, 0, -1): 1, \
+                        (1, 1, 0): np.sqrt(2), (1, 0, 1): np.sqrt(2), (0, 1, 1): np.sqrt(2), \
+                        (-1, -1, 0): np.sqrt(2), (-1, 0, -1): np.sqrt(2), (0, -1, -1): np.sqrt(2), \
+                        (1, -1, 0): np.sqrt(2), (-1, 1, 0): np.sqrt(2), (1, 0, -1): np.sqrt(2), \
+                        (-1, 0, 1): np.sqrt(2), (0, 1, -1): np.sqrt(2), (0, -1, 1): np.sqrt(2), \
+                        (1, 1, 1): np.sqrt(3), (-1, -1, -1) : np.sqrt(3), \
+                        (1, -1, -1): np.sqrt(3), (-1, 1, -1): np.sqrt(3), (-1, -1, 1): np.sqrt(3), \
+                        (1, 1, -1): np.sqrt(3), (1, -1, 1): np.sqrt(3), (-1, 1, 1): np.sqrt(3)}
         self.env = env(resolution=resolution)
         self.g = g_Space(self)
         self.start, self.goal = getNearest(self.g, self.env.start), getNearest(self.g, self.env.goal)
@@ -177,7 +181,7 @@ class Lifelong_Astar(object):
 
 if __name__ == '__main__':
     sta = time.time()
-    Astar = Lifelong_Astar(0.5)
+    Astar = Lifelong_Astar(1)
     Astar.ComputePath()
     Astar.change_env()
     Astar.ComputePath()

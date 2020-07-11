@@ -15,11 +15,15 @@ from Search_3D.plot_util3D import visualization
 
 class D_star(object):
     def __init__(self, resolution=1):
-        self.Alldirec = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 1, 0], [1, 0, 1], [0, 1, 1], [1, 1, 1],
-                                  [-1, 0, 0], [0, -1, 0], [0, 0, -1], [-1, -1, 0], [-1, 0, -1], [0, -1, -1],
-                                  [-1, -1, -1],
-                                  [1, -1, 0], [-1, 1, 0], [1, 0, -1], [-1, 0, 1], [0, 1, -1], [0, -1, 1],
-                                  [1, -1, -1], [-1, 1, -1], [-1, -1, 1], [1, 1, -1], [1, -1, 1], [-1, 1, 1]])
+        self.Alldirec = {(1, 0, 0): 1, (0, 1, 0): 1, (0, 0, 1): 1, \
+                        (-1, 0, 0): 1, (0, -1, 0): 1, (0, 0, -1): 1, \
+                        (1, 1, 0): np.sqrt(2), (1, 0, 1): np.sqrt(2), (0, 1, 1): np.sqrt(2), \
+                        (-1, -1, 0): np.sqrt(2), (-1, 0, -1): np.sqrt(2), (0, -1, -1): np.sqrt(2), \
+                        (1, -1, 0): np.sqrt(2), (-1, 1, 0): np.sqrt(2), (1, 0, -1): np.sqrt(2), \
+                        (-1, 0, 1): np.sqrt(2), (0, 1, -1): np.sqrt(2), (0, -1, 1): np.sqrt(2), \
+                        (1, 1, 1): np.sqrt(3), (-1, -1, -1) : np.sqrt(3), \
+                        (1, -1, -1): np.sqrt(3), (-1, 1, -1): np.sqrt(3), (-1, -1, 1): np.sqrt(3), \
+                        (1, 1, -1): np.sqrt(3), (1, -1, 1): np.sqrt(3), (-1, 1, 1): np.sqrt(3)}
         self.env = env(resolution=resolution)
         self.X = StateSpace(self.env)
         self.x0, self.xt = getNearest(self.X, self.env.start), getNearest(self.X, self.env.goal)
@@ -133,7 +137,6 @@ class D_star(object):
             self.insert(x, self.h[xparent] + cost(self, x, xparent))
     def modify(self, x):
         self.modify_cost(x)
-        self.V = set()
         while True:
             kmin = self.process_state()
             # visualization(self)
@@ -175,6 +178,7 @@ class D_star(object):
             self.env.move_block(a=[0, 0, -0.25], s=0.5, block_to_move=0, mode='translation')
             # travel from end to start
             s = tuple(self.env.start)
+            self.V = set()
             while s != self.xt:
                 if s == tuple(self.env.start):
                     sparent = self.b[self.x0]

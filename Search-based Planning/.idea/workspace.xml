@@ -21,8 +21,6 @@
   <component name="ChangeListManager">
     <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_3D/Dstar3D.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_3D/Dstar3D.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_3D/utils3D.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_3D/utils3D.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -52,7 +50,7 @@
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Sampling-based Planning" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="aDefault" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
@@ -74,7 +72,28 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.Astar3D">
+  <component name="RunManager" selected="Python.Field_D_star">
+    <configuration name="ARAstar" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Search-based Planning" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Search_2D" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/ARAstar.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="Astar3D" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Search-based Planning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -96,7 +115,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="D_star" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="D_star_Lite" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Search-based Planning" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -108,7 +127,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/D_star.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/D_star_Lite.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -117,7 +136,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Dstar3D" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="Field_D_star" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Search-based Planning" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -125,11 +144,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Search_3D" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Search_2D" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_3D/Dstar3D.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/Field_D_star.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -138,7 +157,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="ReedsShepp" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="Potential_Field" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Search-based Planning" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -146,11 +165,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Search_2D/Hybrid_Astar/ReedsSheppPlanner" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Search_2D" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/Hybrid_Astar/ReedsSheppPlanner/ReedsShepp.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/Potential_Field.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -180,42 +199,21 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="simulation" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="Search-based Planning" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Search_2D/Hybrid_Astar/ReedsSheppPlanner" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/Hybrid_Astar/ReedsSheppPlanner/simulation.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <list>
       <item itemvalue="Python.dijkstra" />
-      <item itemvalue="Python.D_star" />
-      <item itemvalue="Python.ReedsShepp" />
-      <item itemvalue="Python.simulation" />
-      <item itemvalue="Python.Dstar3D" />
       <item itemvalue="Python.Astar3D" />
+      <item itemvalue="Python.ARAstar" />
+      <item itemvalue="Python.Potential_Field" />
+      <item itemvalue="Python.D_star_Lite" />
+      <item itemvalue="Python.Field_D_star" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.Field_D_star" />
+        <item itemvalue="Python.D_star_Lite" />
+        <item itemvalue="Python.Potential_Field" />
+        <item itemvalue="Python.ARAstar" />
         <item itemvalue="Python.Astar3D" />
-        <item itemvalue="Python.Dstar3D" />
-        <item itemvalue="Python.D_star" />
-        <item itemvalue="Python.simulation" />
-        <item itemvalue="Python.ReedsShepp" />
       </list>
     </recent_temporary>
   </component>

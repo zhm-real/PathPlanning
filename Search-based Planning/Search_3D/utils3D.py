@@ -141,9 +141,10 @@ def isCollide(initparams, x, child, dist):
     return False, dist
 
 
-def children(initparams, x):
+def children(initparams, x, settings = 0):
     # get the neighbor of a specific state
     allchild = []
+    allcost = []
     resolution = initparams.env.resolution
     for direc in initparams.Alldirec:
         child = tuple(map(np.add, x, np.multiply(direc, resolution)))
@@ -153,8 +154,11 @@ def children(initparams, x):
             continue
         if isinbound(initparams.env.boundary, child):
             allchild.append(child)
-            # initparams.Alldirec[direc]*resolution
-    return allchild
+            allcost.append((child,initparams.Alldirec[direc]*resolution))
+    if settings == 0:
+        return allchild
+    if settings == 1:
+        return allcost
 
 
 def obstacleFree(initparams, x):
@@ -167,15 +171,15 @@ def obstacleFree(initparams, x):
     return True
 
 
-def cost(initparams, i, j, dist=None, settings=0):
+def cost(initparams, i, j, dist=None, settings='Euclidean'):
     collide, dist = isCollide(initparams, i, j, dist)
     # collide, dist= False, getDist(i, j)
-    if settings == 0:
+    if settings == 'Euclidean':
         if collide:
             return np.inf
         else:
             return dist
-    if settings == 1:
+    if settings == 'Manhattan':
         if collide:
             return np.inf
         else:

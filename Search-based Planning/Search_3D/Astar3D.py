@@ -40,7 +40,7 @@ class Weighted_A_star(object):
         self.Path = []
         self.ind = 0
         self.x0, self.xt = self.start, self.goal
-        self.OPEN = queue.QueuePrior()  # store [point,priority]
+        self.OPEN = queue.MinheapPQ()  # store [point,priority]
         self.OPEN.put(self.x0, self.g[self.x0] + heuristic_fun(self,self.x0))  # item, priority = g + h
         self.lastpoint = self.x0
 
@@ -52,7 +52,7 @@ class Weighted_A_star(object):
             if xi not in self.CLOSED:
                 self.V.append(np.array(xi))
             self.CLOSED.add(xi)  # add the point in CLOSED set
-            if xi == xt:
+            if getDist(xi,xt) < self.env.resolution:
                 break
             # visualization(self)
             for xj in children(self,xi):
@@ -80,7 +80,7 @@ class Weighted_A_star(object):
 
         self.lastpoint = xi
         # if the path finding is finished
-        if xt in self.CLOSED:
+        if self.lastpoint in self.CLOSED:
             self.done = True
             self.Path = self.path()
             if N is None:
@@ -113,7 +113,8 @@ class Weighted_A_star(object):
 
 
 if __name__ == '__main__':
+    
+    Astar = Weighted_A_star(1)
     sta = time.time()
-    Astar = Weighted_A_star(0.5)
     Astar.run()
     print(time.time() - sta)

@@ -30,7 +30,7 @@ class RTA_A_star:
         # Initialize hvalues at infinity
         self.localhvals = []
         nodeset, vals = [], []
-        for (_,xi) in self.Astar.OPEN.enumerate():
+        for (_,_,xi) in self.Astar.OPEN.enumerate():
             nodeset.append(xi)
             vals.append(self.Astar.g[xi] + self.Astar.h[xi])
         j, fj = nodeset[np.argmin(vals)], min(vals)

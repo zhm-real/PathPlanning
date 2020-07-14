@@ -30,11 +30,11 @@ class Lifelong_Astar(object):
         self.g = g_Space(self)
         self.start, self.goal = getNearest(self.g, self.env.start), getNearest(self.g, self.env.goal)
         self.x0, self.xt = self.start, self.goal
-        self.v = g_Space(self) # rhs(.) = g(.) = inf
-        self.v[self.start] = 0 # rhs(x0) = 0
+        self.rhs = g_Space(self) # rhs(.) = g(.) = inf
+        self.rhs[self.start] = 0 # rhs(x0) = 0
         self.h = Heuristic(self.g, self.goal)
         
-        self.OPEN = queue.QueuePrior()  # store [point,priority]
+        self.OPEN = queue.MinheapPQ()  # store [point,priority]
         self.OPEN.put(self.x0, [self.h[self.x0],0])
         self.CLOSED = set()
 
@@ -115,7 +115,7 @@ class Lifelong_Astar(object):
         else: return dist
             
     def key(self,xi,epsilion = 1):
-        return [min(self.g[xi],self.v[xi]) + epsilion*self.h[xi],min(self.g[xi],self.v[xi])]
+        return [min(self.g[xi],self.rhs[xi]) + epsilion*self.h[xi],min(self.g[xi],self.rhs[xi])]
 
     def path(self):
         path = []
@@ -141,18 +141,18 @@ class Lifelong_Astar(object):
     #------------------Lifelong Plannning A* 
     def UpdateMembership(self, xi, xparent=None):
         if xi != self.x0:
-            self.v[xi] = min([self.g[j] + self.getCOSTset(xi,j) for j in self.CHILDREN[xi]])
+            self.rhs[xi] = min([self.g[j] + self.getCOSTset(xi,j) for j in self.CHILDREN[xi]])
         self.OPEN.check_remove(xi)
-        if self.g[xi] != self.v[xi]:
+        if self.g[xi] != self.rhs[xi]:
             self.OPEN.put(xi,self.key(xi))
     
     def ComputePath(self):
         print('computing path ...')
-        while self.key(self.xt) > self.OPEN.top_key() or self.v[self.xt] != self.g[self.xt]:
+        while self.key(self.xt) > self.OPEN.top_key() or self.rhs[self.xt] != self.g[self.xt]:
             xi = self.OPEN.get()
             # if g > rhs, overconsistent
-            if self.g[xi] > self.v[xi]: 
-                self.g[xi] = self.v[xi]
+            if self.g[xi] > self.rhs[xi]: 
+                self.g[xi] = self.rhs[xi]
                 # add xi to expanded node set
                 if xi not in self.CLOSED:
                     self.V.append(xi)
@@ -182,8 +182,10 @@ class Lifelong_Astar(object):
 if __name__ == '__main__':
     sta = time.time()
     Astar = Lifelong_Astar(1)
+    
     Astar.ComputePath()
     Astar.change_env()
     Astar.ComputePath()
     plt.show()
+    
     print(time.time() - sta)

@@ -32,8 +32,8 @@ class Weighted_A_star(object):
         self.env = env(resolution = resolution)
         self.start, self.goal = tuple(self.env.start), tuple(self.env.goal)
         self.g = {self.start:0,self.goal:0}
-        self.OPEN1 = queue.QueuePrior() # store [point,priority]
-        self.OPEN2 = queue.QueuePrior()
+        self.OPEN1 = queue.MinheapPQ() # store [point,priority]
+        self.OPEN2 = queue.MinheapPQ()
         self.Parent1, self.Parent2 = {}, {}
         self.CLOSED1, self.CLOSED2 = set(), set()
         self.V = []
@@ -76,10 +76,7 @@ class Weighted_A_star(object):
                     if a < self.g[xj]:
                         self.g[xj] = a
                         self.Parent1[xj] = xi
-                        if (a, xj) in self.OPEN1.enumerate():
-                            self.OPEN1.put(xj, a+1*heuristic_fun(self,xj,self.goal))
-                        else:
-                            self.OPEN1.put(xj, a+1*heuristic_fun(self,xj,self.goal))
+                        self.OPEN1.put(xj, a+1*heuristic_fun(self,xj,self.goal))
             if conf == 2:
                 if xj not in self.CLOSED2:
                     if xj not in self.g:
@@ -91,10 +88,7 @@ class Weighted_A_star(object):
                     if a < self.g[xj]:
                         self.g[xj] = a
                         self.Parent2[xj] = xi
-                        if (a, xj) in self.OPEN2.enumerate():
-                            self.OPEN2.put(xj, a+1*heuristic_fun(self,xj,self.start))
-                        else:
-                            self.OPEN2.put(xj, a+1*heuristic_fun(self,xj,self.start))
+                        self.OPEN2.put(xj, a+1*heuristic_fun(self,xj,self.start))
             
     def path(self):
         # TODO: fix path

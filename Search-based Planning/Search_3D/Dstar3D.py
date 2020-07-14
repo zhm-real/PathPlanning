@@ -27,44 +27,23 @@ class D_star(object):
         self.env = env(resolution=resolution)
         self.X = StateSpace(self.env)
         self.x0, self.xt = getNearest(self.X, self.env.start), getNearest(self.X, self.env.goal)
+        # self.x0, self.xt = tuple(self.env.start), tuple(self.env.goal)
         self.b = defaultdict(lambda: defaultdict(dict))  # back pointers every state has one except xt.
         self.OPEN = {}  # OPEN list, here use a hashmap implementation. hash is point, key is value
-        self.h = self.initH()  # estimate from a point to the end point
-        self.tag = self.initTag()  # set all states to new
+        self.h = {}  # estimate from a point to the end point
+        self.tag = {}  # set all states to new
         self.V = set()  # vertice in closed
-        # initialize cost set
-        # self.c = initcost(self)
         # for visualization
         self.ind = 0
         self.Path = []
         self.done = False
         self.Obstaclemap = {}
 
-    def update_obs(self):
-        for xi in self.X:
-            print('xi')
-            self.Obstaclemap[xi] = False
-            for aabb in self.env.blocks:
-                self.Obstaclemap[xi] = isinbound(aabb, xi)
-            if self.Obstaclemap[xi] == False:
-                for ball in self.env.balls:
-                    self.Obstaclemap[xi] = isinball(ball, xi)
-
-    def initH(self):
-        # h set, all initialzed h vals are 0 for all states.
-        h = {}
-        for xi in self.X:
-            h[xi] = 0
-        return h
-
-    def initTag(self):
-        # tag , New point (never been in the OPEN list)
-        #       Open point ( currently in OPEN )
-        #       Closed (currently in CLOSED)
-        t = {}
-        for xi in self.X:
-            t[xi] = 'New'
-        return t
+    def checkState(self, y):
+        if y not in self.h:
+            self.h[y] = 0
+        if y not in self.tag:
+            self.tag[y] = 'New'
 
     def get_kmin(self):
         # get the minimum of the k val in OPEN
@@ -97,18 +76,26 @@ class D_star(object):
         self.h[x], self.tag[x] = h_new, 'Open'
 
     def process_state(self):
+        # main function of the D star algorithm, perform the process state 
+        # around the old path when needed.
         x, kold = self.min_state()
         self.tag[x] = 'Closed'
         self.V.add(x)
         if x is None:
             return -1
+        # check if 1st timer x
+        self.checkState(x)
         if kold < self.h[x]:  # raised states
             for y in children(self, x):
+                # check y
+                self.checkState(y)
                 a = self.h[y] + cost(self, y, x)
                 if self.h[y] <= kold and self.h[x] > a:
                     self.b[x], self.h[x] = y, a
         if kold == self.h[x]:  # lower
             for y in children(self, x):
+                # check y
+                self.checkState(y)
                 bb = self.h[x] + cost(self, x, y)
                 if self.tag[y] == 'New' or \
                         (self.b[y] == x and self.h[y] != bb) or \
@@ -117,6 +104,8 @@ class D_star(object):
                     self.insert(y, bb)
         else:
             for y in children(self, x):
+                 # check y
+                self.checkState(y)
                 bb = self.h[x] + cost(self, x, y)
                 if self.tag[y] == 'New' or \
                         (self.b[y] == x and self.h[y] != bb):
@@ -135,6 +124,7 @@ class D_star(object):
         xparent = self.b[x]
         if self.tag[x] == 'Closed':
             self.insert(x, self.h[xparent] + cost(self, x, xparent))
+
     def modify(self, x):
         self.modify_cost(x)
         while True:
@@ -158,6 +148,7 @@ class D_star(object):
     def run(self):
         # put G (ending state) into the OPEN list
         self.OPEN[self.xt] = 0
+        self.tag[self.x0] = 'New'
         # first run
         while True:
             # TODO: self.x0 =
@@ -178,7 +169,7 @@ class D_star(object):
             self.env.move_block(a=[0, 0, -0.25], s=0.5, block_to_move=0, mode='translation')
             # travel from end to start
             s = tuple(self.env.start)
-            self.V = set()
+            # self.V = set()
             while s != self.xt:
                 if s == tuple(self.env.start):
                     sparent = self.b[self.x0]
@@ -196,5 +187,5 @@ class D_star(object):
 
 
 if __name__ == '__main__':
-    D = D_star(1)
+    D = D_star(0.75)
     D.run()

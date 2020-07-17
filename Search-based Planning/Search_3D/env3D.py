@@ -77,7 +77,7 @@ class env():
         # G is an orthorgonal transform in R3*3, in the Galilean transformation
         # (x',t') = (x + tv, t) is uniform transformation
         if mode == 'uniform':
-            ori = self.blocks[block_to_move]
+            ori = np.array(self.blocks[block_to_move])
             self.blocks[block_to_move] = \
                 np.array([ori[0] + self.t * v[0],\
                     ori[1] + self.t * v[1],\
@@ -91,10 +91,15 @@ class env():
             self.AABB[block_to_move].P[1] + self.t * v[1], \
             self.AABB[block_to_move].P[2] + self.t * v[2]]
             # return a range of block that the block might moved
-            return self.blocks[block_to_move] + self.t * 2* max([abs(i) for i in v]) 
+            a = self.blocks[block_to_move]
+            # return np.array([a[0] - self.resolution, a[1] - self.resolution, a[2] - self.resolution, \
+            #                 a[3] + self.resolution, a[4] + self.resolution, a[5] + self.resolution]). \
+                    # np.array([ori[0] - self.resolution, ori[1] - self.resolution, ori[2] - self.resolution, \
+                    #         ori[3] + self.resolution, ori[4] + self.resolution, ori[5] + self.resolution])
+            return a,ori
         # (x',t') = (x + a, t + s) is a translation
         if mode == 'translation':
-            ori = self.blocks[block_to_move]
+            ori = np.array(self.blocks[block_to_move])
             self.blocks[block_to_move] = \
                 np.array([ori[0] + a[0],\
                     ori[1] + a[1],\
@@ -109,7 +114,12 @@ class env():
             self.AABB[block_to_move].P[2] + a[2]]
             self.t += s
             # return a range of block that the block might moved
-            return self.blocks[block_to_move] + 2* max([abs(i) for i in a]) 
+            a = self.blocks[block_to_move]
+            return np.array([a[0] - self.resolution, a[1] - self.resolution, a[2] - self.resolution, \
+                            a[3] + self.resolution, a[4] + self.resolution, a[5] + self.resolution]), \
+                    np.array([ori[0] - self.resolution, ori[1] - self.resolution, ori[2] - self.resolution, \
+                            ori[3] + self.resolution, ori[4] + self.resolution, ori[5] + self.resolution])
+            # return a,ori
         # (x',t') = (Gx, t)
         if mode == 'rotation': # this makes AABB become a OBB
             #TODO: implement this with rotation matrix

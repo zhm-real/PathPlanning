@@ -11,7 +11,7 @@ from Search_3D import Astar3D
 from Search_3D.utils3D import getDist, getRay, g_Space, Heuristic, heuristic_fun, getNearest, isinbound, isinball, \
     isCollide, cost, obstacleFree, children, StateSpace
 from Search_3D.plot_util3D import visualization
-import queue
+from Search_3D import queue
 import pyrr
 import time
 
@@ -23,15 +23,16 @@ class D_star_Lite(object):
                         (1, 1, 0): np.sqrt(2), (1, 0, 1): np.sqrt(2), (0, 1, 1): np.sqrt(2), \
                         (-1, -1, 0): np.sqrt(2), (-1, 0, -1): np.sqrt(2), (0, -1, -1): np.sqrt(2), \
                         (1, -1, 0): np.sqrt(2), (-1, 1, 0): np.sqrt(2), (1, 0, -1): np.sqrt(2), \
-                        (-1, 0, 1): np.sqrt(2), (0, 1, -1): np.sqrt(2), (0, -1, 1): np.sqrt(2), \
-                        (1, 1, 1): np.sqrt(3), (-1, -1, -1) : np.sqrt(3), \
-                        (1, -1, -1): np.sqrt(3), (-1, 1, -1): np.sqrt(3), (-1, -1, 1): np.sqrt(3), \
-                        (1, 1, -1): np.sqrt(3), (1, -1, 1): np.sqrt(3), (-1, 1, 1): np.sqrt(3)}
+                        (-1, 0, 1): np.sqrt(2), (0, 1, -1): np.sqrt(2), (0, -1, 1): np.sqrt(2)}
+                        # (1, 1, 1): np.sqrt(3), (-1, -1, -1) : np.sqrt(3), \
+                        # (1, -1, -1): np.sqrt(3), (-1, 1, -1): np.sqrt(3), (-1, -1, 1): np.sqrt(3), \
+                        # (1, 1, -1): np.sqrt(3), (1, -1, 1): np.sqrt(3), (-1, 1, 1): np.sqrt(3)}
         self.env = env(resolution=resolution)
-        # self.X = StateSpace(self.env)
-        # self.x0, self.xt = getNearest(self.X, self.env.start), getNearest(self.X, self.env.goal)
-        self.x0, self.xt = tuple(self.env.start), tuple(self.env.goal)
-        self.OPEN = queue.QueuePrior()
+        self.X = StateSpace(self.env)
+        self.x0, self.xt = getNearest(self.X, self.env.start), getNearest(self.X, self.env.goal)
+        #self.x0, self.xt = tuple(self.env.start), tuple(self.env.goal)
+        # self.OPEN = queue.QueuePrior()
+        self.OPEN = queue.MinheapPQ()
         self.km = 0
         self.g = {} # all g initialized at inf
         self.rhs = {self.xt:0} # rhs(x0) = 0
@@ -60,37 +61,30 @@ class D_star_Lite(object):
             self.COST[xi][xj] = cost(self, xi, xj)
         return self.COST[xi][xj]
 
-    def updatecost(self,range_changed=None):
-        # TODO: update cost when the environment is changed
-        # chaged nodes
+    def updatecost(self,range_changed=None, new=None, old=None):
+        # scan graph for changed cost, if cost is changed update it
         CHANGED = set()
-        for xi in self.CLOSED:
-            oldchildren = self.CHILDREN[xi]# A
-            # if you don't know where the change occured:
-            if range_changed is None:
-                newchildren = set(children(self,xi))# B
-                added = newchildren.difference(oldchildren)# B-A
-                removed = oldchildren.difference(newchildren)# A-B
-                self.CHILDREN[xi] = newchildren
-                if added or removed:
-                    CHANGED.add(xi)
-                for xj in removed:
-                    self.COST[xi][xj] = cost(self, xi, xj)  
-                for xj in added:
-                    self.COST[xi][xj] = cost(self, xi, xj)    
-            # if you do know where on the map changed, only update those changed around that area
-            else: 
-                if isinbound(range_changed, xi):
+        for xi in self.X:
+            if xi in self.CHILDREN:
+                oldchildren = self.CHILDREN[xi]# A
+                if isinbound(old, xi) or isinbound(new, xi):
                     newchildren = set(children(self,xi))# B
-                    added = newchildren.difference(oldchildren)# B-A
-                    removed = oldchildren.difference(newchildren)# A-B
-                    self.CHILDREN[xi] = newchildren
-                    if added or removed:
-                        CHANGED.add(xi)
+                    removed = oldchildren.difference(newchildren)
+                    intersection = oldchildren.intersection(newchildren)
+                    added = newchildren.difference(oldchildren)
                     for xj in removed:
-                        self.COST[xi][xj] = cost(self, xi, xj)  
-                    for xj in added:
-                        self.COST[xi][xj] = cost(self, xi, xj)         
+                        self.COST[xi][xj] = cost(self, xi, xj)
+                    for xj in intersection.union(added):
+                        self.COST[xi][xj] = cost(self, xi, xj)
+                    CHANGED.add(xi)
+                    self.CHILDREN[xi] = newchildren
+            else: 
+                if isinbound(old, xi) or isinbound(new, xi):
+                    CHANGED.add(xi)
+                    children_added = set(children(self,xi))
+                    self.CHILDREN[xi] = children_added
+                    for xj in children_added:
+                        self.COST[xi][xj] = cost(self, xi, xj)
         return CHANGED
 
     def getchildren(self, xi):
@@ -98,10 +92,6 @@ class D_star_Lite(object):
             allchild = children(self, xi)
             self.CHILDREN[xi] = set(allchild)
         return self.CHILDREN[xi]
-
-    def updatechildren(self):
-        # TODO: update children set when the environment is changed
-        pass
 
     def geth(self, xi):
         # when the heurisitic is first calculated
@@ -126,6 +116,7 @@ class D_star_Lite(object):
     def UpdateVertex(self, u):
         # if still in the hunt
         if not getDist(self.xt, u) <= self.env.resolution: # originally: u != s_goal
+            cdren = self.getchildren(u)
             self.rhs[u] = min([self.getcost(s, u) + self.getg(s) for s in self.getchildren(u)])
         # if u is in OPEN, remove it
         self.OPEN.check_remove(u)
@@ -139,9 +130,10 @@ class D_star_Lite(object):
             u = self.OPEN.get()
             self.V.add(u)
             self.CLOSED.add(u)
-            if getDist(self.x0, u) <= self.env.resolution:
-                break
-            # visualization(self)
+            # if not self.done: # first time running, we need to stop on this condition
+            #     if getDist(self.x0,u) < 1.5*self.env.resolution:
+            #         self.x0 = u
+            #         break
             if kold < self.CalculateKey(u):
                 self.OPEN.put(u, self.CalculateKey(u))
             if self.getg(u) > self.getrhs(u):
@@ -155,7 +147,6 @@ class D_star_Lite(object):
 
     def main(self):
         s_last = self.x0
-        s_start = self.x0
         print('first run ...')
         self.ComputeShortestPath()
         self.Path = self.path()
@@ -163,38 +154,48 @@ class D_star_Lite(object):
         visualization(self)
         plt.pause(0.5)
         # plt.show()
-        # change the environment 
         print('running with map update ...')
-        for i in range(100):
-            range_changed1 = self.env.move_block(a=[0, 0, -0.1], s=0.5, block_to_move=0, mode='translation')
-            range_changed2 = self.env.move_block(a=[0.1, 0, 0], s=0.5, block_to_move=1, mode='translation')
-            range_changed3 = self.env.move_block(a=[0, 0.1, 0], s=0.5, block_to_move=2, mode='translation')
-            #range_changed = self.env.move_block(a=[0.1, 0, 0], s=0.5, block_to_move=1, mode='translation')
-                #   update the edge cost of c(u,v) 
-            CHANGED1 = self.updatecost(range_changed1)
-            CHANGED2 = self.updatecost(range_changed2)
-            CHANGED3 = self.updatecost(range_changed3)
-            CHANGED2 = CHANGED2.union(CHANGED1)
-            CHANGED = CHANGED3.union(CHANGED2)
-            while getDist(s_start, self.xt) > 2*self.env.resolution:
-                if s_start == self.x0:
-                    children = [i for i in self.CLOSED if getDist(s_start, i) <= self.env.resolution*np.sqrt(3)]
-                else:
-                    children = list(self.CHILDREN[s_start])
-                s_start = children[np.argmin([cost(self,s_start,s_p) + self.g[s_p] for s_p in children])]
+        t = 0 # count time
+        ischanged = False
+        while getDist(self.x0, self.xt) > 2*self.env.resolution:
+            #---------------------------------- at 5th node, the environment is changed and cost is updated
+            if t == 1: 
+                # new1,old1 = self.env.move_block(a=[0, 0, -2], s=0.5, block_to_move=0, mode='translation')
+                new1,old1 = self.env.move_block(a=[0, 0, -2], s=0.5, block_to_move=0, mode='translation')
+                ischanged = True
+                self.Path = []
+                visualization(self)
+            # if t == 5: 
+            #     new1,old1 = self.env.move_block(a=[0, 0, -1], s=0.5, block_to_move=1, mode='translation')
+            #     ischanged = True
+            #----------------------------------- traverse the route as originally planned
+            if t == 0:
+                children_new = [i for i in self.CLOSED if getDist(self.x0, i) <= self.env.resolution*np.sqrt(3)]
+            else:
+                children_new = list(children(self,self.x0))
+            self.x0 = children_new[np.argmin([self.getcost(self.x0,s_p) + self.getg(s_p) for s_p in children_new])]
+            # TODO add the moving robot position codes
+            self.env.start = self.x0
+            # ---------------------------------- if any cost changed, update km, reset slast, 
+            #                                    for all directed edgees (u,v) with  chaged edge costs, 
+            #                                    update the edge cost c(u,v) and update vertex u. then replan
+            if ischanged:
+                self.km += heuristic_fun(self, self.x0, s_last)
+                s_last = self.x0
+                CHANGED = self.updatecost(True, new1, old1)
+                self.V = set()
+                for u in CHANGED:
+                    self.UpdateVertex(u)
+                self.ComputeShortestPath()
                 
-                #   for all directed edges (u,v) with changed costs
-                if CHANGED:
-                    self.km = self.km + heuristic_fun(self, s_start, s_last)
-                    for u in CHANGED:
-                        self.UpdateVertex(u)
-                    s_last = s_start
-                    self.ComputeShortestPath()
-            self.Path = self.path()
+                ischanged = False
+            # self.Path = self.path(s_start)
+            self.Path = self.path(self.x0)
             visualization(self)
+            t += 1
         plt.show()
 
-    def path(self):
+    def path(self, s_start=None):
         '''After ComputeShortestPath()
         returns, one can then follow a shortest path from s_start to
         s_goal by always moving from the current vertex s, starting
@@ -202,14 +203,17 @@ class D_star_Lite(object):
         until s_goal is reached (ties can be broken arbitrarily).'''
         path = []
         s_goal = self.xt
-        s = self.x0
+        if not s_start:
+            s = self.x0
+        else:
+            s= s_start
         ind = 0
         while s != s_goal:
             if s == self.x0:
                 children = [i for i in self.CLOSED if getDist(s, i) <= self.env.resolution*np.sqrt(3)]
             else: 
                 children = list(self.CHILDREN[s])
-            snext = children[np.argmin([cost(self,s,s_p) + self.g[s_p] for s_p in children])]
+            snext = children[np.argmin([cost(self,s,s_p) + self.getg(s_p) for s_p in children])]
             path.append([s, snext])
             s = snext
             if ind > 100:
@@ -219,11 +223,8 @@ class D_star_Lite(object):
 
 if __name__ == '__main__':
     
-    D_lite = D_star_Lite(1)
-    #D_lite.ComputeShortestPath()
+    D_lite = D_star_Lite(0.5)
     a = time.time()
-    #range_changed = D_lite.env.move_block(a=[0, 0, 1], s=0.5, block_to_move=1, mode='translation')
-    #CHANGED = D_lite.updatecost(range_changed)
     D_lite.main()
     print('used time (s) is ' + str(time.time() - a))
             

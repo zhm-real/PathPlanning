@@ -159,12 +159,12 @@ class D_star_Lite(object):
         ischanged = False
         while getDist(self.x0, self.xt) > 2*self.env.resolution:
             #---------------------------------- at 5th node, the environment is changed and cost is updated
-            if t == 1: 
+            if t % 2 == 0: 
                 # new1,old1 = self.env.move_block(a=[0, 0, -2], s=0.5, block_to_move=0, mode='translation')
-                new1,old1 = self.env.move_block(a=[0, 0, -2], s=0.5, block_to_move=0, mode='translation')
+                new1,old1 = self.env.move_block(a=[0, 0, -0.1], s=0.5, block_to_move=0, mode='translation')
+                #new2,old2 = self.env.move_block(a=[-0.3, 0, -0.1], s=0.5, block_to_move=1, mode='translation')
                 ischanged = True
                 self.Path = []
-                visualization(self)
             # if t == 5: 
             #     new1,old1 = self.env.move_block(a=[0, 0, -1], s=0.5, block_to_move=1, mode='translation')
             #     ischanged = True
@@ -183,6 +183,8 @@ class D_star_Lite(object):
                 self.km += heuristic_fun(self, self.x0, s_last)
                 s_last = self.x0
                 CHANGED = self.updatecost(True, new1, old1)
+                #CHANGED2 = self.updatecost(True, new2, old2)
+                #CHANGED = CHANGED.union(CHANGED2)
                 self.V = set()
                 for u in CHANGED:
                     self.UpdateVertex(u)

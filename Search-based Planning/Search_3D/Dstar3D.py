@@ -187,5 +187,5 @@ class D_star(object):
 
 
 if __name__ == '__main__':
-    D = D_star(0.5)
+    D = D_star(1)
     D.run()

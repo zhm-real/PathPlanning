@@ -61,7 +61,8 @@ def visualization(initparams):
         # edges = E.get_edge()
         # generate axis objects
         ax = plt.subplot(111, projection='3d')
-        ax.view_init(elev=0.+ 0.03*initparams.ind/(2*np.pi), azim=90 + 0.03*initparams.ind/(2*np.pi))
+        #ax.view_init(elev=0.+ 0.03*initparams.ind/(2*np.pi), azim=90 + 0.03*initparams.ind/(2*np.pi))
+        ax.view_init(elev=0., azim=90)
         ax.clear()
         # drawing objects
         draw_Spheres(ax, initparams.env.balls)
@@ -69,7 +70,8 @@ def visualization(initparams):
         draw_block_list(ax, np.array([initparams.env.boundary]),alpha=0)
         # draw_line(ax,edges,visibility=0.25)
         draw_line(ax,Path,color='r')
-        ax.scatter3D(V[:, 0], V[:, 1], V[:, 2], s=2, color='g',)
+        if len(V) > 0:
+            ax.scatter3D(V[:, 0], V[:, 1], V[:, 2], s=2, color='g',)
         ax.plot(start[0:1], start[1:2], start[2:], 'go', markersize=7, markeredgecolor='k')
         ax.plot(goal[0:1], goal[1:2], goal[2:], 'ro', markersize=7, markeredgecolor='k') 
         # adjust the aspect ratio

@@ -71,6 +71,7 @@ def lineSphere(p0, p1, ball):
 
 def lineAABB(p0, p1, dist, aabb):
     # https://www.gamasutra.com/view/feature/131790/simple_intersection_tests_for_games.php?print=1
+    # aabb should have the attributes of P, E as center point and extents
     mid = [(p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2, (p0[2] + p1[2]) / 2]  # mid point
     I = [(p1[0] - p0[0]) / dist, (p1[1] - p0[1]) / dist, (p1[2] - p0[2]) / dist]  # unit direction
     hl = dist / 2  # radius
@@ -92,6 +93,113 @@ def lineAABB(p0, p1, dist, aabb):
     if abs(T[0] * I[1] - T[1] * I[0]) > r: return False
 
     return True
+
+def OBBOBB(obb1, obb2):
+    # https://www.gamasutra.com/view/feature/131790/simple_intersection_tests_for_games.php?print=1
+    # each obb class should contain attributes:
+    # E: extents along three principle axis in R3
+    # P: position of the center axis in R3
+    # O: orthornormal basis in R3*3
+    a , b = np.array(obb1.E), np.array(obb2.E)
+    Pa, Pb = np.array(obb1.P), np.array(obb2.P)
+    A , B = np.array(obb1.O), np.array(obb2.O)
+    # check if two oriented bounding boxes overlap
+    # translation, in parent frame
+    v = Pb - Pa
+    # translation, in A's frame
+    # vdotA[0],vdotA[1],vdotA[2]
+    T = [v@B[0], v@B[1], v@B[2]]
+    R = np.zeros([3,3])
+    for i in range(0,3):
+        for k in range(0,3):
+            R[i][k] = A[i]@B[k]
+            # use separating axis thm for all 15 separating axes
+            # if the separating axis cannot be found, then overlap
+            # A's basis vector
+            for i in range(0,3):
+                ra = a[i]
+                rb = b[0]*abs(R[i][0]) + b[1]*abs(R[i][1]) + b[2]*abs(R[i][2])
+                t = abs(T[i])
+                if t > ra + rb:
+                    return False
+            for k in range(0,3):
+                ra = a[0]*abs(R[0][k]) + a[1]*abs(R[1][k]) + a[2]*abs(R[2][k])
+                rb = b[k]
+                t = abs(T[0]*R[0][k] + T[1]*R[1][k] + T[2]*R[2][k])
+                if t > ra + rb:
+                    return False
+
+            #9 cross products
+            #L = A0 x B0
+            ra = a[1]*abs(R[2][0]) + a[2]*abs(R[1][0])
+            rb = b[1]*abs(R[0][2]) + b[2]*abs(R[0][1])
+            t = abs(T[2]*R[1][0] - T[1]*R[2][0])
+            if t > ra + rb:
+                return False
+
+            #L = A0 x B1
+            ra = a[1]*abs(R[2][1]) + a[2]*abs(R[1][1])
+            rb = b[0]*abs(R[0][2]) + b[2]*abs(R[0][0])
+            t = abs(T[2]*R[1][1] - T[1]*R[2][1])
+            if t > ra + rb:
+                return False
+
+            #L = A0 x B2
+            ra = a[1]*abs(R[2][2]) + a[2]*abs(R[1][2])
+            rb = b[0]*abs(R[0][1]) + b[1]*abs(R[0][0])
+
+            t = abs(T[2]*R[1][2] - T[1]*R[2][2])
+            if t > ra + rb:
+                return False
+
+            #L = A1 x B0
+            ra = a[0]*abs(R[2][0]) + a[2]*abs(R[0][0])
+            rb = b[1]*abs(R[1][2]) + b[2]*abs(R[1][1])
+
+            t = abs( T[0]*R[2][0] - T[2]*R[0][0] )
+            if t > ra + rb:
+                return False
+
+            # L = A1 x B1
+            ra = a[0]*abs(R[2][1]) + a[2]*abs(R[0][1])
+            rb = b[0]*abs(R[1][2]) + b[2]*abs(R[1][0])
+            t = abs( T[0]*R[2][1] - T[2]*R[0][1] )
+            if t > ra + rb:
+                return False
+
+            #L = A1 x B2
+            ra = a[0]*abs(R[2][2]) + a[2]*abs(R[0][2])
+            rb = b[0]*abs(R[1][1]) + b[1]*abs(R[1][0])
+            t = abs( T[0]*R[2][2] - T[2]*R[0][2] )
+            if t > ra + rb:
+                return False
+
+            #L = A2 x B0
+            ra = a[0]*abs(R[1][0]) + a[1]*abs(R[0][0])
+            rb = b[1]*abs(R[2][2]) + b[2]*abs(R[2][1])
+            t = abs( T[1]*R[0][0] - T[0]*R[1][0] )
+            if t > ra + rb:
+                return False
+
+            # L = A2 x B1
+            ra = a[0]*abs(R[1][1]) + a[1]*abs(R[0][1])
+            rb = b[0] *abs(R[2][2]) + b[2]*abs(R[2][0])
+            t = abs( T[1]*R[0][1] - T[0]*R[1][1] )
+            if t > ra + rb:
+                return False
+
+            #L = A2 x B2
+            ra = a[0]*abs(R[1][2]) + a[1]*abs(R[0][2])
+            rb = b[0]*abs(R[2][1]) + b[1]*abs(R[2][0])
+            t = abs( T[1]*R[0][2] - T[0]*R[1][2] )
+            if t > ra + rb:
+                return False
+
+            # no separating axis found,
+            # the two boxes overlap 
+            return True
+    
+
 
 
 def StateSpace(env, factor=0):
@@ -195,7 +303,13 @@ def initcost(initparams):
             c[xi][child] = cost(initparams, xi, child)
     return c
 
+class obb(object):
+    def __init__(self, P, E, O):
+        self.P = P
+        self.E = E
+        self.O = O
 
 if __name__ == "__main__":
-    a = '()'
-    print(list(a))
+    obb1 = obb([0,0,0],[1,1,1],[[1,0,0],[0,1,0],[0,0,1]])
+    obb2 = obb([1,1,0],[1,1,1],[[1/np.sqrt(3)*1,1/np.sqrt(3)*1,1/np.sqrt(3)*1],[np.sqrt(3/2)*(-1/3),np.sqrt(3/2)*2/3,np.sqrt(3/2)*(-1/3)],[np.sqrt(1/8)*(-2),0,np.sqrt(1/8)*2]])
+    print(OBBOBB(obb1, obb2))

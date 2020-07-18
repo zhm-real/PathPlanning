@@ -52,8 +52,11 @@ def isinball(i, x):
     return False
 
 def isinobb(i, x):
-    pt = i.O.T@np.array(x) # transform the point from {W} to {body}
-    minx,miny,minz,maxx,maxy,maxz = i.P[0] - i.E[0],i.P[1] - i.E[1],i.P[2] - i.E[2],i.P[0] + i.E[0],i.P[1] + i.E[1],i.P[2] + i.E[2]
+    # pt = i.O.T@np.array(x) # transform the point from {W} to {body}
+    # minx,miny,minz,maxx,maxy,maxz = i.P[0] - i.E[0],i.P[1] - i.E[1],i.P[2] - i.E[2],i.P[0] + i.E[0],i.P[1] + i.E[1],i.P[2] + i.E[2]
+    T = np.vstack([np.column_stack([i.O.T,-i.O.T@i.P]),[0,0,0,1]])
+    pt = T@np.append(x,1) # transform the point from {W} to {body}
+    minx,miny,minz,maxx,maxy,maxz = - i.E[0],- i.E[1],- i.E[2],+ i.E[0],+ i.E[1],+ i.E[2]
     block = [minx,miny,minz,maxx,maxy,maxz]
     return isinbound(block, pt)
 
@@ -117,9 +120,10 @@ def lineAABB(p0, p1, dist, aabb):
     return True
 
 def lineOBB(p0, p1, dist, obb):
-    p0 = obb.O.T@np.array(p0)
-    p1 = obb.O.T@np.array(p1)
-    return lineAABB(p0,p1,dist,obb)
+    T = np.vstack([np.column_stack([obb.O.T,-obb.O.T@obb.P]),[0,0,0,1]])
+    p0 = T@np.append(p0,1) # transform the points to the box
+    p1 = T@np.append(p1,1)
+    return lineAABB(p0[0:3],p1[0:3],dist,obb)
 
 def OBBOBB(obb1, obb2):
     # https://www.gamasutra.com/view/feature/131790/simple_intersection_tests_for_games.php?print=1
@@ -256,18 +260,18 @@ def isCollide(initparams, x, child, dist):
     '''specified for expansion in A* 3D lookup table'''
     if dist==None:
         dist = getDist(x, child)
+    # check in bound
     if not isinbound(initparams.env.boundary, child): 
         return True, dist
+    # check collision in AABB
     for i in range(len(initparams.env.AABB)):
-        # if isinbound(initparams.env.blocks[i], child): 
-        #     return True, dist
         if lineAABB(x, child, dist, initparams.env.AABB[i]): 
             return True, dist
+    # check collision in ball
     for i in initparams.env.balls:
-        # if isinball(i, child): i
-        #     return True, dist
         if lineSphere(x, child, i): 
             return True, dist
+    # check collision with obb
     for i in initparams.env.OBB:
         if lineOBB(x, child, dist, i):
             return True, dist

@@ -157,6 +157,7 @@ class D_star_Lite(object):
         print('running with map update ...')
         t = 0 # count time
         ischanged = False
+        self.V = set()
         while getDist(self.x0, self.xt) > 2*self.env.resolution:
             #---------------------------------- at 5th node, the environment is changed and cost is updated
             if t % 1 == 0: 

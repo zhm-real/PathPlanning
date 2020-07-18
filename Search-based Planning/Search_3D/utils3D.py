@@ -1,6 +1,7 @@
 import numpy as np
 import pyrr
 from collections import defaultdict
+import copy
 
 
 def getRay(x, y):
@@ -38,17 +39,39 @@ def heuristic_fun(initparams, k, t=None):
         t = initparams.goal
     return max([abs(t[0] - k[0]), abs(t[1] - k[1]), abs(t[2] - k[2])])
 
-def isinbound(i, x):
+def isinbound(i, x, mode=False):
+    if mode == 'obb':
+        return isinobb(i, x)
     if i[0] <= x[0] < i[3] and i[1] <= x[1] < i[4] and i[2] <= x[2] < i[5]:
         return True
     return False
-
 
 def isinball(i, x):
     if getDist(i[0:3], x) <= i[3]:
         return True
     return False
 
+def isinobb(i, x):
+    pt = i.O.T@np.array(x) # transform the point from {W} to {body}
+    minx,miny,minz,maxx,maxy,maxz = i.P[0] - i.E[0],i.P[1] - i.E[1],i.P[2] - i.E[2],i.P[0] + i.E[0],i.P[1] + i.E[1],i.P[2] + i.E[2]
+    block = [minx,miny,minz,maxx,maxy,maxz]
+    return isinbound(block, pt)
+
+def OBB2AABB(obb):
+    # https://www.gamasutra.com/view/feature/131790/simple_intersection_tests_for_games.php?print=1
+    aabb = copy.deepcopy(obb)
+    P = obb.P
+    a = obb.E
+    A = obb.O
+    # a1(A1 dot x) + a2(A2 dot x) + a3(A3 dot x) 
+    Ex = a[0]*abs(A[0][0]) + a[1]*abs(A[1][0]) + a[2]*abs(A[2][0])
+    Ey = a[0]*abs(A[0][1]) + a[1]*abs(A[1][1]) + a[2]*abs(A[2][1])
+    Ez = a[0]*abs(A[0][2]) + a[1]*abs(A[1][2]) + a[2]*abs(A[2][2])
+    E = np.array([Ex, Ey, Ez])
+    aabb.P = P
+    aabb.E = E
+    aabb.O = np.array([[1,0,0],[0,1,0],[0,0,1]])
+    return aabb
 
 def lineSphere(p0, p1, ball):
     # https://cseweb.ucsd.edu/classes/sp19/cse291-d/Files/CSE291_13_CollisionDetection.pdf
@@ -67,7 +90,6 @@ def lineSphere(p0, p1, ball):
         k = [c[0] - x[0], c[1] - x[1], c[2] - x[2]]
         if (k[0] * k[0] + k[1] * k[1] + k[2] * k[2]) <= r ** 2: return True
     return False
-
 
 def lineAABB(p0, p1, dist, aabb):
     # https://www.gamasutra.com/view/feature/131790/simple_intersection_tests_for_games.php?print=1
@@ -93,6 +115,11 @@ def lineAABB(p0, p1, dist, aabb):
     if abs(T[0] * I[1] - T[1] * I[0]) > r: return False
 
     return True
+
+def lineOBB(p0, p1, dist, obb):
+    p0 = obb.O.T@np.array(p0)
+    p1 = obb.O.T@np.array(p1)
+    return lineAABB(p0,p1,dist,obb)
 
 def OBBOBB(obb1, obb2):
     # https://www.gamasutra.com/view/feature/131790/simple_intersection_tests_for_games.php?print=1
@@ -147,7 +174,6 @@ def OBBOBB(obb1, obb2):
             #L = A0 x B2
             ra = a[1]*abs(R[2][2]) + a[2]*abs(R[1][2])
             rb = b[0]*abs(R[0][1]) + b[1]*abs(R[0][0])
-
             t = abs(T[2]*R[1][2] - T[1]*R[2][2])
             if t > ra + rb:
                 return False
@@ -155,7 +181,6 @@ def OBBOBB(obb1, obb2):
             #L = A1 x B0
             ra = a[0]*abs(R[2][0]) + a[2]*abs(R[0][0])
             rb = b[1]*abs(R[1][2]) + b[2]*abs(R[1][1])
-
             t = abs( T[0]*R[2][0] - T[2]*R[0][0] )
             if t > ra + rb:
                 return False
@@ -198,9 +223,6 @@ def OBBOBB(obb1, obb2):
             # no separating axis found,
             # the two boxes overlap 
             return True
-    
-
-
 
 def StateSpace(env, factor=0):
     boundary = env.boundary
@@ -242,9 +264,12 @@ def isCollide(initparams, x, child, dist):
         if lineAABB(x, child, dist, initparams.env.AABB[i]): 
             return True, dist
     for i in initparams.env.balls:
-        # if isinball(i, child): 
+        # if isinball(i, child): i
         #     return True, dist
         if lineSphere(x, child, i): 
+            return True, dist
+    for i in initparams.env.OBB:
+        if lineOBB(x, child, dist, i):
             return True, dist
     return False, dist
 
@@ -256,6 +281,8 @@ def children(initparams, x, settings = 0):
     resolution = initparams.env.resolution
     for direc in initparams.Alldirec:
         child = tuple(map(np.add, x, np.multiply(direc, resolution)))
+        if any([isinobb(i, child) for i in initparams.env.OBB]):
+            continue
         if any([isinball(i ,child) for i in initparams.env.balls]):
             continue
         if any([isinbound(i ,child) for i in initparams.env.blocks]):
@@ -303,13 +330,8 @@ def initcost(initparams):
             c[xi][child] = cost(initparams, xi, child)
     return c
 
-class obb(object):
-    def __init__(self, P, E, O):
-        self.P = P
-        self.E = E
-        self.O = O
-
 if __name__ == "__main__":
-    obb1 = obb([0,0,0],[1,1,1],[[1,0,0],[0,1,0],[0,0,1]])
-    obb2 = obb([1,1,0],[1,1,1],[[1/np.sqrt(3)*1,1/np.sqrt(3)*1,1/np.sqrt(3)*1],[np.sqrt(3/2)*(-1/3),np.sqrt(3/2)*2/3,np.sqrt(3/2)*(-1/3)],[np.sqrt(1/8)*(-2),0,np.sqrt(1/8)*2]])
-    print(OBBOBB(obb1, obb2))
+    pass
+    # obb1 = obb([0,0,0],[1,1,1],[[1,0,0],[0,1,0],[0,0,1]])
+    # obb2 = obb([1,1,0],[1,1,1],[[1/np.sqrt(3)*1,1/np.sqrt(3)*1,1/np.sqrt(3)*1],[np.sqrt(3/2)*(-1/3),np.sqrt(3/2)*2/3,np.sqrt(3/2)*(-1/3)],[np.sqrt(1/8)*(-2),0,np.sqrt(1/8)*2]])
+    # print(OBBOBB(obb1, obb2))

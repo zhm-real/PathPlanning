@@ -114,7 +114,7 @@ class Weighted_A_star(object):
 
 if __name__ == '__main__':
     
-    Astar = Weighted_A_star(1)
+    Astar = Weighted_A_star(0.5)
     sta = time.time()
     Astar.run()
     print(time.time() - sta)

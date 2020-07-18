@@ -41,7 +41,7 @@ Directory Structure
 <div align=right>
 <table>
   <tr>
-    <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Search-based%20Planning/gif/DFS.gif" alt="dfs" width="400"/></a></td>
+    <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Search-based%20Planning/gif/BF.gif" alt="dfs" width="400"/></a></td>
     <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Search-based%20Planning/gif/Dijkstra.gif" alt="dijkstra" width="400"/></a></td>
   </tr>
 </table>

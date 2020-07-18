@@ -5,7 +5,19 @@
 @author: yue qi
 """
 import numpy as np
+# from utils3D import OBB2AABB
 
+def R_matrix(z_angle,y_angle,x_angle):
+    # x angle: row; y angle: pitch; z angle: yaw
+    # generate rotation matrix in SO3
+    # RzRyRx = R, ZYX intrinsic rotation
+    # also (r1,r2,r3) in R3*3 in {W} frame
+    # used in obb.O
+    # [[R p]
+    # [0T 1]] gives transformation from body to world 
+    return np.array([[np.cos(z_angle), -np.sin(z_angle), 0.0], [np.sin(z_angle), np.cos(z_angle), 0.0], [0.0, 0.0, 1.0]])@ \
+           np.array([[np.cos(y_angle), 0.0, np.sin(y_angle)], [0.0, 1.0, 0.0], [-np.sin(y_angle), 0.0, np.cos(y_angle)]])@ \
+           np.array([[1.0, 0.0, 0.0], [0.0, np.cos(x_angle), -np.sin(x_angle)], [0.0, np.sin(x_angle), np.cos(x_angle)]])
 
 def getblocks():
     # AABBs
@@ -30,9 +42,23 @@ def getAABB(blocks):
     return AABB
 
 class aabb(object):
+    # make AABB out of blocks, 
+    # P: center point
+    # E: extents
+    # O: Rotation matrix in SO(3), in {w}
     def __init__(self,AABB):
         self.P = [(AABB[3] + AABB[0])/2, (AABB[4] + AABB[1])/2, (AABB[5] + AABB[2])/2]# center point
         self.E = [(AABB[3] - AABB[0])/2, (AABB[4] - AABB[1])/2, (AABB[5] - AABB[2])/2]# extents
+        self.O = [[1,0,0],[0,1,0],[0,0,1]]
+
+class obb(object):
+    # P: center point
+    # E: extents
+    # O: Rotation matrix in SO(3), in {w}
+    def __init__(self, P, E, O):
+        self.P = P
+        self.E = E
+        self.O = O
 
 def getAABB2(blocks):
     # used in lineAABB
@@ -59,6 +85,10 @@ class env():
         self.AABB = getAABB2(self.blocks)
         self.AABB_pyrr = getAABB(self.blocks)
         self.balls = getballs()
+        self.OBB = np.array([obb([2.6,2.5,1],[0.2,1,1],R_matrix(0,0,45))])
+        #self.OBB = np.squeeze(np.vstack([self.OBB,OBB2AABB(self.OBB[0])]))
+        #print(self.OBB)
+        # self.OBB = []
         self.start = np.array([0.5, 2.5, 5.5])
         self.goal = np.array([19.0, 2.5, 5.5])
         self.t = 0 # time 
@@ -72,9 +102,9 @@ class env():
     def move_start(self, x):
         self.start = x
 
-    def move_block(self, a = [0,0,0], s = 0, v = [0.1,0,0], G = None, block_to_move = 0, mode = 'uniform'):
+    def move_block(self, a = [0,0,0], s = 0, v = [0.1,0,0], theta = [0,0,0], block_to_move = 0, obb_to_move = 0, mode = 'uniform'):
         # t is time , v is velocity in R3, a is acceleration in R3, s is increment ini time, 
-        # G is an orthorgonal transform in R3*3, in the Galilean transformation
+        # R is an orthorgonal transform in R3*3, is the rotation matrix
         # (x',t') = (x + tv, t) is uniform transformation
         if mode == 'uniform':
             ori = np.array(self.blocks[block_to_move])
@@ -120,13 +150,13 @@ class env():
                     np.array([ori[0] - self.resolution, ori[1] - self.resolution, ori[2] - self.resolution, \
                             ori[3] + self.resolution, ori[4] + self.resolution, ori[5] + self.resolution])
             # return a,ori
-        # (x',t') = (Gx, t)
-        if mode == 'rotation': # this makes AABB become a OBB
-            #TODO: implement this with rotation matrix
-            pass
+        # (x',t') = (Rx, t)
+        if mode == 'rotation': # this makes an OBB rotate
+            ori = [self.OBB[obb_to_move]]
+            self.OBB[obb_to_move].O = R_matrix(z_angle=theta[0],y_angle=theta[1],x_angle=theta[2])
+            return self.OBB[obb_to_move], ori[0]
           
 
 
 if __name__ == '__main__':
     newenv = env()
-    print(newenv.balls)

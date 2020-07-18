@@ -61,13 +61,13 @@ class D_star_Lite(object):
             self.COST[xi][xj] = cost(self, xi, xj)
         return self.COST[xi][xj]
 
-    def updatecost(self,range_changed=None, new=None, old=None):
+    def updatecost(self,range_changed=None, new=None, old=None, mode=False):
         # scan graph for changed cost, if cost is changed update it
         CHANGED = set()
         for xi in self.X:
             if xi in self.CHILDREN:
                 oldchildren = self.CHILDREN[xi]# A
-                if isinbound(old, xi) or isinbound(new, xi):
+                if isinbound(old, xi, mode) or isinbound(new, xi, mode):
                     newchildren = set(children(self,xi))# B
                     removed = oldchildren.difference(newchildren)
                     intersection = oldchildren.intersection(newchildren)
@@ -79,7 +79,7 @@ class D_star_Lite(object):
                     CHANGED.add(xi)
                     self.CHILDREN[xi] = newchildren
             else: 
-                if isinbound(old, xi) or isinbound(new, xi):
+                if isinbound(old, xi, mode) or isinbound(new, xi, mode):
                     CHANGED.add(xi)
                     children_added = set(children(self,xi))
                     self.CHILDREN[xi] = children_added
@@ -157,11 +157,13 @@ class D_star_Lite(object):
         print('running with map update ...')
         t = 0 # count time
         ischanged = False
+        self.V = set()
         while getDist(self.x0, self.xt) > 2*self.env.resolution:
             #---------------------------------- at 5th node, the environment is changed and cost is updated
-            if t % 2 == 0: 
+            if t % 1 == 0: 
                 # new1,old1 = self.env.move_block(a=[0, 0, -2], s=0.5, block_to_move=0, mode='translation')
-                new1,old1 = self.env.move_block(a=[0, 0, -0.1], s=0.5, block_to_move=0, mode='translation')
+                new1,old1 = self.env.move_block(a=[0, 0, -0.2], s=0.5, block_to_move=0, mode='translation')
+                new2,old2 = self.env.move_block(theta = [0,0,0.1*t], mode='rotation')
                 #new2,old2 = self.env.move_block(a=[-0.3, 0, -0.1], s=0.5, block_to_move=1, mode='translation')
                 ischanged = True
                 self.Path = []
@@ -183,9 +185,9 @@ class D_star_Lite(object):
                 self.km += heuristic_fun(self, self.x0, s_last)
                 s_last = self.x0
                 CHANGED = self.updatecost(True, new1, old1)
-                #CHANGED2 = self.updatecost(True, new2, old2)
-                #CHANGED = CHANGED.union(CHANGED2)
-                self.V = set()
+                CHANGED2 = self.updatecost(True, new2, old2, mode='obb')
+                CHANGED = CHANGED.union(CHANGED2)
+                # self.V = set()
                 for u in CHANGED:
                     self.UpdateVertex(u)
                 self.ComputeShortestPath()

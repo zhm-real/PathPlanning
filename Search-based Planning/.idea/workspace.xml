@@ -19,7 +19,15 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="" />
+    <list default="true" id="025aff36-a6aa-4945-ab7e-b2c625055f47" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Search_2D/best_first.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/Hybrid_Astar/ReedsSheppPlanner/ReedsShepp.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/Hybrid_Astar/ReedsSheppPlanner/draw.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/Hybrid_Astar/ReedsSheppPlanner/simulation.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/Hybrid_Astar/ReedsSheppPlanner/utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_2D/plotting.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_2D/plotting.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +78,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.Field_D_star">
+  <component name="RunManager" selected="Python.best_first">
     <configuration name="ARAstar" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Search-based Planning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -84,27 +92,6 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/ARAstar.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Astar3D" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="Search-based Planning" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Search_3D" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_3D/Astar3D.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -176,6 +163,27 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="best_first" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Search-based Planning" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Search_2D" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Search_2D/best_first.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="dijkstra" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="Search-based Planning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -199,19 +207,19 @@
     </configuration>
     <list>
       <item itemvalue="Python.dijkstra" />
-      <item itemvalue="Python.Astar3D" />
       <item itemvalue="Python.ARAstar" />
       <item itemvalue="Python.Potential_Field" />
       <item itemvalue="Python.D_star_Lite" />
       <item itemvalue="Python.Field_D_star" />
+      <item itemvalue="Python.best_first" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.best_first" />
         <item itemvalue="Python.Field_D_star" />
         <item itemvalue="Python.D_star_Lite" />
         <item itemvalue="Python.Potential_Field" />
         <item itemvalue="Python.ARAstar" />
-        <item itemvalue="Python.Astar3D" />
       </list>
     </recent_temporary>
   </component>

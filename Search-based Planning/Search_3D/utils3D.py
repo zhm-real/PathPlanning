@@ -52,12 +52,9 @@ def isinball(i, x):
     return False
 
 def isinobb(i, x):
-    # pt = i.O.T@np.array(x) # transform the point from {W} to {body}
-    # minx,miny,minz,maxx,maxy,maxz = i.P[0] - i.E[0],i.P[1] - i.E[1],i.P[2] - i.E[2],i.P[0] + i.E[0],i.P[1] + i.E[1],i.P[2] + i.E[2]
-    T = np.vstack([np.column_stack([i.O.T,-i.O.T@i.P]),[0,0,0,1]])
-    pt = T@np.append(x,1) # transform the point from {W} to {body}
-    minx,miny,minz,maxx,maxy,maxz = - i.E[0],- i.E[1],- i.E[2],+ i.E[0],+ i.E[1],+ i.E[2]
-    block = [minx,miny,minz,maxx,maxy,maxz]
+    # transform the point from {W} to {body}
+    pt = i.T@np.append(x,1)
+    block = [- i.E[0],- i.E[1],- i.E[2],+ i.E[0],+ i.E[1],+ i.E[2]]
     return isinbound(block, pt)
 
 def OBB2AABB(obb):
@@ -100,30 +97,33 @@ def lineAABB(p0, p1, dist, aabb):
     mid = [(p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2, (p0[2] + p1[2]) / 2]  # mid point
     I = [(p1[0] - p0[0]) / dist, (p1[1] - p0[1]) / dist, (p1[2] - p0[2]) / dist]  # unit direction
     hl = dist / 2  # radius
-    P = aabb.P  # center of the AABB
-    E = aabb.E  # extents of AABB
-    T = [P[0] - mid[0], P[1] - mid[1], P[2] - mid[2]]
+    T = [aabb.P[0] - mid[0], aabb.P[1] - mid[1], aabb.P[2] - mid[2]]
     # do any of the principal axis form a separting axis?
-    if abs(T[0]) > (E[0] + hl * abs(I[0])): return False
-    if abs(T[1]) > (E[1] + hl * abs(I[1])): return False
-    if abs(T[2]) > (E[2] + hl * abs(I[2])): return False
+    if abs(T[0]) > (aabb.E[0] + hl * abs(I[0])): return False
+    if abs(T[1]) > (aabb.E[1] + hl * abs(I[1])): return False
+    if abs(T[2]) > (aabb.E[2] + hl * abs(I[2])): return False
     # I.cross(x axis) ?
-    r = E[1] * abs(I[2]) + E[2] * abs(I[1])
+    r = aabb.E[1] * abs(I[2]) + aabb.E[2] * abs(I[1])
     if abs(T[1] * I[2] - T[2] * I[1]) > r: return False
     # I.cross(y axis) ?
-    r = E[0] * abs(I[2]) + E[2] * abs(I[0])
+    r = aabb.E[0] * abs(I[2]) + aabb.E[2] * abs(I[0])
     if abs(T[2] * I[0] - T[0] * I[2]) > r: return False
     # I.cross(z axis) ?
-    r = E[0] * abs(I[1]) + E[1] * abs(I[0])
+    r = aabb.E[0] * abs(I[1]) + aabb.E[1] * abs(I[0])
     if abs(T[0] * I[1] - T[1] * I[0]) > r: return False
 
     return True
 
 def lineOBB(p0, p1, dist, obb):
-    T = np.vstack([np.column_stack([obb.O.T,-obb.O.T@obb.P]),[0,0,0,1]])
-    p0 = T@np.append(p0,1) # transform the points to the box
-    p1 = T@np.append(p1,1)
-    return lineAABB(p0[0:3],p1[0:3],dist,obb)
+    # transform points to obb frame
+    res = obb.T@np.column_stack([np.array([p0,p1]),[1,1]]).T 
+    # record old position and set the position to origin
+    oldP, obb.P= obb.P, [0,0,0] 
+    # calculate segment-AABB testing
+    ans = lineAABB(res[0:3,0],res[0:3,1],dist,obb)
+    # reset the position
+    obb.P = oldP 
+    return ans
 
 def OBBOBB(obb1, obb2):
     # https://www.gamasutra.com/view/feature/131790/simple_intersection_tests_for_games.php?print=1
@@ -311,7 +311,12 @@ def obstacleFree(initparams, x):
 
 
 def cost(initparams, i, j, dist=None, settings='Euclidean'):
-    collide, dist = isCollide(initparams, i, j, dist)
+    if initparams.env.resolution < 0.25:
+        if dist==None:
+            dist = getDist(i,j)
+        collide = False
+    else:
+        collide, dist = isCollide(initparams, i, j, dist)
     # collide, dist= False, getDist(i, j)
     if settings == 'Euclidean':
         if collide:
@@ -335,7 +340,17 @@ def initcost(initparams):
     return c
 
 if __name__ == "__main__":
-    pass
-    # obb1 = obb([0,0,0],[1,1,1],[[1,0,0],[0,1,0],[0,0,1]])
+    import time
+    from env3D import R_matrix, obb
+    obb1 = obb([2.6,2.5,1],[0.2,2,2],R_matrix(0,0,45))
     # obb2 = obb([1,1,0],[1,1,1],[[1/np.sqrt(3)*1,1/np.sqrt(3)*1,1/np.sqrt(3)*1],[np.sqrt(3/2)*(-1/3),np.sqrt(3/2)*2/3,np.sqrt(3/2)*(-1/3)],[np.sqrt(1/8)*(-2),0,np.sqrt(1/8)*2]])
-    # print(OBBOBB(obb1, obb2))
+    p0, p1 = [2.9,2.5,1],[1.9,2.5,1]
+    dist = getDist(p0,p1)
+    start = time.time()
+    for i in range(3000*27):
+        lineAABB(p0,p1,dist,obb1)
+        #lineOBB(p0,p1,dist,obb1)
+    print(time.time() - start)
+    
+
+

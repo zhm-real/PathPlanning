@@ -59,6 +59,7 @@ class obb(object):
         self.P = P
         self.E = E
         self.O = O
+        self.T = np.vstack([np.column_stack([self.O.T,-self.O.T@self.P]),[0,0,0,1]])
 
 def getAABB2(blocks):
     # used in lineAABB
@@ -85,7 +86,7 @@ class env():
         self.AABB = getAABB2(self.blocks)
         self.AABB_pyrr = getAABB(self.blocks)
         self.balls = getballs()
-        self.OBB = np.array([obb([2.6,2.5,1],[0.2,1,1],R_matrix(0,0,45))])
+        self.OBB = np.array([obb([2.6,2.5,1],[0.2,2,1],R_matrix(0,0,45))])
         #self.OBB = np.squeeze(np.vstack([self.OBB,OBB2AABB(self.OBB[0])]))
         #print(self.OBB)
         # self.OBB = []
@@ -154,6 +155,7 @@ class env():
         if mode == 'rotation': # this makes an OBB rotate
             ori = [self.OBB[obb_to_move]]
             self.OBB[obb_to_move].O = R_matrix(z_angle=theta[0],y_angle=theta[1],x_angle=theta[2])
+            self.OBB[obb_to_move].T = np.vstack([np.column_stack([self.OBB[obb_to_move].O.T,-self.OBB[obb_to_move].O.T@self.OBB[obb_to_move].P]),[0,0,0,1]])
             return self.OBB[obb_to_move], ori[0]
           
 

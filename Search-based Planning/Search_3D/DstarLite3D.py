@@ -7,12 +7,10 @@ from collections import defaultdict
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Search-based Planning/")
 from Search_3D.env3D import env
-from Search_3D import Astar3D
-from Search_3D.utils3D import getDist, getRay, g_Space, Heuristic, heuristic_fun, getNearest, isinbound, isinball, \
-    isCollide, cost, obstacleFree, children, StateSpace
+from Search_3D.utils3D import getDist, heuristic_fun, getNearest, isinbound, \
+     cost, children, StateSpace
 from Search_3D.plot_util3D import visualization
 from Search_3D import queue
-import pyrr
 import time
 
 class D_star_Lite(object):
@@ -23,13 +21,14 @@ class D_star_Lite(object):
                         (1, 1, 0): np.sqrt(2), (1, 0, 1): np.sqrt(2), (0, 1, 1): np.sqrt(2), \
                         (-1, -1, 0): np.sqrt(2), (-1, 0, -1): np.sqrt(2), (0, -1, -1): np.sqrt(2), \
                         (1, -1, 0): np.sqrt(2), (-1, 1, 0): np.sqrt(2), (1, 0, -1): np.sqrt(2), \
-                        (-1, 0, 1): np.sqrt(2), (0, 1, -1): np.sqrt(2), (0, -1, 1): np.sqrt(2)}
-                        # (1, 1, 1): np.sqrt(3), (-1, -1, -1) : np.sqrt(3), \
-                        # (1, -1, -1): np.sqrt(3), (-1, 1, -1): np.sqrt(3), (-1, -1, 1): np.sqrt(3), \
-                        # (1, 1, -1): np.sqrt(3), (1, -1, 1): np.sqrt(3), (-1, 1, 1): np.sqrt(3)}
+                        (-1, 0, 1): np.sqrt(2), (0, 1, -1): np.sqrt(2), (0, -1, 1): np.sqrt(2), \
+                        (1, 1, 1): np.sqrt(3), (-1, -1, -1) : np.sqrt(3), \
+                        (1, -1, -1): np.sqrt(3), (-1, 1, -1): np.sqrt(3), (-1, -1, 1): np.sqrt(3), \
+                        (1, 1, -1): np.sqrt(3), (1, -1, 1): np.sqrt(3), (-1, 1, 1): np.sqrt(3)}
         self.env = env(resolution=resolution)
         #self.X = StateSpace(self.env)
         #self.x0, self.xt = getNearest(self.X, self.env.start), getNearest(self.X, self.env.goal)
+        self.settings = 'CollisionChecking' # for collision checking
         self.x0, self.xt = tuple(self.env.start), tuple(self.env.goal)
         # self.OPEN = queue.QueuePrior()
         self.OPEN = queue.MinheapPQ()
@@ -50,16 +49,6 @@ class D_star_Lite(object):
         self.ind = 0
         self.Path = []
         self.done = False
-
-    def getcost(self, xi, xj):
-        # use a LUT for getting the costd
-        if xi not in self.COST:
-            for (xj,xjcost) in children(self, xi, settings=1):
-                self.COST[xi][xj] = cost(self, xi, xj, xjcost)
-        # this might happen when there is a node changed. 
-        if xj not in self.COST[xi]:
-            self.COST[xi][xj] = cost(self, xi, xj)
-        return self.COST[xi][xj]
 
     def updatecost(self,range_changed=None, new=None, old=None, mode=False):
         # scan graph for changed cost, if cost is changed update it
@@ -85,6 +74,16 @@ class D_star_Lite(object):
                     for xj in children_added:
                         self.COST[xi][xj] = cost(self, xi, xj)
         return CHANGED
+
+    def getcost(self, xi, xj):
+        # use a LUT for getting the costd
+        if xi not in self.COST:
+            for (xj,xjcost) in children(self, xi, settings=1):
+                self.COST[xi][xj] = cost(self, xi, xj, xjcost)
+        # this might happen when there is a node changed. 
+        if xj not in self.COST[xi]:
+            self.COST[xi][xj] = cost(self, xi, xj)
+        return self.COST[xi][xj]
 
     def getchildren(self, xi):
         if xi not in self.CHILDREN:

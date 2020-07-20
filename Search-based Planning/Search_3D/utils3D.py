@@ -39,15 +39,15 @@ def heuristic_fun(initparams, k, t=None):
         t = initparams.goal
     return max([abs(t[0] - k[0]), abs(t[1] - k[1]), abs(t[2] - k[2])])
 
-def isinbound(i, x, mode=False):
+def isinbound(i, x, mode=False, factor = 0):
     if mode == 'obb':
         return isinobb(i, x)
-    if i[0] <= x[0] < i[3] and i[1] <= x[1] < i[4] and i[2] <= x[2] < i[5]:
+    if i[0] - factor <= x[0] < i[3] + factor and i[1] - factor <= x[1] < i[4] + factor and i[2] - factor <= x[2] < i[5] + factor:
         return True
     return False
 
-def isinball(i, x):
-    if getDist(i[0:3], x) <= i[3]:
+def isinball(i, x, factor = 0):
+    if getDist(i[0:3], x) <= i[3] + factor:
         return True
     return False
 
@@ -311,7 +311,7 @@ def obstacleFree(initparams, x):
 
 
 def cost(initparams, i, j, dist=None, settings='Euclidean'):
-    if initparams.env.resolution < 0.25:
+    if initparams.settings == 'NonCollisionChecking':
         if dist==None:
             dist = getDist(i,j)
         collide = False

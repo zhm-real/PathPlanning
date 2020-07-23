@@ -225,7 +225,7 @@ class D_star_Lite(object):
 
 if __name__ == '__main__':
     
-    D_lite = D_star_Lite(0.5)
+    D_lite = D_star_Lite(1)
     a = time.time()
     D_lite.main()
     print('used time (s) is ' + str(time.time() - a))

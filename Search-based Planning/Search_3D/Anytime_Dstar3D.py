@@ -31,10 +31,9 @@ class Anytime_Dstar(object):
         self.settings = 'CollisionChecking' # for collision checking
         self.x0, self.xt = tuple(self.env.start), tuple(self.env.goal)
         self.OPEN = queue.MinheapPQ()
-        self.km = 0
         self.g = {} # all g initialized at inf
-        self.rhs = {self.xt:0} # rhs(x0) = 0
         self.h = {}
+        self.rhs = {self.xt:0} # rhs(x0) = 0
         self.OPEN.put(self.xt, self.key(self.xt))
         self.INCONS = set()
         self.CLOSED = set()
@@ -49,6 +48,9 @@ class Anytime_Dstar(object):
         self.ind = 0
         self.Path = []
         self.done = False
+
+        # epsilon in the key caculation
+        self.epsilon = 1
 
     def getcost(self, xi, xj):
         # use a LUT for getting the costd
@@ -82,6 +84,30 @@ class Anytime_Dstar(object):
             self.rhs[xi] = np.inf
         return self.rhs[xi]
 
+    def updatecost(self,range_changed=None, new=None, old=None, mode=False):
+        # scan graph for changed cost, if cost is changed update it
+        CHANGED = set()
+        for xi in self.CLOSED:
+            if xi in self.CHILDREN:
+                oldchildren = self.CHILDREN[xi]# A
+                if isinbound(old, xi, mode) or isinbound(new, xi, mode):
+                    newchildren = set(children(self,xi))# B
+                    removed = oldchildren.difference(newchildren)
+                    intersection = oldchildren.intersection(newchildren)
+                    added = newchildren.difference(oldchildren)
+                    for xj in removed:
+                        self.COST[xi][xj] = cost(self, xi, xj)
+                    for xj in intersection.union(added):
+                        self.COST[xi][xj] = cost(self, xi, xj)
+                    CHANGED.add(xi)
+            else: 
+                if isinbound(old, xi, mode) or isinbound(new, xi, mode):
+                    CHANGED.add(xi)
+                    children_added = set(children(self,xi))
+                    self.CHILDREN[xi] = children_added
+                    for xj in children_added:
+                        self.COST[xi][xj] = cost(self, xi, xj)
+        return CHANGED
 #--------------main functions for Anytime D star
 
     def key(self, s, epsilon=1):
@@ -104,9 +130,42 @@ class Anytime_Dstar(object):
                 self.INCONS.add(s)
 
     def ComputeorImprovePath(self):
-        pass
+        while self.key(self.OPEN.top_key()) < self.key(self.x0) or self.rhs[self.x0] != self.g[self.x0]:
+            s = self.OPEN.get()
+            if self.g[s] > self.rhs[s]:
+                self.g[s] = self.rhs[s]
+                self.CLOSED.add(s)
+                for s_p in self.getchildren(s):
+                    self.UpdateState(s_p)
+            else:
+                self.g[s] = np.inf
+                self.UpdateState(s)
+                for s_p in self.getchildren(s):
+                    self.UpdateState(s_p)
 
     def Main(self):
+        epsilon = self.epsilon
+        ischanged = False
+        self.ComputeorImprovePath()
+        #TODO publish current epsilon sub-optimal solution
+        while True:
+            # change environment
+            new2,old2 = self.env.move_block(theta = [0,0,0.1*t], mode='rotation')
+            ischanged = True
+            self.Path = []
+            # update cost with changed environment
+            if ischanged:
+                CHANGED = self.updatecost(True, new2, old2, mode='obb')
+                for u in CHANGED:
+                    self.UpdateState(u)
+                self.ComputeorImprovePath()
+                ischanged = False
+
+            # if the environment is largely changed
+            # epsilon += increment or replan from scratch
+            # else if 
+            # epsilon -= increment
+            
         pass
 
 if __name__ == '__main__':

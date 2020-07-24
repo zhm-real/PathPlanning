@@ -29,7 +29,7 @@ class Weighted_A_star(object):
                         (1, 1, 1): np.sqrt(3), (-1, -1, -1) : np.sqrt(3), \
                         (1, -1, -1): np.sqrt(3), (-1, 1, -1): np.sqrt(3), (-1, -1, 1): np.sqrt(3), \
                         (1, 1, -1): np.sqrt(3), (1, -1, 1): np.sqrt(3), (-1, 1, 1): np.sqrt(3)}
-        self.settings = 'NonCollisionChecking'                
+        self.settings = 'CollisionChecking'                
         self.env = env(resolution=resolution)
         self.start, self.goal = tuple(self.env.start), tuple(self.env.goal)
         self.g = {self.start:0,self.goal:np.inf}
@@ -84,7 +84,7 @@ class Weighted_A_star(object):
             self.done = True
             self.Path = self.path()
             if N is None:
-                visualization(self)
+                #visualization(self)
                 plt.show()
             return True
 

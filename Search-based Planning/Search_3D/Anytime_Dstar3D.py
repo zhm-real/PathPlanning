@@ -51,6 +51,7 @@ class Anytime_Dstar(object):
 
         # epsilon in the key caculation
         self.epsilon = 1
+        self.increment = 0.1
 
     def getcost(self, xi, xj):
         # use a LUT for getting the costd
@@ -120,7 +121,7 @@ class Anytime_Dstar(object):
         if s not in self.CLOSED:
         # TODO if s is not visited before
             self.g[s] = np.inf
-        if getDist(s, self.xt) <= self.env.resolution:
+        if s != self.xt:
             self.rhs[s] = min([self.getcost(s, s_p) + self.getg(s_p) for s_p in self.getchildren(s)]) 
         self.OPEN.check_remove(s)
         if self.getg(s) != self.getrhs(s):
@@ -130,11 +131,13 @@ class Anytime_Dstar(object):
                 self.INCONS.add(s)
 
     def ComputeorImprovePath(self):
-        while self.key(self.OPEN.top_key()) < self.key(self.x0) or self.rhs[self.x0] != self.g[self.x0]:
+        while self.OPEN.top_key() < self.key(self.x0) or self.rhs[self.x0] != self.g[self.x0]:
             s = self.OPEN.get()
+            visualization(self)
             if self.g[s] > self.rhs[s]:
                 self.g[s] = self.rhs[s]
                 self.CLOSED.add(s)
+                self.V.add(s)
                 for s_p in self.getchildren(s):
                     self.UpdateState(s_p)
             else:
@@ -142,17 +145,22 @@ class Anytime_Dstar(object):
                 self.UpdateState(s)
                 for s_p in self.getchildren(s):
                     self.UpdateState(s_p)
+            self.ind += 1
 
     def Main(self):
         epsilon = self.epsilon
+        increment = self.increment
         ischanged = False
+        islargelychanged = False
         self.ComputeorImprovePath()
         #TODO publish current epsilon sub-optimal solution
         while True:
             # change environment
             new2,old2 = self.env.move_block(theta = [0,0,0.1*t], mode='rotation')
             ischanged = True
+            # islargelychanged = True
             self.Path = []
+
             # update cost with changed environment
             if ischanged:
                 CHANGED = self.updatecost(True, new2, old2, mode='obb')
@@ -161,13 +169,24 @@ class Anytime_Dstar(object):
                 self.ComputeorImprovePath()
                 ischanged = False
 
-            # if the environment is largely changed
-            # epsilon += increment or replan from scratch
-            # else if 
-            # epsilon -= increment
+            if islargelychanged:  
+                epsilon += increment # or replan from scratch
+            elif epsilon > 1:
+                epsilon -= increment
             
+            # move states from the INCONS to OPEN
+            # update priorities in OPEN
+            Allnodes = self.INCONS.union(set(self.OPEN.enumerate()))
+            for node in Allnodes:
+                self.OPEN.put(node, self.key(node, epsilon)) 
+            self.INCONS = set()
+            self.CLOSED = set()
+            self.ComputeorImprovePath()
+            # publish current epsilon sub optimal solution
+            # if epsilon == 1:
+                # wait for change to occur
         pass
 
 if __name__ == '__main__':
-    AD = Anytime_Dstar(resolution = 1)
+    AD = Anytime_Dstar(resolution = 0.5)
     AD.Main()

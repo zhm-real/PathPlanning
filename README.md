@@ -37,7 +37,7 @@ Directory Structure
         ├── Sarsa.py                                    # SARSA : on-policy TD control
         └── Q-learning.py                               # Q-learning : off-policy TD control
 
-## Animations
+## Animations - Search-Based
 ### Best-First & Dijkstra
 <div align=right>
 <table>
@@ -78,6 +78,17 @@ Directory Structure
   <tr>
     <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Search-based%20Planning/gif/ADstar_small.gif" alt="lpastar" width="400"/></a></td>
     <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Search-based%20Planning/gif/ADstar_sig.gif" alt="dstarlite" width="400"/></a></td>
+  </tr>
+</table>
+</div>
+
+## Animation - Sampling-Based
+### RRT & Variants
+<div align=right>
+<table>
+  <tr>
+    <td><img src="https://github.com/zhm-real/PathPlanning/blob/master/Sampling-based%20Planning/gif/RRT_2D.gif" alt="value iteration" width="400"/></a></td>
+    <td><img src="https://github.com/zhm-real/PathPlanning/blob/master/Sampling-based%20Planning/gif/RRT_CONNECT_2D.gif" alt="value iteration" width="400"/></a></td>
   </tr>
 </table>
 </div>

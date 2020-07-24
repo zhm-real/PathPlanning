@@ -12,7 +12,6 @@ from collections import deque
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Search-based Planning/")
 
-import
 from Search_2D import plotting
 from Search_2D import env
 

@@ -1,5 +1,5 @@
 """
-D_star_Lite 2D
+Anytime_D_star 2D
 @author: huiming zhou
 """
 
@@ -15,8 +15,8 @@ from Search_2D import plotting
 from Search_2D import env
 
 
-class DStar:
-    def __init__(self, s_start, s_goal, heuristic_type):
+class ADStar:
+    def __init__(self, s_start, s_goal, eps, heuristic_type):
         self.s_start, self.s_goal = s_start, s_goal
         self.heuristic_type = heuristic_type
 
@@ -28,8 +28,7 @@ class DStar:
         self.x = self.Env.x_range
         self.y = self.Env.y_range
 
-        self.g, self.rhs, self.U = {}, {}, {}
-        self.km = 0
+        self.g, self.rhs, self.OPEN = {}, {}, {}
 
         for i in range(1, self.Env.x_range - 1):
             for j in range(1, self.Env.y_range - 1):
@@ -37,15 +36,39 @@ class DStar:
                 self.g[(i, j)] = float("inf")
 
         self.rhs[self.s_goal] = 0.0
-        self.U[self.s_goal] = self.CalculateKey(self.s_goal)
+        self.eps = eps
+        self.OPEN[self.s_goal] = self.Key(self.s_goal)
+        self.CLOSED, self.INCONS = set(), dict()
+
         self.visited = set()
         self.count = 0
+        self.count_env_change = 0
+        self.obs_add = set()
+        self.obs_remove = set()
+        self.title = "Anytime D*: Small changes"  # significant changes
         self.fig = plt.figure()
 
     def run(self):
-        self.Plot.plot_grid("D* Lite")
-        self.ComputePath()
+        self.Plot.plot_grid(self.title)
+        self.ComputeOrImprovePath()
+        self.plot_visited()
         self.plot_path(self.extract_path())
+        self.visited = set()
+
+        while True:
+            if self.eps <= 1.0:
+                break
+            self.eps -= 0.5
+            self.OPEN.update(self.INCONS)
+            for s in self.OPEN:
+                self.OPEN[s] = self.Key(s)
+            self.CLOSED = set()
+            self.ComputeOrImprovePath()
+            self.plot_visited()
+            self.plot_path(self.extract_path())
+            self.visited = set()
+            plt.pause(0.5)
+
         self.fig.canvas.mpl_connect('button_press_event', self.on_press)
         plt.show()
 
@@ -54,91 +77,135 @@ class DStar:
         if x < 0 or x > self.x - 1 or y < 0 or y > self.y - 1:
             print("Please choose right area!")
         else:
+            self.count_env_change += 1
             x, y = int(x), int(y)
             print("Change position: x =", x, ",", "y =", y)
 
-            s_curr = self.s_start
-            s_last = self.s_start
-            i = 0
-            path = [self.s_start]
+            # for small changes
+            if self.title == "Anytime D*: Small changes":
+                if (x, y) not in self.obs:
+                    self.obs.add((x, y))
+                    plt.plot(x, y, 'sk')
+                    self.g[(x, y)] = float("inf")
+                    self.rhs[(x, y)] = float("inf")
+                else:
+                    self.obs.remove((x, y))
+                    plt.plot(x, y, marker='s', color='white')
+                    self.UpdateState((x, y))
 
-            while s_curr != self.s_goal:
-                s_list = {}
+                for sn in self.get_neighbor((x, y)):
+                    self.UpdateState(sn)
 
-                for s in self.get_neighbor(s_curr):
-                    s_list[s] = self.g[s] + self.cost(s_curr, s)
-                s_curr = min(s_list, key=s_list.get)
-                path.append(s_curr)
+                while True:
+                    if len(self.INCONS) == 0:
+                        break
+                    self.OPEN.update(self.INCONS)
+                    for s in self.OPEN:
+                        self.OPEN[s] = self.Key(s)
+                    self.CLOSED = set()
+                    self.ComputeOrImprovePath()
+                    self.plot_visited()
+                    self.plot_path(self.extract_path())
+                    plt.plot(self.title)
+                    self.visited = set()
 
-                if i < 1:
-                    self.km += self.h(s_last, s_curr)
-                    s_last = s_curr
-                    if (x, y) not in self.obs:
-                        self.obs.add((x, y))
-                        plt.plot(x, y, 'sk')
+                    if self.eps <= 1.0:
+                        break
+
+            else:
+                if (x, y) not in self.obs:
+                    self.obs.add((x, y))
+                    self.obs_add.add((x, y))
+                    plt.plot(x, y, 'sk')
+                    if (x, y) in self.obs_remove:
+                        self.obs_remove.remove((x, y))
+                else:
+                    self.obs.remove((x, y))
+                    self.obs_remove.add((x, y))
+                    plt.plot(x, y, marker='s', color='white')
+                    if (x, y) in self.obs_add:
+                        self.obs_add.remove((x, y))
+
+                if self.count_env_change >= 15:
+                    self.count_env_change = 0
+                    self.eps += 2.0
+                    for s in self.obs_add:
                         self.g[(x, y)] = float("inf")
                         self.rhs[(x, y)] = float("inf")
-                    else:
-                        self.obs.remove((x, y))
-                        plt.plot(x, y, marker='s', color='white')
-                        self.UpdateVertex((x, y))
-                    for s in self.get_neighbor((x, y)):
-                        self.UpdateVertex(s)
-                    i += 1
 
-                    self.count += 1
-                    self.visited = set()
-                    self.ComputePath()
+                        for sn in self.get_neighbor(s):
+                            self.UpdateState(sn)
 
-            self.plot_visited(self.visited)
-            self.plot_path(path)
+                    for s in self.obs_remove:
+                        for sn in self.get_neighbor(s):
+                            self.UpdateState(sn)
+                        self.UpdateState(s)
+
+                    while True:
+                        if self.eps <= 1.0:
+                            break
+                        self.eps -= 0.5
+                        self.OPEN.update(self.INCONS)
+                        for s in self.OPEN:
+                            self.OPEN[s] = self.Key(s)
+                        self.CLOSED = set()
+                        self.ComputeOrImprovePath()
+                        self.plot_visited()
+                        self.plot_path(self.extract_path())
+                        plt.title(self.title)
+                        self.visited = set()
+                        plt.pause(0.5)
+
             self.fig.canvas.draw_idle()
 
-    def ComputePath(self):
+    def ComputeOrImprovePath(self):
         while True:
             s, v = self.TopKey()
-            if v >= self.CalculateKey(self.s_start) and \
+            if v >= self.Key(self.s_start) and \
                     self.rhs[self.s_start] == self.g[self.s_start]:
                 break
 
-            k_old = v
-            self.U.pop(s)
+            self.OPEN.pop(s)
             self.visited.add(s)
 
-            if k_old < self.CalculateKey(s):
-                self.U[s] = self.CalculateKey(s)
-            elif self.g[s] > self.rhs[s]:
+            if self.g[s] > self.rhs[s]:
                 self.g[s] = self.rhs[s]
-                for x in self.get_neighbor(s):
-                    self.UpdateVertex(x)
+                self.CLOSED.add(s)
+                for sn in self.get_neighbor(s):
+                    self.UpdateState(sn)
             else:
                 self.g[s] = float("inf")
-                self.UpdateVertex(s)
-                for x in self.get_neighbor(s):
-                    self.UpdateVertex(x)
+                for sn in self.get_neighbor(s):
+                    self.UpdateState(sn)
+                self.UpdateState(s)
 
-    def UpdateVertex(self, s):
+    def UpdateState(self, s):
         if s != self.s_goal:
             self.rhs[s] = float("inf")
             for x in self.get_neighbor(s):
                 self.rhs[s] = min(self.rhs[s], self.g[x] + self.cost(s, x))
-        if s in self.U:
-            self.U.pop(s)
+        if s in self.OPEN:
+            self.OPEN.pop(s)
 
         if self.g[s] != self.rhs[s]:
-            self.U[s] = self.CalculateKey(s)
+            if s not in self.CLOSED:
+                self.OPEN[s] = self.Key(s)
+            else:
+                self.INCONS[s] = 0
 
-    def CalculateKey(self, s):
-        return [min(self.g[s], self.rhs[s]) + self.h(self.s_start, s) + self.km,
-                min(self.g[s], self.rhs[s])]
+    def Key(self, s):
+        if self.g[s] > self.rhs[s]:
+            return [self.rhs[s] + self.eps * self.h(self.s_start, s), self.rhs[s]]
+        else:
+            return [self.g[s] + self.h(self.s_start, s), self.g[s]]
 
     def TopKey(self):
         """
         :return: return the min key and its value.
         """
 
-        s = min(self.U, key=self.U.get)
-        return s, self.U[s]
+        s = min(self.OPEN, key=self.OPEN.get)
+        return s, self.OPEN[s]
 
     def h(self, s_start, s_goal):
         heuristic_type = self.heuristic_type  # heuristic type
@@ -216,7 +283,9 @@ class DStar:
         plt.plot(self.s_start[0], self.s_start[1], "bs")
         plt.plot(self.s_goal[0], self.s_goal[1], "gs")
 
-    def plot_visited(self, visited):
+    def plot_visited(self):
+        self.count += 1
+
         color = ['gainsboro', 'lightgray', 'silver', 'darkgray',
                  'bisque', 'navajowhite', 'moccasin', 'wheat',
                  'powderblue', 'skyblue', 'lightskyblue', 'cornflowerblue']
@@ -224,7 +293,7 @@ class DStar:
         if self.count >= len(color) - 1:
             self.count = 0
 
-        for x in visited:
+        for x in self.visited:
             plt.plot(x[0], x[1], marker='s', color=color[self.count])
 
 
@@ -232,7 +301,7 @@ def main():
     s_start = (5, 5)
     s_goal = (45, 25)
 
-    dstar = DStar(s_start, s_goal, "euclidean")
+    dstar = ADStar(s_start, s_goal, 2.5, "euclidean")
     dstar.run()
 
 

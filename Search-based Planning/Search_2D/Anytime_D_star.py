@@ -106,7 +106,7 @@ class ADStar:
                     self.ComputeOrImprovePath()
                     self.plot_visited()
                     self.plot_path(self.extract_path())
-                    plt.plot(self.title)
+                    # plt.plot(self.title)
                     self.visited = set()
 
                     if self.eps <= 1.0:

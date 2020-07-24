@@ -27,6 +27,11 @@ class Plotting:
         self.plot_visited(nodelist, animation)
         self.plot_path(path)
 
+    def animation_connect(self, V1, V2, path, name):
+        self.plot_grid(name)
+        self.plot_visited_connect(V1, V2)
+        self.plot_path(path)
+
     def plot_grid(self, name):
         fig, ax = plt.subplots()
 
@@ -76,11 +81,32 @@ class Plotting:
                     plt.plot([node.parent.x, node.x], [node.parent.y, node.y], "-g")
                     plt.gcf().canvas.mpl_connect('key_release_event',
                                                  lambda event: [exit(0) if event.key == 'escape' else None])
-                    if count % 10 == 0: plt.pause(0.001)
+                    if count % 10 == 0:
+                        plt.pause(0.001)
         else:
             for node in nodelist:
                 if node.parent:
                     plt.plot([node.parent.x, node.x], [node.parent.y, node.y], "-g")
+
+    @staticmethod
+    def plot_visited_connect(V1, V2):
+        len1, len2 = len(V1), len(V2)
+
+        for k in range(max(len1, len2)):
+            if k < len1:
+                if V1[k].parent:
+                    plt.plot([V1[k].x, V1[k].parent.x], [V1[k].y, V1[k].parent.y], "-g")
+            if k < len2:
+                if V2[k].parent:
+                    plt.plot([V2[k].x, V2[k].parent.x], [V2[k].y, V2[k].parent.y], "-g")
+
+            plt.gcf().canvas.mpl_connect('key_release_event',
+                                         lambda event: [exit(0) if event.key == 'escape' else None])
+
+            if k % 2 == 0:
+                plt.pause(0.001)
+
+        plt.pause(0.01)
 
     @staticmethod
     def plot_path(path):

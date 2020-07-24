@@ -3,10 +3,10 @@ RRT_2D
 @author: huiming zhou
 """
 
-import math
-import numpy as np
 import os
 import sys
+import math
+import numpy as np
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Sampling-based Planning/")
@@ -44,7 +44,7 @@ class Rrt:
 
     def planning(self):
         for i in range(self.iter_max):
-            node_rand = self.random_state(self.goal_sample_rate)
+            node_rand = self.generate_random_node(self.goal_sample_rate)
             node_near = self.nearest_neighbor(self.vertex, node_rand)
             node_new = self.new_state(node_near, node_rand)
 
@@ -58,7 +58,7 @@ class Rrt:
 
         return None
 
-    def random_state(self, goal_sample_rate):
+    def generate_random_node(self, goal_sample_rate):
         delta = self.utils.delta
 
         if np.random.random() > goal_sample_rate:
@@ -67,16 +67,17 @@ class Rrt:
 
         return self.s_goal
 
-    def nearest_neighbor(self, node_list, n):
-        return self.vertex[int(np.argmin([math.hypot(nd.x - n.x, nd.y - n.y)
-                                          for nd in node_list]))]
+    @staticmethod
+    def nearest_neighbor(node_list, n):
+        return node_list[int(np.argmin([math.hypot(nd.x - n.x, nd.y - n.y)
+                                        for nd in node_list]))]
 
     def new_state(self, node_start, node_end):
         dist, theta = self.get_distance_and_angle(node_start, node_end)
 
         dist = min(self.step_len, dist)
         node_new = Node((node_start.x + dist * math.cos(theta),
-                        node_start.y + dist * math.sin(theta)))
+                         node_start.y + dist * math.sin(theta)))
         node_new.parent = node_start
 
         return node_new

@@ -3,10 +3,10 @@ RRT_star 2D
 @author: huiming zhou
 """
 
-import math
-import numpy as np
 import os
 import sys
+import math
+import numpy as np
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Sampling-based Planning/")
@@ -50,7 +50,7 @@ class RrtStar:
             if k % 500 == 0:
                 print(k)
 
-            node_rand = self.random_state(self.goal_sample_rate)
+            node_rand = self.generate_random_node(self.goal_sample_rate)
             node_near = self.nearest_neighbor(self.vertex, node_rand)
             node_new = self.new_state(node_near, node_rand)
 
@@ -64,7 +64,7 @@ class RrtStar:
         index = self.search_goal_parent()
         return self.extract_path(self.vertex[index])
 
-    def random_state(self, goal_sample_rate):
+    def generate_random_node(self, goal_sample_rate):
         delta = self.utils.delta
 
         if np.random.random() > goal_sample_rate:
@@ -161,7 +161,7 @@ def main():
     x_start = (2, 2)  # Starting node
     x_goal = (49, 24)  # Goal node
 
-    rrt_star = RrtStar(x_start, x_goal, 8, 0.10, 20, 10000)
+    rrt_star = RrtStar(x_start, x_goal, 10, 0.10, 20, 10000)
     path = rrt_star.planning()
 
     if path:

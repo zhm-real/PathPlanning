@@ -76,6 +76,7 @@ class MinheapPQ:
     """
     def __init__(self):
         self.pq = [] # lis of the entries arranged in a heap
+        self.nodes = set()
         self.entry_finder = {} # mapping of the item entries
         self.counter = itertools.count() # unique sequence count
         self.REMOVED = '<removed-item>'
@@ -88,12 +89,14 @@ class MinheapPQ:
         entry = [priority, count, item]
         self.entry_finder[item] = entry
         heapq.heappush(self.pq, entry)
+        self.nodes.add(item)
 
     def check_remove(self, item):
         if item not in self.entry_finder:
             return
         entry = self.entry_finder.pop(item)
         entry[-1] = self.REMOVED
+        self.nodes.remove(item)
 
     def get(self):
         """Remove and return the lowest priority task. Raise KeyError if empty."""
@@ -101,6 +104,7 @@ class MinheapPQ:
             priority, count, item = heapq.heappop(self.pq)
             if item is not self.REMOVED:
                 del self.entry_finder[item]
+                self.nodes.remove(item)
                 return item
         raise KeyError('pop from an empty priority queue')
 
@@ -109,6 +113,9 @@ class MinheapPQ:
         
     def enumerate(self):
         return self.pq
+
+    def allnodes(self):
+        return self.nodes
 
 # class QueuePrior:
 #     """

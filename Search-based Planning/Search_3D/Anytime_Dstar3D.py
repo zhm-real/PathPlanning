@@ -52,6 +52,7 @@ class Anytime_Dstar(object):
         # epsilon in the key caculation
         self.epsilon = 1
         self.increment = 0.1
+        self.decrement = 0.2
 
     def getcost(self, xi, xj):
         # use a LUT for getting the costd
@@ -131,9 +132,12 @@ class Anytime_Dstar(object):
                 self.INCONS.add(s)
 
     def ComputeorImprovePath(self):
-        while self.OPEN.top_key() < self.key(self.x0) or self.rhs[self.x0] != self.g[self.x0]:
+        while self.OPEN.top_key() < self.key(self.x0,self.epsilon) or self.rhs[self.x0] != self.g[self.x0]:
             s = self.OPEN.get()
-            visualization(self)
+
+            if getDist(s, tuple(self.env.start)) < self.env.resolution:
+                break
+
             if self.g[s] > self.rhs[s]:
                 self.g[s] = self.rhs[s]
                 self.CLOSED.add(s)
@@ -148,13 +152,15 @@ class Anytime_Dstar(object):
             self.ind += 1
 
     def Main(self):
-        epsilon = self.epsilon
-        increment = self.increment
         ischanged = False
         islargelychanged = False
+        t = 0
         self.ComputeorImprovePath()
         #TODO publish current epsilon sub-optimal solution
         while True:
+            print(t)
+            if t == 5:
+                break
             # change environment
             new2,old2 = self.env.move_block(theta = [0,0,0.1*t], mode='rotation')
             ischanged = True
@@ -170,23 +176,23 @@ class Anytime_Dstar(object):
                 ischanged = False
 
             if islargelychanged:  
-                epsilon += increment # or replan from scratch
-            elif epsilon > 1:
-                epsilon -= increment
+                self.epsilon += self.increment # or replan from scratch
+            elif self.epsilon > 1:
+                self.epsilon -= self.decrement
             
             # move states from the INCONS to OPEN
             # update priorities in OPEN
-            Allnodes = self.INCONS.union(set(self.OPEN.enumerate()))
+            Allnodes = self.INCONS.union(self.OPEN.allnodes())
             for node in Allnodes:
-                self.OPEN.put(node, self.key(node, epsilon)) 
+                self.OPEN.put(node, self.key(node, self.epsilon)) 
             self.INCONS = set()
             self.CLOSED = set()
             self.ComputeorImprovePath()
-            # publish current epsilon sub optimal solution
+            #TODO publish current epsilon sub optimal solution
             # if epsilon == 1:
                 # wait for change to occur
-        pass
+            t += 1
 
 if __name__ == '__main__':
-    AD = Anytime_Dstar(resolution = 0.5)
+    AD = Anytime_Dstar(resolution = 1)
     AD.Main()

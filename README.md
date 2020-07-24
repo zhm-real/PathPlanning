@@ -76,7 +76,7 @@ Directory Structure
 <table>
   <tr>
     <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Search-based%20Planning/gif/ADstar_small.gif" alt="lpastar" width="400"/></a></td>
-    <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Search-based%20Planning/gif/ADstar_sig.giff" alt="dstarlite" width="400"/></a></td>
+    <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Search-based%20Planning/gif/ADstar_sig.gif" alt="dstarlite" width="400"/></a></td>
   </tr>
 </table>
 </div>

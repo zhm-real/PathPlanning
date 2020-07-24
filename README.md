@@ -38,7 +38,7 @@ Directory Structure
         └── Q-learning.py                               # Q-learning : off-policy TD control
 
 ## Animations
-### DFS & BFS (Dijkstra)
+### Best-First & Dijkstra
 <div align=right>
 <table>
   <tr>

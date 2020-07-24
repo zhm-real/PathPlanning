@@ -14,6 +14,7 @@ Directory Structure
             ├── RTAAstar.py                             # Real-time Adaptive A*
             ├── LPAstar.py                              # Lifelong Planning A*
             ├── D_star.py                               # D* (Dynamic A*)
+            ├── Anytime_D_star.py                       # Anytime D*
             └── D_star_Lite.py                          # D* Lite
         └── Search_3D
             ├── Astar3D.py                              # A*_3D

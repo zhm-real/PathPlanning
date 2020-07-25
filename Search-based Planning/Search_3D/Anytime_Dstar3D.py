@@ -157,21 +157,25 @@ class Anytime_Dstar(object):
         t = 0
         self.ComputeorImprovePath()
         #TODO publish current epsilon sub-optimal solution
+        self.done = True
+        self.ind = 0
         self.Path = self.path()
+        visualization(self)
         while True:
-            print(t)
-            print(self.Path)
-            if t == 5:
+            visualization(self)
+            if t == 20:
                 break
             # change environment
-            new2,old2 = self.env.move_block(theta = [0,0,0.1*t], mode='rotation')
+            # new2,old2 = self.env.move_block(theta = [0,0,0.1*t], mode='rotation')
+            new2,old2 = self.env.move_block(a = [0,0,-0.2], mode='translation')
             ischanged = True
             # islargelychanged = True
             self.Path = []
 
             # update cost with changed environment
             if ischanged:
-                CHANGED = self.updatecost(True, new2, old2, mode='obb')
+                # CHANGED = self.updatecost(True, new2, old2, mode='obb')
+                CHANGED = self.updatecost(True, new2, old2)
                 for u in CHANGED:
                     self.UpdateState(u)
                 self.ComputeorImprovePath()

@@ -42,6 +42,34 @@ def draw_block_list(ax, blocks ,color=None,alpha=0.15):
         h = ax.add_collection3d(pc)
         return h
 
+def obb_verts(obb):
+    # 0.017004013061523438 for 1000 iters
+    ori_body = np.array([[1,1,1],[-1,1,1],[-1,-1,1],[1,-1,1],\
+                [1,1,-1],[-1,1,-1],[-1,-1,-1],[1,-1,-1]])
+    # P + (ori * E)
+    ori_body = np.multiply(ori_body,obb.E)
+    # obb.O is orthornormal basis in {W}, aka rotation matrix in SO(3)
+    verts = (obb.O@ori_body.T).T + obb.P
+    return verts
+
+
+def draw_obb(ax, OBB, color=None,alpha=0.15):
+    f = np.array([[0, 1, 5, 4], [1, 2, 6, 5], [2, 3, 7, 6], [3, 0, 4, 7], [0, 1, 2, 3], [4, 5, 6, 7]])
+    n = OBB.shape[0]
+    vl = np.zeros((8 * n, 3))
+    fl = np.zeros((6 * n, 4), dtype='int64')
+    for k in range(n):
+        vl[k * 8:(k + 1) * 8, :] = obb_verts(OBB[k])
+        fl[k * 6:(k + 1) * 6, :] = f + k * 8
+    if type(ax) is Poly3DCollection:
+        ax.set_verts(vl[fl])
+    else:
+        pc = Poly3DCollection(vl[fl], alpha=alpha, linewidths=1, edgecolors='k')
+        pc.set_facecolor(color)
+        h = ax.add_collection3d(pc)
+        return h
+
+
 def draw_line(ax,SET,visibility=1,color=None):
     if SET != []:
         for i in SET:
@@ -52,8 +80,8 @@ def draw_line(ax,SET,visibility=1,color=None):
             ax.add_line(line)
 
 def visualization(initparams):
-    if initparams.ind % 10 == 0 or initparams.done:
-        V = np.array(initparams.V)
+    if initparams.ind % 20 == 0 or initparams.done:
+        V = np.array(list(initparams.V))
         E = initparams.E
         Path = np.array(initparams.Path)
         start = initparams.env.start
@@ -61,15 +89,21 @@ def visualization(initparams):
         edges = E.get_edge()
         # generate axis objects
         ax = plt.subplot(111, projection='3d')
-        ax.view_init(elev=0., azim=90)
+        #ax.view_init(elev=0.+ 0.03*initparams.ind/(2*np.pi), azim=90 + 0.03*initparams.ind/(2*np.pi))
+        #ax.view_init(elev=0., azim=90.)
+        ax.view_init(elev=8., azim=120.)
+        #ax.view_init(elev=-8., azim=180)
         ax.clear()
         # drawing objects
         draw_Spheres(ax, initparams.env.balls)
         draw_block_list(ax, initparams.env.blocks)
+        if initparams.env.OBB is not None:
+            draw_obb(ax,initparams.env.OBB)
         draw_block_list(ax, np.array([initparams.env.boundary]),alpha=0)
         draw_line(ax,edges,visibility=0.25)
         draw_line(ax,Path,color='r')
-        ax.scatter3D(V[:, 0], V[:, 1], V[:, 2], s=2, color='g',)
+        if len(V) > 0:
+            ax.scatter3D(V[:, 0], V[:, 1], V[:, 2], s=2, color='g',)
         ax.plot(start[0:1], start[1:2], start[2:], 'go', markersize=7, markeredgecolor='k')
         ax.plot(goal[0:1], goal[1:2], goal[2:], 'ro', markersize=7, markeredgecolor='k') 
         # adjust the aspect ratio
@@ -80,7 +114,7 @@ def visualization(initparams):
         ax.get_proj = make_get_proj(ax,1*dx, 1*dy, 2*dy)
         plt.xlabel('x')
         plt.ylabel('y')
-        plt.pause(0.001)
+        plt.pause(0.0001)
 
 def make_get_proj(self, rx, ry, rz):
     '''
@@ -135,3 +169,6 @@ def make_get_proj(self, rx, ry, rz):
         M = np.dot(perspM, M0)
         return M
     return get_proj
+
+if __name__ == '__main__':
+    pass

@@ -52,6 +52,7 @@ class Anytime_Dstar(object):
         # epsilon in the key caculation
         self.epsilon = 1
         self.increment = 0.1
+        self.decrement = 0.2
 
     def getcost(self, xi, xj):
         # use a LUT for getting the costd
@@ -131,9 +132,12 @@ class Anytime_Dstar(object):
                 self.INCONS.add(s)
 
     def ComputeorImprovePath(self):
-        while self.OPEN.top_key() < self.key(self.x0) or self.rhs[self.x0] != self.g[self.x0]:
+        while self.OPEN.top_key() < self.key(self.x0,self.epsilon) or self.rhs[self.x0] != self.g[self.x0]:
             s = self.OPEN.get()
-            visualization(self)
+
+            if getDist(s, tuple(self.env.start)) < self.env.resolution:
+                break
+
             if self.g[s] > self.rhs[s]:
                 self.g[s] = self.rhs[s]
                 self.CLOSED.add(s)
@@ -148,45 +152,77 @@ class Anytime_Dstar(object):
             self.ind += 1
 
     def Main(self):
-        epsilon = self.epsilon
-        increment = self.increment
         ischanged = False
         islargelychanged = False
+        t = 0
         self.ComputeorImprovePath()
         #TODO publish current epsilon sub-optimal solution
+        self.done = True
+        self.ind = 0
+        self.Path = self.path()
+        visualization(self)
         while True:
+            visualization(self)
+            if t == 20:
+                break
             # change environment
-            new2,old2 = self.env.move_block(theta = [0,0,0.1*t], mode='rotation')
+            # new2,old2 = self.env.move_block(theta = [0,0,0.1*t], mode='rotation')
+            new2,old2 = self.env.move_block(a = [0,0,-0.2], mode='translation')
             ischanged = True
             # islargelychanged = True
             self.Path = []
 
             # update cost with changed environment
             if ischanged:
-                CHANGED = self.updatecost(True, new2, old2, mode='obb')
+                # CHANGED = self.updatecost(True, new2, old2, mode='obb')
+                CHANGED = self.updatecost(True, new2, old2)
                 for u in CHANGED:
                     self.UpdateState(u)
                 self.ComputeorImprovePath()
                 ischanged = False
 
             if islargelychanged:  
-                epsilon += increment # or replan from scratch
-            elif epsilon > 1:
-                epsilon -= increment
+                self.epsilon += self.increment # or replan from scratch
+            elif self.epsilon > 1:
+                self.epsilon -= self.decrement
             
             # move states from the INCONS to OPEN
             # update priorities in OPEN
-            Allnodes = self.INCONS.union(set(self.OPEN.enumerate()))
+            Allnodes = self.INCONS.union(self.OPEN.allnodes())
             for node in Allnodes:
-                self.OPEN.put(node, self.key(node, epsilon)) 
+                self.OPEN.put(node, self.key(node, self.epsilon)) 
             self.INCONS = set()
             self.CLOSED = set()
             self.ComputeorImprovePath()
-            # publish current epsilon sub optimal solution
+            #TODO publish current epsilon sub optimal solution
+            self.Path = self.path()
             # if epsilon == 1:
                 # wait for change to occur
-        pass
+            t += 1
+
+    def path(self, s_start=None):
+        '''After ComputeShortestPath()
+        returns, one can then follow a shortest path from s_start to
+        s_goal by always moving from the current vertex s, starting
+        at s_start. , to any successor s' that minimizes c(s,s') + g(s') 
+        until s_goal is reached (ties can be broken arbitrarily).'''
+        path = []
+        s_goal = self.xt
+        s = self.x0
+        ind = 0
+        while getDist(s, s_goal) > self.env.resolution:
+            if s == self.x0:
+                children = [i for i in self.CLOSED if getDist(s, i) <= self.env.resolution*np.sqrt(3)]
+            else: 
+                children = list(self.CHILDREN[s])
+            snext = children[np.argmin([self.getcost(s,s_p) + self.getg(s_p) for s_p in children])]
+            path.append([s, snext])
+            s = snext
+            if ind > 100:
+                break
+            ind += 1
+        return path
 
 if __name__ == '__main__':
-    AD = Anytime_Dstar(resolution = 0.5)
+    AD = Anytime_Dstar(resolution = 1)
     AD.Main()

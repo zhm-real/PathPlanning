@@ -23,7 +23,11 @@ class Utils:
         self.obs_circle = self.env.obs_circle
         self.obs_rectangle = self.env.obs_rectangle
         self.obs_boundary = self.env.obs_boundary
-        self.obs_vertex = self.get_obs_vertex()
+
+    def update_obs(self, obs_cir, obs_bound, obs_rec):
+        self.obs_circle = obs_cir
+        self.obs_boundary = obs_bound
+        self.obs_rectangle = obs_rec
 
     def get_obs_vertex(self):
         delta = self.delta
@@ -81,8 +85,9 @@ class Utils:
             return True
 
         o, d = self.get_ray(start, end)
+        obs_vertex = self.get_obs_vertex()
 
-        for (v1, v2, v3, v4) in self.obs_vertex:
+        for (v1, v2, v3, v4) in obs_vertex:
             if self.is_intersect_rec(start, end, o, d, v1, v2):
                 return True
             if self.is_intersect_rec(start, end, o, d, v2, v3):

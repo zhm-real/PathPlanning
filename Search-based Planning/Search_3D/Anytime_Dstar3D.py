@@ -157,8 +157,10 @@ class Anytime_Dstar(object):
         t = 0
         self.ComputeorImprovePath()
         #TODO publish current epsilon sub-optimal solution
+        self.Path = self.path()
         while True:
             print(t)
+            print(self.Path)
             if t == 5:
                 break
             # change environment
@@ -189,9 +191,33 @@ class Anytime_Dstar(object):
             self.CLOSED = set()
             self.ComputeorImprovePath()
             #TODO publish current epsilon sub optimal solution
+            self.Path = self.path()
             # if epsilon == 1:
                 # wait for change to occur
             t += 1
+
+    def path(self, s_start=None):
+        '''After ComputeShortestPath()
+        returns, one can then follow a shortest path from s_start to
+        s_goal by always moving from the current vertex s, starting
+        at s_start. , to any successor s' that minimizes c(s,s') + g(s') 
+        until s_goal is reached (ties can be broken arbitrarily).'''
+        path = []
+        s_goal = self.xt
+        s = self.x0
+        ind = 0
+        while getDist(s, s_goal) > self.env.resolution:
+            if s == self.x0:
+                children = [i for i in self.CLOSED if getDist(s, i) <= self.env.resolution*np.sqrt(3)]
+            else: 
+                children = list(self.CHILDREN[s])
+            snext = children[np.argmin([self.getcost(s,s_p) + self.getg(s_p) for s_p in children])]
+            path.append([s, snext])
+            s = snext
+            if ind > 100:
+                break
+            ind += 1
+        return path
 
 if __name__ == '__main__':
     AD = Anytime_Dstar(resolution = 1)

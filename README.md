@@ -87,7 +87,7 @@ Directory Structure
 <div align=right>
 <table>
   <tr>
-    <td><img src="https://github.com/zhm-real/PathPlanning/blob/master/Sampling-based%20Planning/gif/RRT_2D.gif" alt="value iteration" width="400"/></a></td>
+    <td><img src="https://github.com/zhm-real/PathPlanning/blob/master/Sampling-based%20Planning/gif/Goal_biasd_RRT_2D.gif" alt="value iteration" width="400"/></a></td>
     <td><img src="https://github.com/zhm-real/PathPlanning/blob/master/Sampling-based%20Planning/gif/RRT_CONNECT_2D.gif" alt="value iteration" width="400"/></a></td>
   </tr>
 </table>

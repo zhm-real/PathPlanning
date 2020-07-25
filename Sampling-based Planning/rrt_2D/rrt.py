@@ -107,7 +107,7 @@ def main():
     path = rrt.planning()
 
     if path:
-        rrt.plotting.animation(rrt.vertex, path, "RRT", True)
+        rrt.plotting.animation(rrt.vertex, path, "Goal-bias RRT", True)
     else:
         print("No Path Found!")
 

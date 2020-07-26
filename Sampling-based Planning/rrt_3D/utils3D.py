@@ -169,9 +169,12 @@ def nearest(initparams, x):
 
 
 def steer(initparams, x, y):
-    direc = (y - x) / np.linalg.norm(y - x)
-    xnew = x + initparams.stepsize * direc
-    return tuple(xnew)
+    dist, step = getDist(y, x), initparams.stepsize
+    increment = ((y[0] - x[0]) / dist * step, (y[1] - x[1]) / dist * step, (y[2] - x[2]) / dist * step)
+    xnew = (x[0] + increment[0], x[1] + increment[1], x[2] + increment[2])
+    # direc = (y - x) / np.linalg.norm(y - x)
+    # xnew = x + initparams.stepsize * direc
+    return xnew
 
 
 def near(initparams, x):
@@ -199,8 +202,8 @@ def cost(initparams, x):
 
 
 def path(initparams, Path=[], dist=0):
-    x = initparams.env.goal
-    while not all(x == initparams.env.start):
+    x = tuple(initparams.env.goal)
+    while x != tuple(initparams.env.start):
         x2 = initparams.Parent[x]
         Path.append(np.array([x, x2]))
         dist += getDist(x, x2)
@@ -225,7 +228,8 @@ class edgeset(object):
         if x in self.E:
             self.E[x].add(y)
         else:
-            self.E[x] = set(y)
+            self.E[x] = set()
+            self.E[x].add(y)
 
     def remove_edge(self, edge):
         x, y = edge[0], edge[1]

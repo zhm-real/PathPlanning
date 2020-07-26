@@ -21,12 +21,13 @@ from rrt_3D.utils3D import getDist, sampleFree, nearest, steer, isCollide, near,
 class rrtstar():
     def __init__(self):
         self.env = env()
-        self.Parent = defaultdict(lambda: defaultdict(dict))
+        # self.Parent = defaultdict(lambda: defaultdict(dict))
+        self.Parent = {}
         self.V = []
         self.E = edgeset()
         self.i = 0
         self.maxiter = 10000
-        self.stepsize = 1.0
+        self.stepsize = 0.5
         self.Path = []
         self.done = False
 
@@ -39,7 +40,7 @@ class rrtstar():
         self.ind = 0
         self.fig = plt.figure(figsize=(10, 8))
         xnew = self.env.start
-        while self.ind < self.maxiter and getDist(xnew, self.env.goal) > 1:
+        while self.ind < self.maxiter and getDist(xnew, self.env.goal) > self.stepsize:
             xrand = sampleFree(self)
             xnearest = nearest(self, xrand)
             xnew = steer(self, xnearest, xrand)
@@ -47,13 +48,17 @@ class rrtstar():
             if not collide:
                 self.V.append(xnew)  # add point
                 self.wireup(xnew, xnearest)
+
+                if getDist(xnew, self.env.goal) <= self.stepsize:
+                    goal = tuple(self.env.goal)
+                    self.wireup(goal, xnew)
+                    self.Path, D = path(self)
+                    print('Total distance = ' + str(D))
                 # visualization(self)
                 self.i += 1
             self.ind += 1
-            if getDist(xnew, self.env.goal) <= 1:
-                self.wireup(self.env.goal, xnew)
-                self.Path, D = path(self)
-                print('Total distance = ' + str(D))
+            # if the goal is really reached
+            
         self.done = True
         visualization(self)
         plt.show()

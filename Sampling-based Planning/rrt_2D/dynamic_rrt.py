@@ -133,7 +133,6 @@ class DynamicRrt:
         for edge in self.edges:
             if self.is_collision_obs_add(edge.parent, edge.child):
                 edge.child.flag = "INVALID"
-                edge.flag = "INVALID"
 
     def is_path_invalid(self):
         for node in self.waypoint:

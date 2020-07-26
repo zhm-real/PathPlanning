@@ -148,7 +148,7 @@ def main():
     x_start = (2, 2)  # Starting node
     x_goal = (49, 24)  # Goal node
 
-    rrt_conn = RrtConnect(x_start, x_goal, 0.8, 0.03, 5000)
+    rrt_conn = RrtConnect(x_start, x_goal, 0.8, 0.05, 5000)
     path = rrt_conn.planning()
 
     rrt_conn.plotting.animation_connect(rrt_conn.V1, rrt_conn.V2, path, "RRT_CONNECT")

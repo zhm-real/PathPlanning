@@ -55,6 +55,7 @@ class RrtStar:
             node_new = self.new_state(node_near, node_rand)
 
             if node_new and not self.utils.is_collision(node_near, node_new):
+                self.vertex.append(node_new)
                 neighbor_index = self.find_near_neighbor(node_new)
                 if neighbor_index:
                     node_new = self.choose_parent(node_new, neighbor_index)
@@ -92,8 +93,9 @@ class RrtStar:
         r = min(self.search_radius * math.sqrt((math.log(n) / n)), self.step_len)
 
         dist_table = [math.hypot(nd.x - node_new.x, nd.y - node_new.y) for nd in self.vertex]
-        dist_table_index = [dist_table.index(d) for d in dist_table if d <= r and
-                            not self.utils.is_collision(node_new, self.vertex[dist_table.index(d)])]
+        dist_table_index = [dist_table.index(d) for d in dist_table if d <= r]
+        dist_table_index = [ind for ind in dist_table_index
+                            if not self.utils.is_collision(node_new, self.vertex[ind])]
 
         return dist_table_index
 

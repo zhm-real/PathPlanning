@@ -47,8 +47,8 @@ def sampleFree(initparams):
         if i < 0.1:
             return initparams.env.goal + 1
         else:
-            return np.array(x)
-        return np.array(x)
+            return x
+        return x
 
 
 def isinside(initparams, x):
@@ -65,25 +65,98 @@ def isinbound(i, x):
     return False
 
 
-def isCollide(initparams, x, y):
-    '''see if line intersects obstacle'''
-    ray = getRay(x, y)
-    dist = getDist(x, y)
-    if not isinbound(initparams.env.boundary, y):
-        return True
-    for i in getAABB(initparams.env.blocks):
-        shot = pyrr.geometric_tests.ray_intersect_aabb(ray, i)
-        if shot is not None:
-            dist_wall = getDist(x, shot)
-            if dist_wall <= dist:  # collide
-                return True
-    for i in initparams.env.balls:
-        shot = pyrr.geometric_tests.ray_intersect_sphere(ray, i)
-        if shot != []:
-            dists_ball = [getDist(x, j) for j in shot]
-            if all(dists_ball <= dist):  # collide
-                return True
+# def isCollide(initparams, x, y):
+#     '''see if line intersects obstacle'''
+#     ray = getRay(x, y)
+#     dist = getDist(x, y)
+#     if not isinbound(initparams.env.boundary, y):
+#         return True
+#     for i in getAABB(initparams.env.blocks):
+#         shot = pyrr.geometric_tests.ray_intersect_aabb(ray, i)
+#         if shot is not None:
+#             dist_wall = getDist(x, shot)
+#             if dist_wall <= dist:  # collide
+#                 return True
+#     for i in initparams.env.balls:
+#         shot = pyrr.geometric_tests.ray_intersect_sphere(ray, i)
+#         if shot != []:
+#             dists_ball = [getDist(x, j) for j in shot]
+#             if all(dists_ball <= dist):  # collide
+#                 return True
+#     return False
+def lineSphere(p0, p1, ball):
+    # https://cseweb.ucsd.edu/classes/sp19/cse291-d/Files/CSE291_13_CollisionDetection.pdf
+    c, r = ball[0:3], ball[-1]
+    line = [p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2]]
+    d1 = [c[0] - p0[0], c[1] - p0[1], c[2] - p0[2]]
+    t = (1 / (line[0] * line[0] + line[1] * line[1] + line[2] * line[2])) * (
+                line[0] * d1[0] + line[1] * d1[1] + line[2] * d1[2])
+    if t <= 0:
+        if (d1[0] * d1[0] + d1[1] * d1[1] + d1[2] * d1[2]) <= r ** 2: return True
+    elif t >= 1:
+        d2 = [c[0] - p1[0], c[1] - p1[1], c[2] - p1[2]]
+        if (d2[0] * d2[0] + d2[1] * d2[1] + d2[2] * d2[2]) <= r ** 2: return True
+    elif 0 < t < 1:
+        x = [p0[0] + t * line[0], p0[1] + t * line[1], p0[2] + t * line[2]]
+        k = [c[0] - x[0], c[1] - x[1], c[2] - x[2]]
+        if (k[0] * k[0] + k[1] * k[1] + k[2] * k[2]) <= r ** 2: return True
     return False
+
+def lineAABB(p0, p1, dist, aabb):
+    # https://www.gamasutra.com/view/feature/131790/simple_intersection_tests_for_games.php?print=1
+    # aabb should have the attributes of P, E as center point and extents
+    mid = [(p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2, (p0[2] + p1[2]) / 2]  # mid point
+    I = [(p1[0] - p0[0]) / dist, (p1[1] - p0[1]) / dist, (p1[2] - p0[2]) / dist]  # unit direction
+    hl = dist / 2  # radius
+    T = [aabb.P[0] - mid[0], aabb.P[1] - mid[1], aabb.P[2] - mid[2]]
+    # do any of the principal axis form a separting axis?
+    if abs(T[0]) > (aabb.E[0] + hl * abs(I[0])): return False
+    if abs(T[1]) > (aabb.E[1] + hl * abs(I[1])): return False
+    if abs(T[2]) > (aabb.E[2] + hl * abs(I[2])): return False
+    # I.cross(x axis) ?
+    r = aabb.E[1] * abs(I[2]) + aabb.E[2] * abs(I[1])
+    if abs(T[1] * I[2] - T[2] * I[1]) > r: return False
+    # I.cross(y axis) ?
+    r = aabb.E[0] * abs(I[2]) + aabb.E[2] * abs(I[0])
+    if abs(T[2] * I[0] - T[0] * I[2]) > r: return False
+    # I.cross(z axis) ?
+    r = aabb.E[0] * abs(I[1]) + aabb.E[1] * abs(I[0])
+    if abs(T[0] * I[1] - T[1] * I[0]) > r: return False
+
+    return True
+
+def lineOBB(p0, p1, dist, obb):
+    # transform points to obb frame
+    res = obb.T@np.column_stack([np.array([p0,p1]),[1,1]]).T 
+    # record old position and set the position to origin
+    oldP, obb.P= obb.P, [0,0,0] 
+    # calculate segment-AABB testing
+    ans = lineAABB(res[0:3,0],res[0:3,1],dist,obb)
+    # reset the position
+    obb.P = oldP 
+    return ans
+
+def isCollide(initparams, x, child, dist=None):
+    '''see if line intersects obstacle'''
+    '''specified for expansion in A* 3D lookup table'''
+    if dist==None:
+        dist = getDist(x, child)
+    # check in bound
+    if not isinbound(initparams.env.boundary, child): 
+        return True, dist
+    # check collision in AABB
+    for i in range(len(initparams.env.AABB)):
+        if lineAABB(x, child, dist, initparams.env.AABB[i]): 
+            return True, dist
+    # check collision in ball
+    for i in initparams.env.balls:
+        if lineSphere(x, child, i): 
+            return True, dist
+    # check collision with obb
+    for i in initparams.env.OBB:
+        if lineOBB(x, child, dist, i):
+            return True, dist
+    return False, dist
 
 
 def nearest(initparams, x):
@@ -92,13 +165,13 @@ def nearest(initparams, x):
         return initparams.V[0]
     xr = repmat(x, len(V), 1)
     dists = np.linalg.norm(xr - V, axis=1)
-    return initparams.V[np.argmin(dists)]
+    return tuple(initparams.V[np.argmin(dists)])
 
 
 def steer(initparams, x, y):
     direc = (y - x) / np.linalg.norm(y - x)
     xnew = x + initparams.stepsize * direc
-    return xnew
+    return tuple(xnew)
 
 
 def near(initparams, x):
@@ -106,7 +179,8 @@ def near(initparams, x):
     eta = initparams.eta
     gamma = initparams.gamma
     r = min(gamma * (np.log(cardV) / cardV), eta)
-    if initparams.done: r = 1
+    if initparams.done: 
+        r = 1
     V = np.array(initparams.V)
     if initparams.i == 0:
         return [initparams.V[0]]
@@ -118,16 +192,16 @@ def near(initparams, x):
 
 def cost(initparams, x):
     '''here use the additive recursive cost function'''
-    if all(x == initparams.env.start):
+    if all(x == tuple(initparams.env.start)):
         return 0
-    xparent = initparams.Parent[hash3D(x)]
+    xparent = initparams.Parent[x]
     return cost(initparams, xparent) + getDist(x, xparent)
 
 
 def path(initparams, Path=[], dist=0):
     x = initparams.env.goal
     while not all(x == initparams.env.start):
-        x2 = initparams.Parent[hash3D(x)]
+        x2 = initparams.Parent[x]
         Path.append(np.array([x, x2]))
         dist += getDist(x, x2)
         x = x2
@@ -147,20 +221,20 @@ class edgeset(object):
         self.E = {}
 
     def add_edge(self, edge):
-        x, y = hash3D(edge[0]), hash3D(edge[1])
+        x, y = edge[0], edge[1]
         if x in self.E:
-            self.E[x].append(y)
+            self.E[x].add(y)
         else:
-            self.E[x] = [y]
+            self.E[x] = set(y)
 
     def remove_edge(self, edge):
         x, y = edge[0], edge[1]
-        self.E[hash3D(x)].remove(hash3D(y))
+        self.E[x].remove(y)
 
     def get_edge(self):
         edges = []
         for v in self.E:
             for n in self.E[v]:
                 # if (n,v) not in edges:
-                edges.append((dehash(v), dehash(n)))
+                edges.append((v, n))
         return edges

@@ -61,6 +61,7 @@ class D_star_Lite(object):
                     removed = oldchildren.difference(newchildren)
                     intersection = oldchildren.intersection(newchildren)
                     added = newchildren.difference(oldchildren)
+                    self.CHILDREN[xi] = newchildren
                     for xj in removed:
                         self.COST[xi][xj] = cost(self, xi, xj)
                     for xj in intersection.union(added):

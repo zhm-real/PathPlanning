@@ -197,7 +197,7 @@ class Anytime_Dstar(object):
             self.INCONS = set()
             self.CLOSED = set()
             self.ComputeorImprovePath()
-            # TODO publish current epsilon sub optimal solution
+            # publish current epsilon sub optimal solution
             self.Path = self.path()
             # if epsilon == 1:
             # wait for change to occur

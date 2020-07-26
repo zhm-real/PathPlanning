@@ -32,10 +32,10 @@ class rrtstar():
 
     def wireup(self, x, y):
         self.E.add_edge([x, y])  # add edge
-        self.Parent[hash3D(x)] = y
+        self.Parent[x] = y
 
     def run(self):
-        self.V.append(self.env.start)
+        self.V.append(tuple(self.env.start))
         self.ind = 0
         self.fig = plt.figure(figsize=(10, 8))
         xnew = self.env.start
@@ -43,10 +43,11 @@ class rrtstar():
             xrand = sampleFree(self)
             xnearest = nearest(self, xrand)
             xnew = steer(self, xnearest, xrand)
-            if not isCollide(self, xnearest, xnew):
+            collide, _ = isCollide(self, xnearest, xnew)
+            if not collide:
                 self.V.append(xnew)  # add point
                 self.wireup(xnew, xnearest)
-                visualization(self)
+                # visualization(self)
                 self.i += 1
             self.ind += 1
             if getDist(xnew, self.env.goal) <= 1:

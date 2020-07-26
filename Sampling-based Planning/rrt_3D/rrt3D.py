@@ -29,6 +29,7 @@ class rrtstar():
         self.stepsize = 0.5
         self.Path = []
         self.done = False
+        self.x0 = tuple(self.env.start)
 
     def wireup(self, x, y):
         self.E.add_edge([x, y])  # add edge

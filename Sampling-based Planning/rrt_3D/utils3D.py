@@ -37,14 +37,14 @@ def getDist(pos1, pos2):
 '''
 
 
-def sampleFree(initparams):
+def sampleFree(initparams, bias = 0.1):
     '''biased sampling'''
     x = np.random.uniform(initparams.env.boundary[0:3], initparams.env.boundary[3:6])
     i = np.random.random()
     if isinside(initparams, x):
         return sampleFree(initparams)
     else:
-        if i < 0.1:
+        if i < bias:
             return initparams.env.goal + 1
         else:
             return x
@@ -172,10 +172,9 @@ def steer(initparams, x, y):
 
 def cost(initparams, x):
     '''here use the additive recursive cost function'''
-    if x == tuple(initparams.env.start):
+    if x == initparams.x0:
         return 0
-    xparent = initparams.Parent[x]
-    return cost(initparams, xparent) + getDist(x, xparent)
+    return cost(initparams, initparams.Parent[x]) + getDist(x, initparams.Parent[x])
 
 
 def path(initparams, Path=[], dist=0):

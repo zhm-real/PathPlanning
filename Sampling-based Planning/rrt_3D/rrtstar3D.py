@@ -23,12 +23,13 @@ class rrtstar():
         self.E = edgeset()
         self.V = []
         self.i = 0
-        self.maxiter = 2000 # at least 2000 in this env
+        self.maxiter = 12000 # at least 2000 in this env
         self.stepsize = 0.5
         self.gamma = 500
         self.eta = 2*self.stepsize
         self.Path = []
         self.done = False
+        self.x0 = tuple(self.env.start)
 
     def wireup(self,x,y):
         self.E.add_edge([x,y]) # add edge
@@ -52,7 +53,7 @@ class rrtstar():
     def run(self):
         self.V.append(tuple(self.env.start))
         self.ind = 0
-        xnew = tuple(self.env.start)
+        xnew = self.x0
         print('start rrt*... ')
         self.fig = plt.figure(figsize = (10,8))
         while self.ind < self.maxiter:

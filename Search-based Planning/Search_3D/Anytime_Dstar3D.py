@@ -91,27 +91,29 @@ class Anytime_Dstar(object):
         # scan graph for changed cost, if cost is changed update it
         CHANGED = set()
         for xi in self.CLOSED:
-            if xi in self.CHILDREN:
-                oldchildren = self.CHILDREN[xi]  # A
-                if isinbound(old, xi, mode) or isinbound(new, xi, mode):
-                    newchildren = set(children(self, xi))  # B
-                    removed = oldchildren.difference(newchildren)
-                    intersection = oldchildren.intersection(newchildren)
-                    added = newchildren.difference(oldchildren)
-                    self.CHILDREN[xi] = newchildren
-                    for xj in removed:
-                        self.COST[xi][xj] = cost(self, xi, xj)
-                    for xj in intersection.union(added):
-                        self.COST[xi][xj] = cost(self, xi, xj)
-                    CHANGED.add(xi)
-            else:
-                if isinbound(old, xi, mode) or isinbound(new, xi, mode):
-                    CHANGED.add(xi)
-                    children_added = set(children(self, xi))
-                    self.CHILDREN[xi] = children_added
-                    for xj in children_added:
-                        self.COST[xi][xj] = cost(self, xi, xj)
+            if isinbound(old, xi, mode) or isinbound(new, xi, mode):
+                newchildren = set(children(self, xi))  # B
+                self.CHILDREN[xi] = newchildren
+                for xj in newchildren:
+                    self.COST[xi][xj] = cost(self, xi, xj)
+                CHANGED.add(xi)
         return CHANGED
+
+    # def updateGraphCost(self, range_changed=None, new=None, old=None, mode=False):
+    #     # TODO scan graph for changed cost, if cost is changed update it
+    #     # make the graph cost via vectorization
+    #     CHANGED = set()
+    #     Allnodes = np.array(list(self.CLOSED))
+    #     isChanged = isinbound(old, Allnodes, mode = mode, isarray = True) & \
+    #                 isinbound(new, Allnodes, mode = mode, isarray = True)
+    #     Changednodes = Allnodes[isChanged]
+    #     for xi in Changednodes:
+    #         xi = tuple(xi)
+    #         CHANGED.add(xi)
+    #         self.CHILDREN[xi] = set(children(self, xi))
+    #         for xj in self.CHILDREN:
+    #             self.COST[xi][xj] = cost(self, xi, xj)
+        
 
     # --------------main functions for Anytime D star
 
@@ -228,5 +230,5 @@ class Anytime_Dstar(object):
 
 
 if __name__ == '__main__':
-    AD = Anytime_Dstar(resolution=0.5)
+    AD = Anytime_Dstar(resolution=1)
     AD.Main()

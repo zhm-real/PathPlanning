@@ -50,7 +50,7 @@ def sampleFree(initparams):
             return x
         return x
 
-
+# ---------------------- Collision checking algorithms
 def isinside(initparams, x):
     '''see if inside obstacle'''
     for i in initparams.env.blocks:
@@ -58,32 +58,11 @@ def isinside(initparams, x):
             return True
     return False
 
-
 def isinbound(i, x):
     if i[0] <= x[0] < i[3] and i[1] <= x[1] < i[4] and i[2] <= x[2] < i[5]:
         return True
     return False
 
-
-# def isCollide(initparams, x, y):
-#     '''see if line intersects obstacle'''
-#     ray = getRay(x, y)
-#     dist = getDist(x, y)
-#     if not isinbound(initparams.env.boundary, y):
-#         return True
-#     for i in getAABB(initparams.env.blocks):
-#         shot = pyrr.geometric_tests.ray_intersect_aabb(ray, i)
-#         if shot is not None:
-#             dist_wall = getDist(x, shot)
-#             if dist_wall <= dist:  # collide
-#                 return True
-#     for i in initparams.env.balls:
-#         shot = pyrr.geometric_tests.ray_intersect_sphere(ray, i)
-#         if shot != []:
-#             dists_ball = [getDist(x, j) for j in shot]
-#             if all(dists_ball <= dist):  # collide
-#                 return True
-#     return False
 def lineSphere(p0, p1, ball):
     # https://cseweb.ucsd.edu/classes/sp19/cse291-d/Files/CSE291_13_CollisionDetection.pdf
     c, r = ball[0:3], ball[-1]
@@ -158,7 +137,7 @@ def isCollide(initparams, x, child, dist=None):
             return True, dist
     return False, dist
 
-
+# ---------------------- leaf node extending algorithms
 def nearest(initparams, x):
     V = np.array(initparams.V)
     if initparams.i == 0:
@@ -167,6 +146,21 @@ def nearest(initparams, x):
     dists = np.linalg.norm(xr - V, axis=1)
     return tuple(initparams.V[np.argmin(dists)])
 
+def near(initparams, x):
+    x = np.array(x)
+    V = np.array(initparams.V)
+    cardV = len(initparams.V)
+    eta = initparams.eta
+    gamma = initparams.gamma
+    r = min(gamma * (np.log(cardV) / cardV), eta)
+    if initparams.done: 
+        r = 1
+    if initparams.i == 0:
+        return [initparams.V[0]]
+    xr = repmat(x, len(V), 1)
+    inside = np.linalg.norm(xr - V, axis=1) < r
+    nearpoints = V[inside]
+    return np.array(nearpoints)
 
 def steer(initparams, x, y):
     dist, step = getDist(y, x), initparams.stepsize
@@ -176,26 +170,9 @@ def steer(initparams, x, y):
     # xnew = x + initparams.stepsize * direc
     return xnew
 
-
-def near(initparams, x):
-    cardV = len(initparams.V)
-    eta = initparams.eta
-    gamma = initparams.gamma
-    r = min(gamma * (np.log(cardV) / cardV), eta)
-    if initparams.done: 
-        r = 1
-    V = np.array(initparams.V)
-    if initparams.i == 0:
-        return [initparams.V[0]]
-    xr = repmat(x, len(V), 1)
-    inside = np.linalg.norm(xr - V, axis=1) < r
-    nearpoints = V[inside]
-    return np.array(nearpoints)
-
-
 def cost(initparams, x):
     '''here use the additive recursive cost function'''
-    if all(x == tuple(initparams.env.start)):
+    if x == tuple(initparams.env.start):
         return 0
     xparent = initparams.Parent[x]
     return cost(initparams, xparent) + getDist(x, xparent)
@@ -209,15 +186,6 @@ def path(initparams, Path=[], dist=0):
         dist += getDist(x, x2)
         x = x2
     return Path, dist
-
-
-def hash3D(x):
-    return str(x[0]) + ' ' + str(x[1]) + ' ' + str(x[2])
-
-
-def dehash(x):
-    return np.array([float(i) for i in x.split(' ')])
-
 
 class edgeset(object):
     def __init__(self):

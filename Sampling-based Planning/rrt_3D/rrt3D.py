@@ -17,10 +17,9 @@ from rrt_3D.env3D import env
 from rrt_3D.utils3D import getDist, sampleFree, nearest, steer, isCollide, near, visualization, cost, path, edgeset
 
 
-class rrtstar():
+class rrt():
     def __init__(self):
         self.env = env()
-        # self.Parent = defaultdict(lambda: defaultdict(dict))
         self.Parent = {}
         self.V = []
         self.E = edgeset()
@@ -30,42 +29,59 @@ class rrtstar():
         self.Path = []
         self.done = False
         self.x0 = tuple(self.env.start)
+        self.xt = tuple(self.env.goal)
+        self.Flag = None
+
+        
+        self.ind = 0
+        self.fig = plt.figure(figsize=(10, 8))
 
     def wireup(self, x, y):
         self.E.add_edge([x, y])  # add edge
         self.Parent[x] = y
 
-    def run(self):
-        self.V.append(tuple(self.env.start))
-        self.ind = 0
-        self.fig = plt.figure(figsize=(10, 8))
-        xnew = self.env.start
-        while self.ind < self.maxiter and getDist(xnew, self.env.goal) > self.stepsize:
+    def run(self, Reversed = True, xrobot = None):
+        if Reversed:
+            if xrobot is None:
+                self.x0 = tuple(self.env.goal)
+                self.xt = tuple(self.env.start)
+            else:
+                self.x0 = tuple(self.env.goal)
+                self.xt = xrobot
+            xnew = self.env.goal
+        else:
+            xnew = self.env.start
+        self.V.append(self.x0)
+        while self.ind < self.maxiter:
             xrand = sampleFree(self)
             xnearest = nearest(self, xrand)
             xnew = steer(self, xnearest, xrand)
             collide, _ = isCollide(self, xnearest, xnew)
             if not collide:
                 self.V.append(xnew)  # add point
+                if self.Flag is not None:
+                    self.Flag[xnew] = 'Valid'
                 self.wireup(xnew, xnearest)
 
-                if getDist(xnew, self.env.goal) <= self.stepsize:
-                    goal = tuple(self.env.goal)
-                    self.wireup(goal, xnew)
+                if getDist(xnew, self.xt) <= self.stepsize:
+                    self.wireup(self.xt, xnew)
                     self.Path, D = path(self)
                     print('Total distance = ' + str(D))
+                    if self.Flag is not None:
+                        self.Flag[self.xt] = 'Valid'
+                    break
                 # visualization(self)
                 self.i += 1
             self.ind += 1
             # if the goal is really reached
             
-        self.done = True
-        visualization(self)
-        plt.show()
+        # self.done = True
+        # visualization(self)
+        # plt.show()
 
 
 if __name__ == '__main__':
-    p = rrtstar()
+    p = rrt()
     starttime = time.time()
     p.run()
     print('time used = ' + str(time.time() - starttime))

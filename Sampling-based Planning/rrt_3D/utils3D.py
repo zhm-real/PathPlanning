@@ -45,7 +45,7 @@ def sampleFree(initparams, bias = 0.1):
         return sampleFree(initparams)
     else:
         if i < bias:
-            return initparams.env.goal + 1
+            return np.array(initparams.xt) + 1
         else:
             return x
         return x
@@ -54,12 +54,40 @@ def sampleFree(initparams, bias = 0.1):
 def isinside(initparams, x):
     '''see if inside obstacle'''
     for i in initparams.env.blocks:
-        if i[0] <= x[0] < i[3] and i[1] <= x[1] < i[4] and i[2] <= x[2] < i[5]:
+        if isinbound(i, x):
+            return True
+    for i in initparams.env.OBB:
+        if isinbound(i, x, mode = 'obb'):
+            return True
+    for i in initparams.env.balls:
+        if isinball(i, x):
             return True
     return False
 
-def isinbound(i, x):
-    if i[0] <= x[0] < i[3] and i[1] <= x[1] < i[4] and i[2] <= x[2] < i[5]:
+def isinbound(i, x, mode = False, factor = 0, isarray = False):
+    if mode == 'obb':
+        return isinobb(i, x, isarray)
+    if isarray:
+        compx = (i[0] - factor <= x[:,0]) & (x[:,0] < i[3] + factor) 
+        compy = (i[1] - factor <= x[:,1]) & (x[:,1] < i[4] + factor) 
+        compz = (i[2] - factor <= x[:,2]) & (x[:,2] < i[5] + factor) 
+        return compx & compy & compz
+    else:    
+        return i[0] - factor <= x[0] < i[3] + factor and i[1] - factor <= x[1] < i[4] + factor and i[2] - factor <= x[2] < i[5]
+
+def isinobb(i, x, isarray = False):
+    # transform the point from {W} to {body}
+    if isarray:
+        pts = (i.T@np.column_stack((x, np.ones(len(x)))).T).T[:,0:3]
+        block = [- i.E[0],- i.E[1],- i.E[2],+ i.E[0],+ i.E[1],+ i.E[2]]
+        return isinbound(block, pts, isarray = isarray)
+    else:
+        pt = i.T@np.append(x,1)
+        block = [- i.E[0],- i.E[1],- i.E[2],+ i.E[0],+ i.E[1],+ i.E[2]]
+        return isinbound(block, pt)
+
+def isinball(i, x, factor = 0):
+    if getDist(i[0:3], x) <= i[3] + factor:
         return True
     return False
 
@@ -178,8 +206,8 @@ def cost(initparams, x):
 
 
 def path(initparams, Path=[], dist=0):
-    x = tuple(initparams.env.goal)
-    while x != tuple(initparams.env.start):
+    x = initparams.xt
+    while x != initparams.x0:
         x2 = initparams.Parent[x]
         Path.append(np.array([x, x2]))
         dist += getDist(x, x2)
@@ -202,10 +230,40 @@ class edgeset(object):
         x, y = edge[0], edge[1]
         self.E[x].remove(y)
 
-    def get_edge(self):
+    def get_edge(self, nodes = None):
         edges = []
-        for v in self.E:
-            for n in self.E[v]:
-                # if (n,v) not in edges:
-                edges.append((v, n))
+        if nodes is None:
+            for v in self.E:
+                for n in self.E[v]:
+                    # if (n,v) not in edges:
+                    edges.append((v, n))
+        else: 
+            for v in nodes:
+                for n in self.E[tuple(v)]:
+                    edges.append((v, n))
         return edges
+
+    def isEndNode(self, node):
+        return node not in self.E
+
+
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.sibling = None
+        self.child = None
+
+class Tree:
+    def __init__(self, start):
+        self.root = Node(start)
+        self.ind = 0
+        self.index = {start:self.ind}
+
+    def add_edge(self, edge):
+        # y exists in the tree while x does not
+        x, y = edge[0], edge[1]
+
+        
+        
+
+

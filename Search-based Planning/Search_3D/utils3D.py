@@ -44,8 +44,8 @@ def isinbound(i, x, mode = False, factor = 0, isarray = False):
         return isinobb(i, x, isarray)
     if isarray:
         compx = (i[0] - factor <= x[:,0]) & (x[:,0] < i[3] + factor) 
-        compy = (i[1] - factor <= x[:,1]) & (x[:,0] < i[4] + factor) 
-        compz = (i[2] - factor <= x[:,2]) & (x[:,0] < i[5] + factor) 
+        compy = (i[1] - factor <= x[:,1]) & (x[:,1] < i[4] + factor) 
+        compz = (i[2] - factor <= x[:,2]) & (x[:,2] < i[5] + factor) 
         return compx & compy & compz
     else:    
         return i[0] - factor <= x[0] < i[3] + factor and i[1] - factor <= x[1] < i[4] + factor and i[2] - factor <= x[2] < i[5] + factor

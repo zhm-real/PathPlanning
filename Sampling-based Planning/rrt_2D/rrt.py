@@ -54,6 +54,7 @@ class Rrt:
 
                 if dist <= self.step_len:
                     self.new_state(node_new, self.s_goal)
+                    print(i)
                     return self.extract_path(node_new)
 
         return None

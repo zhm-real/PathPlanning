@@ -80,7 +80,8 @@ class Plotting:
                 if node.parent:
                     plt.plot([node.parent.x, node.x], [node.parent.y, node.y], "-g")
                     plt.gcf().canvas.mpl_connect('key_release_event',
-                                                 lambda event: [exit(0) if event.key == 'escape' else None])
+                                                 lambda event:
+                                                 [exit(0) if event.key == 'escape' else None])
                     if count % 10 == 0:
                         plt.pause(0.001)
         else:
@@ -110,6 +111,7 @@ class Plotting:
 
     @staticmethod
     def plot_path(path):
-        plt.plot([x[0] for x in path], [x[1] for x in path], '-r', linewidth=2)
-        plt.pause(0.01)
+        if len(path) != 0:
+            plt.plot([x[0] for x in path], [x[1] for x in path], '-r', linewidth=2)
+            plt.pause(0.01)
         plt.show()

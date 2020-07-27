@@ -39,23 +39,32 @@ def heuristic_fun(initparams, k, t=None):
         t = initparams.goal
     return max([abs(t[0] - k[0]), abs(t[1] - k[1]), abs(t[2] - k[2])])
 
-def isinbound(i, x, mode=False, factor = 0):
+def isinbound(i, x, mode = False, factor = 0, isarray = False):
     if mode == 'obb':
-        return isinobb(i, x)
-    if i[0] - factor <= x[0] < i[3] + factor and i[1] - factor <= x[1] < i[4] + factor and i[2] - factor <= x[2] < i[5] + factor:
-        return True
-    return False
+        return isinobb(i, x, isarray)
+    if isarray:
+        compx = (i[0] - factor <= x[:,0]) & (x[:,0] < i[3] + factor) 
+        compy = (i[1] - factor <= x[:,1]) & (x[:,1] < i[4] + factor) 
+        compz = (i[2] - factor <= x[:,2]) & (x[:,2] < i[5] + factor) 
+        return compx & compy & compz
+    else:    
+        return i[0] - factor <= x[0] < i[3] + factor and i[1] - factor <= x[1] < i[4] + factor and i[2] - factor <= x[2] < i[5] + factor
 
 def isinball(i, x, factor = 0):
     if getDist(i[0:3], x) <= i[3] + factor:
         return True
     return False
 
-def isinobb(i, x):
+def isinobb(i, x, isarray = False):
     # transform the point from {W} to {body}
-    pt = i.T@np.append(x,1)
-    block = [- i.E[0],- i.E[1],- i.E[2],+ i.E[0],+ i.E[1],+ i.E[2]]
-    return isinbound(block, pt)
+    if isarray:
+        pts = (i.T@np.column_stack((x, np.ones(len(x)))).T).T[:,0:3]
+        block = [- i.E[0],- i.E[1],- i.E[2],+ i.E[0],+ i.E[1],+ i.E[2]]
+        return isinbound(block, pts, isarray = isarray)
+    else:
+        pt = i.T@np.append(x,1)
+        block = [- i.E[0],- i.E[1],- i.E[2],+ i.E[0],+ i.E[1],+ i.E[2]]
+        return isinbound(block, pt)
 
 def OBB2AABB(obb):
     # https://www.gamasutra.com/view/feature/131790/simple_intersection_tests_for_games.php?print=1
@@ -244,7 +253,6 @@ def StateSpace(env, factor=0):
                 Space.add((x, y, z))
     return Space
 
-
 def g_Space(initparams):
     '''This function is used to get nodes and discretize the space.
        State space is by x*y*z,3 where each 3 is a point in 3D.'''
@@ -253,7 +261,6 @@ def g_Space(initparams):
     for v in Space:
         g[v] = np.inf  # this hashmap initialize all g values at inf
     return g
-
 
 def isCollide(initparams, x, child, dist):
     '''see if line intersects obstacle'''
@@ -277,7 +284,6 @@ def isCollide(initparams, x, child, dist):
             return True, dist
     return False, dist
 
-
 def children(initparams, x, settings = 0):
     # get the neighbor of a specific state
     allchild = []
@@ -298,7 +304,6 @@ def children(initparams, x, settings = 0):
         return allchild
     if settings == 1:
         return allcost
-
 
 def obstacleFree(initparams, x):
     for i in initparams.env.blocks:
@@ -345,11 +350,9 @@ if __name__ == "__main__":
     obb1 = obb([2.6,2.5,1],[0.2,2,2],R_matrix(0,0,45))
     # obb2 = obb([1,1,0],[1,1,1],[[1/np.sqrt(3)*1,1/np.sqrt(3)*1,1/np.sqrt(3)*1],[np.sqrt(3/2)*(-1/3),np.sqrt(3/2)*2/3,np.sqrt(3/2)*(-1/3)],[np.sqrt(1/8)*(-2),0,np.sqrt(1/8)*2]])
     p0, p1 = [2.9,2.5,1],[1.9,2.5,1]
-    dist = getDist(p0,p1)
+    pts = np.array([[1,2,3],[4,5,6],[7,8,9],[2,2,2],[1,1,1],[3,3,3]])
     start = time.time()
-    for i in range(3000*27):
-        lineAABB(p0,p1,dist,obb1)
-        #lineOBB(p0,p1,dist,obb1)
+    isinbound(obb1, pts, mode='obb', factor = 0, isarray = True)
     print(time.time() - start)
     
 

@@ -50,29 +50,16 @@ class D_star_Lite(object):
         self.Path = []
         self.done = False
 
-    def updatecost(self,range_changed=None, new=None, old=None, mode=False):
+    def updatecost(self, range_changed=None, new=None, old=None, mode=False):
         # scan graph for changed cost, if cost is changed update it
         CHANGED = set()
         for xi in self.CLOSED:
-            if xi in self.CHILDREN:
-                oldchildren = self.CHILDREN[xi]# A
-                if isinbound(old, xi, mode) or isinbound(new, xi, mode):
-                    newchildren = set(children(self,xi))# B
-                    removed = oldchildren.difference(newchildren)
-                    intersection = oldchildren.intersection(newchildren)
-                    added = newchildren.difference(oldchildren)
-                    for xj in removed:
-                        self.COST[xi][xj] = cost(self, xi, xj)
-                    for xj in intersection.union(added):
-                        self.COST[xi][xj] = cost(self, xi, xj)
-                    CHANGED.add(xi)
-            else: 
-                if isinbound(old, xi, mode) or isinbound(new, xi, mode):
-                    CHANGED.add(xi)
-                    children_added = set(children(self,xi))
-                    self.CHILDREN[xi] = children_added
-                    for xj in children_added:
-                        self.COST[xi][xj] = cost(self, xi, xj)
+            if isinbound(old, xi, mode) or isinbound(new, xi, mode):
+                newchildren = set(children(self, xi))  # B
+                self.CHILDREN[xi] = newchildren
+                for xj in newchildren:
+                    self.COST[xi][xj] = cost(self, xi, xj)
+                CHANGED.add(xi)
         return CHANGED
 
     def getcost(self, xi, xj):

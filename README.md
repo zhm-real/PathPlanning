@@ -139,7 +139,7 @@ Directory Structure
 * [Extended-RRT: ](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.1.7617&rep=rep1&type=pdf) Real-Time Randomized Path Planning for Robot Navigation
 * [Dynamic-RRT: ](https://www.ri.cmu.edu/pub_files/pub4/ferguson_david_2006_2/ferguson_david_2006_2.pdf) Replanning with RRTs
 * [RRT*: ](https://journals.sagepub.com/doi/abs/10.1177/0278364911406761) Sampling-based algorithms for optimal motion planning
-* [Bidirectional-RRT*: ](https://dspace.mit.edu/bitstream/handle/1721.1/79884/MIT-CSAIL-TR-2013-021.pdf) Optimal Bidirectional Rapidly-Exploring Random Trees
+* [Bidirectional-RRT*: ](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6095077) Sampling Heuristics for Optimal Motion Planning in High Dimensions
 * [RRT*-Smart: ](http://save.seecs.nust.edu.pk/pubs/ICMA2012.pdf) Rapid convergence implementation of RRT* towards optimal solution
 * [Anytime-RRT: ](https://dspace.mit.edu/handle/1721.1/63170) Anytime Motion Planning using the RRT*
 * [Closed-loop RRT (CL-RRT): ](http://acl.mit.edu/papers/KuwataTCST09.pdf) Real-time Motion Planning with Applications to Autonomous Urban Driving

@@ -97,6 +97,12 @@ Directory Structure
     <td><img src="https://github.com/zhm-real/PathPlanning/blob/master/Sampling-based%20Planning/gif/Dynamic_RRT_2D.gif" alt="value iteration" width="400"/></a></td>
   </tr>
 </table>
+<table>
+  <tr>
+    <td><img src="https://github.com/zhm-real/PathPlanning/blob/master/Sampling-based%20Planning/gif/RRT_STAR2_2D.gif" alt="value iteration" width="400"/></a></td>
+    <td><img src="https://github.com/zhm-real/PathPlanning/blob/master/Sampling-based%20Planning/gif/INFORMED_RRT_STAR_2D.gif" alt="value iteration" width="400"/></a></td>
+  </tr>
+</table>
 </div>
 
 ### Value/Policy/Q-value/Q-policy Iteration

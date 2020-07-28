@@ -7,8 +7,6 @@ import os
 import sys
 import math
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Sampling-based Planning/")
@@ -37,12 +35,10 @@ class RrtStar:
         self.iter_max = iter_max
         self.vertex = [self.s_start]
         self.path = []
-        self.visited = []
 
         self.env = env.Env()
         self.plotting = plotting.Plotting(x_start, x_goal)
         self.utils = utils.Utils()
-        # self.fig, self.ax = plt.subplots()
 
         self.x_range = self.env.x_range
         self.y_range = self.env.y_range
@@ -63,10 +59,6 @@ class RrtStar:
                 neighbor_index = self.find_near_neighbor(node_new)
                 self.vertex.append(node_new)
 
-                # if k % 20 == 0:
-                #     self.visited.append([[[node.x, node.parent.x], [node.y, node.parent.y]]
-                #                          for node in self.vertex[1: len(self.vertex)]])
-
                 if neighbor_index:
                     self.choose_parent(node_new, neighbor_index)
                     self.rewire(node_new, neighbor_index)
@@ -74,7 +66,7 @@ class RrtStar:
         index = self.search_goal_parent()
         self.path = self.extract_path(self.vertex[index])
 
-        self.plotting.animation(self.vertex, self.path, "rrt*")
+        self.plotting.animation(self.vertex, self.path, "rrt*, N = " + str(self.iter_max))
 
     def new_state(self, node_start, node_goal):
         dist, theta = self.get_distance_and_angle(node_start, node_goal)
@@ -102,9 +94,9 @@ class RrtStar:
 
     def search_goal_parent(self):
         dist_list = [math.hypot(n.x - self.s_goal.x, n.y - self.s_goal.y) for n in self.vertex]
-        node_index = [dist_list.index(i) for i in dist_list if i <= self.step_len]
+        node_index = [i for i in range(len(dist_list)) if dist_list[i] <= self.step_len]
 
-        if node_index:
+        if len(node_index) > 0:
             cost_list = [dist_list[i] + self.cost(self.vertex[i]) for i in node_index
                          if not self.utils.is_collision(self.vertex[i], self.s_goal)]
             return node_index[int(np.argmin(cost_list))]
@@ -125,11 +117,6 @@ class RrtStar:
 
         return self.s_goal
 
-    @staticmethod
-    def nearest_neighbor(node_list, n):
-        return node_list[int(np.argmin([math.hypot(nd.x - n.x, nd.y - n.y)
-                                        for nd in node_list]))]
-
     def find_near_neighbor(self, node_new):
         n = len(self.vertex) + 1
         r = min(self.search_radius * math.sqrt((math.log(n) / n)), self.step_len)
@@ -141,6 +128,11 @@ class RrtStar:
         return dist_table_index
 
     @staticmethod
+    def nearest_neighbor(node_list, n):
+        return node_list[int(np.argmin([math.hypot(nd.x - n.x, nd.y - n.y)
+                                        for nd in node_list]))]
+
+    @staticmethod
     def cost(node_p):
         node = node_p
         cost = 0.0
@@ -150,62 +142,6 @@ class RrtStar:
             node = node.parent
 
         return cost
-
-    def animation(self, name):
-        self.plot_grid(name)
-        plt.pause(4)
-        for edge_set in self.visited:
-            plt.cla()
-
-            self.plot_grid(name)
-            for edges in edge_set:
-                plt.plot(edges[0], edges[1], "-g")
-
-            plt.pause(0.0001)
-
-        if self.path:
-            plt.plot([x[0] for x in self.path], [x[1] for x in self.path], '-r', linewidth=2)
-
-        plt.pause(0.5)
-        plt.show()
-
-    def plot_grid(self, name):
-
-        for (ox, oy, w, h) in self.obs_boundary:
-            self.ax.add_patch(
-                patches.Rectangle(
-                    (ox, oy), w, h,
-                    edgecolor='black',
-                    facecolor='black',
-                    fill=True
-                )
-            )
-
-        for (ox, oy, w, h) in self.obs_rectangle:
-            self.ax.add_patch(
-                patches.Rectangle(
-                    (ox, oy), w, h,
-                    edgecolor='black',
-                    facecolor='gray',
-                    fill=True
-                )
-            )
-
-        for (ox, oy, r) in self.obs_circle:
-            self.ax.add_patch(
-                patches.Circle(
-                    (ox, oy), r,
-                    edgecolor='black',
-                    facecolor='gray',
-                    fill=True
-                )
-            )
-
-        plt.plot(self.s_start.x, self.s_start.y, "bs", linewidth=3)
-        plt.plot(self.s_goal.x, self.s_goal.y, "gs", linewidth=3)
-
-        plt.title(name)
-        plt.axis("equal")
 
     def update_cost(self, parent_node):
         OPEN = queue.QueueFIFO()
@@ -240,10 +176,10 @@ class RrtStar:
 
 
 def main():
-    x_start = (2, 2)  # Starting node
-    x_goal = (49, 24)  # Goal node
+    x_start = (18, 8)  # Starting node
+    x_goal = (37, 18)  # Goal node
 
-    rrt_star = RrtStar(x_start, x_goal, 10, 0.10, 20, 15000)
+    rrt_star = RrtStar(x_start, x_goal, 10, 0.10, 20, 10000)
     rrt_star.planning()
 
 

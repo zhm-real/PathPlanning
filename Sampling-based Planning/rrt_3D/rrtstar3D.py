@@ -66,9 +66,9 @@ class rrtstar():
                 Xnear = near(self,xnew)
                 self.V.append(xnew) # add point
                 # visualization(self)
-                # minimal path and minimal cost
+                # minimal path and minimal Cost
                 xmin, cmin = xnearest, cost(self, xnearest) + getDist(xnearest, xnew)
-                # connecting along minimal cost path
+                # connecting along minimal Cost path
                 for xnear in Xnear:
                     xnear = tuple(xnear)
                     c1 = cost(self, xnear) + getDist(xnew, xnear)

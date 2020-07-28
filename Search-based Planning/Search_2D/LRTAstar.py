@@ -50,7 +50,7 @@ class LrtAstarN:
             for x in h_value:
                 self.h_table[x] = h_value[x]
 
-            s_start, path_k = self.extract_path_in_CLOSE(s_start, h_value)      # s_start -> expected node in OPEN set
+            s_start, path_k = self.extract_path_in_CLOSE(s_start, h_value)      # x_start -> expected node in OPEN set
             self.path.append(path_k)
 
     def extract_path_in_CLOSE(self, s_start, h_value):
@@ -95,7 +95,7 @@ class LrtAstarN:
         OPEN = queue.QueuePrior()                               # OPEN set
         OPEN.put(x_start, self.h(x_start))
         CLOSED = []                                             # CLOSED set
-        g_table = {x_start: 0, self.s_goal: float("inf")}           # cost to come
+        g_table = {x_start: 0, self.s_goal: float("inf")}           # Cost to come
         PARENT = {x_start: x_start}                             # relations
         count = 0                                               # counter
 
@@ -113,7 +113,7 @@ class LrtAstarN:
                     new_cost = g_table[s] + self.cost(s, s_n)
                     if s_n not in g_table:
                         g_table[s_n] = float("inf")
-                    if new_cost < g_table[s_n]:                                 # conditions for updating cost
+                    if new_cost < g_table[s_n]:                                 # conditions for updating Cost
                         g_table[s_n] = new_cost
                         PARENT[s_n] = s
                         OPEN.put(s_n, g_table[s_n] + self.h_table[s_n])
@@ -177,11 +177,11 @@ class LrtAstarN:
 
     def cost(self, s_start, s_goal):
         """
-        Calculate cost for this motion
+        Calculate Cost for this motion
         :param s_start: starting node
         :param s_goal: end node
-        :return:  cost for this motion
-        :note: cost function could be more complicate!
+        :return:  Cost for this motion
+        :note: Cost function could be more complicate!
         """
 
         if self.is_collision(s_start, s_goal):

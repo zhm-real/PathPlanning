@@ -218,7 +218,7 @@ class RrtStar:
                 continue
 
             for node_c in node.child:
-                node_c.cost = self.get_new_cost(node, node_c)
+                node_c.Cost = self.get_new_cost(node, node_c)
                 OPEN.put(node_c)
 
     def extract_path(self, node_end):

@@ -175,7 +175,7 @@ class D_star(object):
                     sparent = self.b[self.x0]
                 else:
                     sparent = self.b[s]
-                # if there is a change of cost, or a collision.
+                # if there is a change of Cost, or a collision.
                 if cost(self, s, sparent) == np.inf:
                     self.modify(s)
                     continue

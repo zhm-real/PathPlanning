@@ -25,7 +25,7 @@ class Astar:
         self.u_set = self.Env.motions                               # feasible input set
         self.obs = self.Env.obs                                     # position of obstacles
 
-        self.g = {self.s_start: 0, self.s_goal: float("inf")}       # cost to come
+        self.g = {self.s_start: 0, self.s_goal: float("inf")}       # Cost to come
         self.OPEN = queue.QueuePrior()                              # priority queue / OPEN set
         self.OPEN.put(self.s_start, self.fvalue(self.s_start))
         self.CLOSED = []                                            # CLOSED set / VISITED order
@@ -48,7 +48,7 @@ class Astar:
                 new_cost = self.g[s] + self.cost(s, s_n)
                 if s_n not in self.g:
                     self.g[s_n] = float("inf")
-                if new_cost < self.g[s_n]:  # conditions for updating cost
+                if new_cost < self.g[s_n]:  # conditions for updating Cost
                     self.g[s_n] = new_cost
                     self.PARENT[s_n] = s
                     self.OPEN.put(s_n, self.fvalue(s_n))
@@ -99,7 +99,7 @@ class Astar:
                     new_cost = g[s] + self.cost(s, s_n)
                     if s_n not in g:
                         g[s_n] = float("inf")
-                    if new_cost < g[s_n]:                       # conditions for updating cost
+                    if new_cost < g[s_n]:                       # conditions for updating Cost
                         g[s_n] = new_cost
                         PARENT[s_n] = s
                         OPEN.put(s_n, g[s_n] + e * self.Heuristic(s_n))
@@ -122,11 +122,11 @@ class Astar:
 
     def cost(self, s_start, s_goal):
         """
-        Calculate cost for this motion
+        Calculate Cost for this motion
         :param s_start: starting node
         :param s_goal: end node
-        :return:  cost for this motion
-        :note: cost function could be more complicate!
+        :return:  Cost for this motion
+        :note: Cost function could be more complicate!
         """
 
         if self.is_collision(s_start, s_goal):
@@ -153,7 +153,7 @@ class Astar:
 
     def fvalue(self, x):
         """
-        f = g + h. (g: cost to come, h: heuristic function)
+        f = g + h. (g: Cost to come, h: heuristic function)
         :param x: current state
         :return: f
         """

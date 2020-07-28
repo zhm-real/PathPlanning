@@ -25,8 +25,8 @@ class BidirectionalAstar:
         self.u_set = self.Env.motions                                       # feasible input set
         self.obs = self.Env.obs                                             # position of obstacles
 
-        self.g_fore = {self.s_start: 0, self.s_goal: float("inf")}          # cost to come: from s_start
-        self.g_back = {self.s_goal: 0, self.s_start: float("inf")}          # cost to come: form s_goal
+        self.g_fore = {self.s_start: 0, self.s_goal: float("inf")}          # Cost to come: from x_start
+        self.g_back = {self.s_goal: 0, self.s_start: float("inf")}          # Cost to come: form x_goal
 
         self.OPEN_fore = queue.QueuePrior()                                 # OPEN set for foreward searching
         self.OPEN_fore.put(self.s_start,
@@ -142,11 +142,11 @@ class BidirectionalAstar:
 
     def cost(self, s_start, s_goal):
         """
-        Calculate cost for this motion
+        Calculate Cost for this motion
         :param s_start: starting node
         :param s_goal: end node
-        :return:  cost for this motion
-        :note: cost function could be more complicate!
+        :return:  Cost for this motion
+        :note: Cost function could be more complicate!
         """
 
         if self.is_collision(s_start, s_goal):

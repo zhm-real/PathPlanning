@@ -199,7 +199,7 @@ def steer(initparams, x, y):
     return xnew
 
 def cost(initparams, x):
-    '''here use the additive recursive cost function'''
+    '''here use the additive recursive Cost function'''
     if x == initparams.x0:
         return 0
     return cost(initparams, initparams.Parent[x]) + getDist(x, initparams.Parent[x])

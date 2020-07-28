@@ -336,7 +336,7 @@ def cost(initparams, i, j, dist=None, settings='Euclidean'):
 
 
 def initcost(initparams):
-    # initialize cost dictionary, could be modifed lateron
+    # initialize Cost dictionary, could be modifed lateron
     c = defaultdict(lambda: defaultdict(dict))  # two key dicionary
     for xi in initparams.X:
         cdren = children(initparams, xi)

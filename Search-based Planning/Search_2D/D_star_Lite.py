@@ -150,11 +150,11 @@ class DStar:
 
     def cost(self, s_start, s_goal):
         """
-        Calculate cost for this motion
+        Calculate Cost for this motion
         :param s_start: starting node
         :param s_goal: end node
-        :return:  cost for this motion
-        :note: cost function could be more complicate!
+        :return:  Cost for this motion
+        :note: Cost function could be more complicate!
         """
 
         if self.is_collision(s_start, s_goal):

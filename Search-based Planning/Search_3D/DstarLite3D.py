@@ -41,7 +41,7 @@ class D_star_Lite(object):
         
         # init children set:
         self.CHILDREN = {}
-        # init cost set
+        # init Cost set
         self.COST = defaultdict(lambda: defaultdict(dict))
         
         # for visualization
@@ -51,7 +51,7 @@ class D_star_Lite(object):
         self.done = False
 
     def updatecost(self, range_changed=None, new=None, old=None, mode=False):
-        # scan graph for changed cost, if cost is changed update it
+        # scan graph for changed Cost, if Cost is changed update it
         CHANGED = set()
         for xi in self.CLOSED:
             if isinbound(old, xi, mode) or isinbound(new, xi, mode):
@@ -100,7 +100,7 @@ class D_star_Lite(object):
 
     def UpdateVertex(self, u):
         # if still in the hunt
-        if not getDist(self.xt, u) <= self.env.resolution: # originally: u != s_goal
+        if not getDist(self.xt, u) <= self.env.resolution: # originally: u != x_goal
             if u in self.CHILDREN and len(self.CHILDREN[u]) == 0:
                 self.rhs[u] = np.inf
             else:
@@ -147,7 +147,7 @@ class D_star_Lite(object):
         ischanged = False
         self.V = set()
         while getDist(self.x0, self.xt) > 2*self.env.resolution:
-            #---------------------------------- at specific times, the environment is changed and cost is updated
+            #---------------------------------- at specific times, the environment is changed and Cost is updated
             if t % 2 == 0: 
                 new0,old0 = self.env.move_block(a=[-0.1, 0, -0.2], s=0.5, block_to_move=1, mode='translation')
                 new1,old1 = self.env.move_block(a=[0, 0, -0.2], s=0.5, block_to_move=0, mode='translation')
@@ -163,9 +163,9 @@ class D_star_Lite(object):
             self.x0 = children_new[np.argmin([self.getcost(self.x0,s_p) + self.getg(s_p) for s_p in children_new])]
             # TODO add the moving robot position codes
             self.env.start = self.x0
-            # ---------------------------------- if any cost changed, update km, reset slast, 
+            # ---------------------------------- if any Cost changed, update km, reset slast,
             #                                    for all directed edgees (u,v) with  chaged edge costs, 
-            #                                    update the edge cost c(u,v) and update vertex u. then replan
+            #                                    update the edge Cost c(u,v) and update vertex u. then replan
             if ischanged:
                 self.km += heuristic_fun(self, self.x0, s_last)
                 s_last = self.x0
@@ -186,10 +186,10 @@ class D_star_Lite(object):
 
     def path(self, s_start=None):
         '''After ComputeShortestPath()
-        returns, one can then follow a shortest path from s_start to
-        s_goal by always moving from the current vertex s, starting
-        at s_start. , to any successor s' that minimizes c(s,s') + g(s') 
-        until s_goal is reached (ties can be broken arbitrarily).'''
+        returns, one can then follow a shortest path from x_start to
+        x_goal by always moving from the current vertex s, starting
+        at x_start. , to any successor s' that minimizes c(s,s') + g(s')
+        until x_goal is reached (ties can be broken arbitrarily).'''
         path = []
         s_goal = self.xt
         if not s_start:

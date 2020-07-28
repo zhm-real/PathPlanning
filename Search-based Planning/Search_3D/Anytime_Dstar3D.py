@@ -41,7 +41,7 @@ class Anytime_Dstar(object):
 
         # init children set:
         self.CHILDREN = {}
-        # init cost set
+        # init Cost set
         self.COST = defaultdict(lambda: defaultdict(dict))
 
         # for visualization
@@ -88,7 +88,7 @@ class Anytime_Dstar(object):
         return self.rhs[xi]
 
     def updatecost(self, range_changed=None, new=None, old=None, mode=False):
-        # scan graph for changed cost, if cost is changed update it
+        # scan graph for changed Cost, if Cost is changed update it
         CHANGED = set()
         for xi in self.CLOSED:
             if isinbound(old, xi, mode) or isinbound(new, xi, mode):
@@ -100,8 +100,8 @@ class Anytime_Dstar(object):
         return CHANGED
 
     # def updateGraphCost(self, range_changed=None, new=None, old=None, mode=False):
-    #     # TODO scan graph for changed cost, if cost is changed update it
-    #     # make the graph cost via vectorization
+    #     # TODO scan graph for changed Cost, if Cost is changed update it
+    #     # make the graph Cost via vectorization
     #     CHANGED = set()
     #     Allnodes = np.array(list(self.CLOSED))
     #     isChanged = isinbound(old, Allnodes, mode = mode, isarray = True) & \
@@ -112,7 +112,7 @@ class Anytime_Dstar(object):
     #         CHANGED.add(xi)
     #         self.CHILDREN[xi] = set(children(self, xi))
     #         for xj in self.CHILDREN:
-    #             self.COST[xi][xj] = cost(self, xi, xj)
+    #             self.COST[xi][xj] = Cost(self, xi, xj)
         
 
     # --------------main functions for Anytime D star
@@ -177,7 +177,7 @@ class Anytime_Dstar(object):
             # islargelychanged = True
             self.Path = []
 
-            # update cost with changed environment
+            # update Cost with changed environment
             if ischanged:
                 # CHANGED = self.updatecost(True, new2, old2, mode='obb')
                 CHANGED = self.updatecost(True, new2, old2)
@@ -207,10 +207,10 @@ class Anytime_Dstar(object):
 
     def path(self, s_start=None):
         '''After ComputeShortestPath()
-        returns, one can then follow a shortest path from s_start to
-        s_goal by always moving from the current vertex s, starting
-        at s_start. , to any successor s' that minimizes c(s,s') + g(s') 
-        until s_goal is reached (ties can be broken arbitrarily).'''
+        returns, one can then follow a shortest path from x_start to
+        x_goal by always moving from the current vertex s, starting
+        at x_start. , to any successor s' that minimizes c(s,s') + g(s')
+        until x_goal is reached (ties can be broken arbitrarily).'''
         path = []
         s_goal = self.xt
         s = self.x0

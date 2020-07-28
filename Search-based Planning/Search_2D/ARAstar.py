@@ -24,7 +24,7 @@ class AraStar:
         self.u_set = self.Env.motions                                       # feasible input set
         self.obs = self.Env.obs                                             # position of obstacles
         self.e = e                                                          # initial weight
-        self.g = {self.s_start: 0, self.s_goal: float("inf")}               # cost to come
+        self.g = {self.s_start: 0, self.s_goal: float("inf")}               # Cost to come
 
         self.OPEN = {self.s_start: self.fvalue(self.s_start)}               # priority queue / OPEN set
         self.CLOSED = set()                                                 # CLOSED set
@@ -155,11 +155,11 @@ class AraStar:
 
     def cost(self, s_start, s_goal):
         """
-        Calculate cost for this motion
+        Calculate Cost for this motion
         :param s_start: starting node
         :param s_goal: end node
-        :return:  cost for this motion
-        :note: cost function could be more complicate!
+        :return:  Cost for this motion
+        :note: Cost function could be more complicate!
         """
 
         if self.is_collision(s_start, s_goal):

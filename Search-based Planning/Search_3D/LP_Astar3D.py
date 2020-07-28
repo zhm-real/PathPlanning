@@ -48,7 +48,7 @@ class Lifelong_Astar(object):
         self.CHILDREN = {}
         self.getCHILDRENset()
 
-        # initialize cost list
+        # initialize Cost list
         self.COST = {}
         _ = self.costset()
 
@@ -58,7 +58,7 @@ class Lifelong_Astar(object):
             children = self.CHILDREN[xi]
             toUpdate = [self.cost(xj,xi) for xj in children]
             if xi in self.COST:
-                # if the old cost not equal to new cost
+                # if the old Cost not equal to new Cost
                 diff = np.not_equal(self.COST[xi],toUpdate)
                 cd = np.array(children)[diff]
                 for i in cd:
@@ -126,7 +126,7 @@ class Lifelong_Astar(object):
             j = x
             nei = self.CHILDREN[x]
             gset = [self.g[xi] for xi in nei]
-            # collision check and make g cost inf
+            # collision check and make g Cost inf
             for i in range(len(nei)):
                 if self.isCollide(nei[i],j)[0]:
                     gset[i] = np.inf

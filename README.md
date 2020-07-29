@@ -28,14 +28,6 @@ Directory Structure
         └── rrt_3D
             ├── rrt3D.py                                # rrt3D : goal-biased rrt3D
             └── rrtstar3D.py
-    └── Stochastic Shortest Path
-        ├── value_iteration.py                          # value iteration
-        ├── policy_iteration.py                         # policy iteration
-        ├── Q-value_iteration.py                        # Q-value iteration
-        └── Q-policy_iteration.py                       # Q-policy iteration
-    └── Model-free Control
-        ├── Sarsa.py                                    # SARSA : on-policy TD control
-        └── Q-learning.py                               # Q-learning : off-policy TD control
 
 ## Animations - Search-Based
 ### Best-First & Dijkstra
@@ -101,28 +93,6 @@ Directory Structure
   <tr>
     <td><img src="https://github.com/zhm-real/PathPlanning/blob/master/Sampling-based%20Planning/gif/RRT_STAR2_2D.gif" alt="value iteration" width="400"/></a></td>
     <td><img src="https://github.com/zhm-real/PathPlanning/blob/master/Sampling-based%20Planning/gif/INFORMED_RRT_STAR_2D.gif" alt="value iteration" width="400"/></a></td>
-  </tr>
-</table>
-</div>
-
-### Value/Policy/Q-value/Q-policy Iteration
-* Brown: losing states
-<div align=right>
-<table>
-  <tr>
-    <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Stochastic%20Shortest%20Path/gif/VI.gif" alt="value iteration" width="400"/></a></td>
-    <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Stochastic%20Shortest%20Path/gif/VI_E.gif" alt="value iteration" width="400"/></a></td>
-  </tr>
-</table>
-</div>
-
-### SARSA(on-policy) & Q-learning(off-policy)
-* Brown: losing states
-<div align=right>
-<table>
-  <tr>
-    <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Model-free%20Control/gif/SARSA.gif" alt="value iteration" width="400"/></a></td>
-    <td><img src="https://github.com/zhm-real/path-planning-algorithms/blob/master/Model-free%20Control/gif/Qlearning.gif" alt="value iteration" width="400"/></a></td>
   </tr>
 </table>
 </div>

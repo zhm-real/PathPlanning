@@ -129,9 +129,12 @@ Directory Structure
 
 ## Papers
 ### Search-base Planning
-* [D*: ](http://web.mit.edu/16.412j/www/html/papers/original_dstar_icra94.pdf) Optimal and Efficient Path Planning for Partially-Known Environments
+* [A*](https://ieeexplore.ieee.org/document/4082128) A Formal Basis for the Heuristic Determination of Minimum Cost Paths
+* [Learning Real-Time A*: ](https://arxiv.org/pdf/1110.4076.pdf) Learning in Real-Time Search: A Unifying Framework
+* [Real-Time Adaptive A*: ](http://idm-lab.org/bib/abstracts/papers/aamas06.pdf) Real-Time Adaptive A*
 * [Lifelong Planning A*: ](https://www.cs.cmu.edu/~maxim/files/aij04.pdf) Lifelong Planning A*
 * [Anytime Repairing A*: ](https://papers.nips.cc/paper/2382-ara-anytime-a-with-provable-bounds-on-sub-optimality.pdf) ARA*: Anytime A* with Provable Bounds on Sub-Optimality
+* [D*: ](http://web.mit.edu/16.412j/www/html/papers/original_dstar_icra94.pdf) Optimal and Efficient Path Planning for Partially-Known Environments
 * [D* Lite: ](http://idm-lab.org/bib/abstracts/papers/aaai02b.pdf) D* Lite
 * [Field D*: ](http://robots.stanford.edu/isrr-papers/draft/stentz.pdf) Field D*: An Interpolation-based Path Planner and Replanner
 * [Anytime D*: ](http://www.cs.cmu.edu/~ggordon/likhachev-etal.anytime-dstar.pdf) Anytime Dynamic A*: An Anytime, Replanning Algorithm
@@ -146,10 +149,10 @@ Directory Structure
 * [Dynamic-RRT: ](https://www.ri.cmu.edu/pub_files/pub4/ferguson_david_2006_2/ferguson_david_2006_2.pdf) Replanning with RRTs
 * [RRT*: ](https://journals.sagepub.com/doi/abs/10.1177/0278364911406761) Sampling-based algorithms for optimal motion planning
 * [Informed RRT*: ](https://arxiv.org/abs/1404.2334) Optimal Sampling-based Path Planning Focused via Direct Sampling of an Admissible Ellipsoidal Heuristic
-* [Fast Marching Trees (FMT*): ](https://arxiv.org/abs/1306.3532) a Fast Marching Sampling-Based Method for Optimal Motion Planning in Many Dimensions
-* [Batch Informed Trees (BIT*): ](https://arxiv.org/abs/1405.5848) Sampling-based Optimal Planning via the Heuristically Guided Search of Implicit Random Geometric Graphs
 * [RRT*-Smart: ](http://save.seecs.nust.edu.pk/pubs/ICMA2012.pdf) Rapid convergence implementation of RRT* towards optimal solution
 * [Anytime-RRT: ](https://dspace.mit.edu/handle/1721.1/63170) Anytime Motion Planning using the RRT*
 * [Closed-loop RRT (CL-RRT): ](http://acl.mit.edu/papers/KuwataTCST09.pdf) Real-time Motion Planning with Applications to Autonomous Urban Driving
 * [Spline-RRT*: ](https://ieeexplore.ieee.org/abstract/document/6987895?casa_token=B9GUwVDbbncAAAAA:DWscGFLIa97ptgH7NpUQUL0A2ModiiBDBGklk1z7aDjI11Kyfzo8rpuFstdYcjOofJfCjR-mNw) Optimal path planning based on spline-RRT* for fixed-wing UAVs operating in three-dimensional environments
 * [LQR-RRT*: ](https://lis.csail.mit.edu/pubs/perez-icra12.pdf) Optimal Sampling-Based Motion Planning with Automatically Derived Extension Heuristics
+* [Fast Marching Trees (FMT*): ](https://arxiv.org/abs/1306.3532) a Fast Marching Sampling-Based Method for Optimal Motion Planning in Many Dimensions
+* [Batch Informed Trees (BIT*): ](https://arxiv.org/abs/1405.5848) Sampling-based Optimal Planning via the Heuristically Guided Search of Implicit Random Geometric Graphs

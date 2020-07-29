@@ -1,5 +1,5 @@
 """
-INFORMED_RRT_STAR 2D
+RRT_STAR_SMART 2D
 @author: huiming zhou
 """
 
@@ -27,7 +27,7 @@ class Node:
         self.parent = None
 
 
-class IRrtStar:
+class RrtStarSmart:
     def __init__(self, x_start, x_goal, step_len,
                  goal_sample_rate, search_radius, iter_max):
         self.x_start = Node(x_start)
@@ -50,19 +50,21 @@ class IRrtStar:
         self.obs_boundary = self.env.obs_boundary
 
         self.V = [self.x_start]
-        self.X_soln = set()
+        self.beacons = []
+        self.beacons_radius = 2
         self.path = None
 
     def planning(self):
-        c_best = np.inf
-        dist, theta = self.get_distance_and_angle(self.x_start, self.x_goal)
-        C = self.RotationToWorldFrame(self.x_start, self.x_goal, dist)
-        x_center = np.array([[(self.x_start.x + self.x_goal.x) / 2.0],
-                             [(self.x_start.y + self.x_goal.y) / 2.0], [0.0]])
-        x_best = self.x_start
+        n = 0
+        b = 3
 
         for k in range(self.iter_max):
-            x_rand = self.Sample(self.x_start, self.x_goal, c_best, x_center, C)
+
+            if (k - n) % b == 0:
+                x_rand = self.Sample(self.beacons)
+            else:
+                x_rand = self.Sample()
+
             x_nearest = self.Nearest(self.V, x_rand)
             x_new = self.Steer(x_nearest, x_rand)
 
@@ -110,7 +112,7 @@ class IRrtStar:
 
     def Near(self, nodelist, node):
         n = len(nodelist) + 1
-        r = min(self.search_radius * math.sqrt((math.log(n) / n)), self.step_len)
+        r = 50 * math.sqrt((math.log(n) / n))
 
         dist_table = [(nd.x - node.x) ** 2 + (nd.y - node.y) ** 2 for nd in nodelist]
         X_near = [nodelist[ind] for ind in range(len(dist_table)) if dist_table[ind] <= r ** 2 and
@@ -118,24 +120,24 @@ class IRrtStar:
 
         return X_near
 
-    def Sample(self, x_start, x_goal, c_max, x_center, C):
-        if c_max < np.inf:
-            c_min = self.Line(x_start, x_goal)
-            r = [c_max / 2.0,
-                 math.sqrt(c_max ** 2 - c_min ** 2) / 2.0,
-                 math.sqrt(c_max ** 2 - c_min ** 2) / 2.0]
-            L = np.diag(r)
-            x_ball = self.SampleUnitNBall()
+    def Sample(self, goal=None):
+        if goal in None:
+            delta = self.utils.delta
+            goal_sample_rate = self.goal_sample_rate
 
-            while True:
-                x_rand = C @ L @ x_ball + x_center
-                if self.x_range[0] + self.delta <= x_rand[0] <= self.x_range[1] + self.delta:
-                    break
-            x_rand = Node((x_rand[0], x_rand[1]))
+            if np.random.random() > goal_sample_rate:
+                return Node((np.random.uniform(self.x_range[0] + delta, self.x_range[1] - delta),
+                             np.random.uniform(self.y_range[0] + delta, self.y_range[1] - delta)))
+
+            return self.x_goal
         else:
-            x_rand = self.SampleFreeSpace()
+            R = self.beacons_radius
+            r = random.uniform(0, R)
+            theta = random.uniform(0, 2 * math.pi)
+            ind = random.randint(0, len(goal) - 1)
 
-        return x_rand
+            return Node((goal[ind][0] + r * math.cos(theta),
+                         goal[ind][1] + r * math.sin(theta)))
 
     def SampleFreeSpace(self):
         delta = self.delta
@@ -285,8 +287,8 @@ def main():
     x_start = (18, 8)  # Starting node
     x_goal = (37, 18)  # Goal node
 
-    rrt_star = IRrtStar(x_start, x_goal, 10, 0.10, 20, 10000)
-    rrt_star.planning()
+    rrt = RrtStarSmart(x_start, x_goal, 1.0, 0.10, 0, 1000)
+    rrt.planning()
 
 
 if __name__ == '__main__':

@@ -52,15 +52,21 @@ class RrtStarSmart:
         self.V = [self.x_start]
         self.beacons = []
         self.beacons_radius = 2
+        self.direct_cost_old = np.inf
+        self.obs_vertex = self.utils.get_obs_vertex()
         self.path = None
 
     def planning(self):
         n = 0
-        b = 3
+        b = 2
+        InitPathFlag = False
+        self.ReformObsVertex()
 
         for k in range(self.iter_max):
+            if k % 200 == 0:
+                print(k)
 
-            if (k - n) % b == 0:
+            if (k - n) % b == 0 and len(self.beacons) > 0:
                 x_rand = self.Sample(self.beacons)
             else:
                 x_rand = self.Sample()
@@ -70,36 +76,77 @@ class RrtStarSmart:
 
             if x_new and not self.utils.is_collision(x_nearest, x_new):
                 X_near = self.Near(self.V, x_new)
-                c_min = self.Cost(x_new)
                 self.V.append(x_new)
 
-                for x_near in X_near:
-                    c_new = self.Cost(x_near) + self.Line(x_near, x_new)
-                    if c_new < c_min:
-                        x_new.parent = x_near
-                        c_min = c_new
+                if X_near:
+                    # choose parent
+                    cost_list = [self.Cost(x_near) + self.Line(x_near, x_new) for x_near in X_near]
+                    x_new.parent = X_near[int(np.argmin(cost_list))]
 
-                for x_near in X_near:
-                    c_near = self.Cost(x_near)
-                    c_new = c_min + self.Line(x_new, x_near)
-                    if c_new < c_near:
-                        x_near.parent = x_new
+                    # rewire
+                    c_min = self.Cost(x_new)
+                    for x_near in X_near:
+                        c_near = self.Cost(x_near)
+                        c_new = c_min + self.Line(x_new, x_near)
+                        if c_new < c_near:
+                            x_near.parent = x_new
 
-                if self.InGoalRegion(x_new):
-                    self.X_soln.add(x_new)
-                    new_cost = self.Cost(x_new) + self.Line(x_new, self.x_goal)
-                    if new_cost < c_best:
-                        c_best = new_cost
-                        x_best = x_new
+                if not InitPathFlag and self.InitialPathFound(x_new):
+                    InitPathFlag = True
+                    n = k
 
-            if k % 20 == 0:
-                self.animation(x_center=x_center, c_best=c_best, dist=dist, theta=theta)
+                if InitPathFlag:
+                    self.PathOptimization(x_new)
+                if k % 5 == 0:
+                    self.animation()
 
-        self.path = self.ExtractPath(x_best)
-        self.animation(x_center=x_center, c_best=c_best, dist=dist, theta=theta)
+        self.path = self.ExtractPath()
+        self.animation()
         plt.plot([x for x, _ in self.path], [y for _, y in self.path], '-r')
         plt.pause(0.01)
         plt.show()
+
+    def PathOptimization(self, node):
+        direct_cost_new = 0.0
+        node_end = self.x_goal
+
+        while node.parent:
+            node_parent = node.parent
+            if not self.utils.is_collision(node_parent, node_end):
+                node_end.parent = node_parent
+            else:
+                direct_cost_new += self.Line(node, node_end)
+                node_end = node
+
+            node = node_parent
+
+        if direct_cost_new < self.direct_cost_old:
+            self.direct_cost_old = direct_cost_new
+            self.UpdateBeacons()
+
+    def UpdateBeacons(self):
+        node = self.x_goal
+        beacons = []
+
+        while node.parent:
+            near_vertex = [v for v in self.obs_vertex
+                           if (node.x - v[0]) ** 2 + (node.y - v[1]) ** 2 < 9]
+            if len(near_vertex) > 0:
+                for v in near_vertex:
+                    beacons.append(v)
+
+            node = node.parent
+
+        self.beacons = beacons
+
+    def ReformObsVertex(self):
+        obs_vertex = []
+
+        for obs in self.obs_vertex:
+            for vertex in obs:
+                obs_vertex.append(vertex)
+
+        self.obs_vertex = obs_vertex
 
     def Steer(self, x_start, x_goal):
         dist, theta = self.get_distance_and_angle(x_start, x_goal)
@@ -111,7 +158,7 @@ class RrtStarSmart:
         return node_new
 
     def Near(self, nodelist, node):
-        n = len(nodelist) + 1
+        n = len(self.V) + 1
         r = 50 * math.sqrt((math.log(n) / n))
 
         dist_table = [(nd.x - node.x) ** 2 + (nd.y - node.y) ** 2 for nd in nodelist]
@@ -121,7 +168,7 @@ class RrtStarSmart:
         return X_near
 
     def Sample(self, goal=None):
-        if goal in None:
+        if goal is None:
             delta = self.utils.delta
             goal_sample_rate = self.goal_sample_rate
 
@@ -148,8 +195,9 @@ class RrtStarSmart:
 
         return self.x_goal
 
-    def ExtractPath(self, node):
-        path = [[self.x_goal.x, self.x_goal.y]]
+    def ExtractPath(self):
+        path = []
+        node = self.x_goal
 
         while node.parent:
             path.append([node.x, node.y])
@@ -159,30 +207,11 @@ class RrtStarSmart:
 
         return path
 
-    def InGoalRegion(self, node):
+    def InitialPathFound(self, node):
         if self.Line(node, self.x_goal) < self.step_len:
             return True
 
         return False
-
-    @staticmethod
-    def RotationToWorldFrame(x_start, x_goal, L):
-        a1 = np.array([[(x_start.x - x_start.x) / L],
-                       [(x_goal.y - x_start.y) / L], [0.0]])
-        e1 = np.array([[1.0], [0.0], [0.0]])
-        M = a1 @ e1.T
-        U, _, V_T = np.linalg.svd(M, True, True)
-        C = U @ np.diag([1.0, 1.0, np.linalg.det(U) * np.linalg.det(V_T.T)]) @ V_T
-
-        return C
-
-    @staticmethod
-    def SampleUnitNBall():
-        theta, r = random.uniform(0.0, 2 * math.pi), random.random()
-        x = r * math.cos(theta)
-        y = r * math.sin(theta)
-
-        return np.array([[x], [y], [0.0]])
 
     @staticmethod
     def Nearest(nodelist, n):
@@ -211,19 +240,25 @@ class RrtStarSmart:
         dy = node_end.y - node_start.y
         return math.hypot(dx, dy), math.atan2(dy, dx)
 
-    def animation(self, x_center=None, c_best=None, dist=None, theta=None):
+    def animation(self):
         plt.cla()
-        self.plot_grid("Informed rrt*, N = " + str(self.iter_max))
+        self.plot_grid("rrt*-Smart, N = " + str(self.iter_max))
         plt.gcf().canvas.mpl_connect(
             'key_release_event',
             lambda event: [exit(0) if event.key == 'escape' else None])
 
-        if c_best != np.inf:
-            self.draw_ellipse(x_center, c_best, dist, theta)
-
         for node in self.V:
             if node.parent:
                 plt.plot([node.x, node.parent.x], [node.y, node.parent.y], "-g")
+
+        if self.beacons:
+            theta = np.arange(0, 2 * math.pi, 0.1)
+            r = self.beacons_radius
+
+            for v in self.beacons:
+                x = v[0] + r * np.cos(theta)
+                y = v[1] + r * np.sin(theta)
+                plt.plot(x, y, linestyle='--', linewidth=2, color='darkorange')
 
         plt.pause(0.01)
 
@@ -265,29 +300,12 @@ class RrtStarSmart:
         plt.title(name)
         plt.axis("equal")
 
-    @staticmethod
-    def draw_ellipse(x_center, c_best, dist, theta):
-        a = math.sqrt(c_best ** 2 - dist ** 2) / 2.0
-        b = c_best / 2.0
-        angle = math.pi / 2.0 - theta
-        cx = x_center[0]
-        cy = x_center[1]
-        t = np.arange(0, 2 * math.pi + 0.1, 0.1)
-        x = [a * math.cos(it) for it in t]
-        y = [b * math.sin(it) for it in t]
-        rot = Rot.from_euler('z', -angle).as_dcm()[0:2, 0:2]
-        fx = rot @ np.array([x, y])
-        px = np.array(fx[0, :] + cx).flatten()
-        py = np.array(fx[1, :] + cy).flatten()
-        plt.plot(cx, cy, ".b")
-        plt.plot(px, py, linestyle='--', color='darkorange', linewidth=2)
-
 
 def main():
     x_start = (18, 8)  # Starting node
     x_goal = (37, 18)  # Goal node
 
-    rrt = RrtStarSmart(x_start, x_goal, 1.0, 0.10, 0, 1000)
+    rrt = RrtStarSmart(x_start, x_goal, 1.5, 0.10, 0, 1000)
     rrt.planning()
 
 

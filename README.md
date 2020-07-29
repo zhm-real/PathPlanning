@@ -120,8 +120,8 @@ Directory Structure
 * [RRT*: ](https://journals.sagepub.com/doi/abs/10.1177/0278364911406761) Sampling-based algorithms for optimal motion planning
 * [Informed RRT*: ](https://arxiv.org/abs/1404.2334) Optimal Sampling-based Path Planning Focused via Direct Sampling of an Admissible Ellipsoidal Heuristic
 * [RRT*-Smart: ](http://save.seecs.nust.edu.pk/pubs/ICMA2012.pdf) Rapid convergence implementation of RRT* towards optimal solution
-* [Anytime-RRT: ](https://dspace.mit.edu/handle/1721.1/63170) Anytime Motion Planning using the RRT*
-* [Closed-loop RRT (CL-RRT): ](http://acl.mit.edu/papers/KuwataTCST09.pdf) Real-time Motion Planning with Applications to Autonomous Urban Driving
+* [Anytime-RRT*: ](https://dspace.mit.edu/handle/1721.1/63170) Anytime Motion Planning using the RRT*
+* [Closed-loop RRT* (CL-RRT*): ](http://acl.mit.edu/papers/KuwataTCST09.pdf) Real-time Motion Planning with Applications to Autonomous Urban Driving
 * [Spline-RRT*: ](https://ieeexplore.ieee.org/abstract/document/6987895?casa_token=B9GUwVDbbncAAAAA:DWscGFLIa97ptgH7NpUQUL0A2ModiiBDBGklk1z7aDjI11Kyfzo8rpuFstdYcjOofJfCjR-mNw) Optimal path planning based on spline-RRT* for fixed-wing UAVs operating in three-dimensional environments
 * [LQR-RRT*: ](https://lis.csail.mit.edu/pubs/perez-icra12.pdf) Optimal Sampling-Based Motion Planning with Automatically Derived Extension Heuristics
 * [Fast Marching Trees (FMT*): ](https://arxiv.org/abs/1306.3532) a Fast Marching Sampling-Based Method for Optimal Motion Planning in Many Dimensions

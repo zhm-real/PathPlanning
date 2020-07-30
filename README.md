@@ -120,11 +120,14 @@ Directory Structure
 * [Extended-RRT: ](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.1.7617&rep=rep1&type=pdf) Real-Time Randomized Path Planning for Robot Navigation
 * [Dynamic-RRT: ](https://www.ri.cmu.edu/pub_files/pub4/ferguson_david_2006_2/ferguson_david_2006_2.pdf) Replanning with RRTs
 * [RRT*: ](https://journals.sagepub.com/doi/abs/10.1177/0278364911406761) Sampling-based algorithms for optimal motion planning
-* [Informed RRT*: ](https://arxiv.org/abs/1404.2334) Optimal Sampling-based Path Planning Focused via Direct Sampling of an Admissible Ellipsoidal Heuristic
-* [RRT*-Smart: ](http://save.seecs.nust.edu.pk/pubs/ICMA2012.pdf) Rapid convergence implementation of RRT* towards optimal solution
 * [Anytime-RRT*: ](https://dspace.mit.edu/handle/1721.1/63170) Anytime Motion Planning using the RRT*
 * [Closed-loop RRT* (CL-RRT*): ](http://acl.mit.edu/papers/KuwataTCST09.pdf) Real-time Motion Planning with Applications to Autonomous Urban Driving
 * [Spline-RRT*: ](https://ieeexplore.ieee.org/abstract/document/6987895?casa_token=B9GUwVDbbncAAAAA:DWscGFLIa97ptgH7NpUQUL0A2ModiiBDBGklk1z7aDjI11Kyfzo8rpuFstdYcjOofJfCjR-mNw) Optimal path planning based on spline-RRT* for fixed-wing UAVs operating in three-dimensional environments
 * [LQR-RRT*: ](https://lis.csail.mit.edu/pubs/perez-icra12.pdf) Optimal Sampling-Based Motion Planning with Automatically Derived Extension Heuristics
+* [RRT#: ](http://dcsl.gatech.edu/papers/icra13.pdf) Use of Relaxation Methods in Sampling-Based Algorithms for Optimal Motion Planning
+* [RRT*-Smart: ](http://save.seecs.nust.edu.pk/pubs/ICMA2012.pdf) Rapid convergence implementation of RRT* towards optimal solution
+* [Informed RRT*: ](https://arxiv.org/abs/1404.2334) Optimal Sampling-based Path Planning Focused via Direct Sampling of an Admissible Ellipsoidal Heuristic
 * [Fast Marching Trees (FMT*): ](https://arxiv.org/abs/1306.3532) a Fast Marching Sampling-Based Method for Optimal Motion Planning in Many Dimensions
 * [Batch Informed Trees (BIT*): ](https://arxiv.org/abs/1405.5848) Sampling-based Optimal Planning via the Heuristically Guided Search of Implicit Random Geometric Graphs
+* [Advanced Batch Informed Trees (ABIT*): ](https://arxiv.org/abs/2002.06589) Sampling-Based Planning with Advanced Graph-Search Techniques ((ICRA) 2020)
+* [Adaptively Informed Trees (AIT*): ](https://arxiv.org/abs/2002.06599) Fast Asymptotically Optimal Path Planning through Adaptive Heuristics ((ICRA) 2020)

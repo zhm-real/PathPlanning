@@ -2,32 +2,34 @@ Directory Structure
 ------
     .
     └── Search-based Planning
-        └── Search_2D
-            ├── bfs.py                                  # breadth-first searching
-            ├── dfs.py                                  # depth-first searching
-            ├── dijkstra.py                             # dijkstra's
-            ├── a_star.py                               # A*
-            ├── bidirectional_a_star.py                 # Bidirectional A*
-            ├── ARAstar.py                              # Anytime Reparing A*
-            ├── IDAstar.py                              # Iteratively Deepening A*
-            ├── LRTAstar.py                             # Learning Real-time A*
-            ├── RTAAstar.py                             # Real-time Adaptive A*
-            ├── LPAstar.py                              # Lifelong Planning A*
-            ├── D_star.py                               # D* (Dynamic A*)
-            ├── Anytime_D_star.py                       # Anytime D*
-            └── D_star_Lite.py                          # D* Lite
-        └── Search_3D
-            ├── Astar3D.py                              # A*_3D
-            ├── bidirectional_Astar3D.py                # Bidirectional A*_3D
-            ├── RTA_Astar3D.py                          # Real-time Adaptive A*_3D
-            └── LRT_Astar3D.py                          # Learning Real-time A*_3D
+        ├── Breadth-First Searching (BFS)
+        ├── Depth-First Searching (DFS)
+        ├── Best-First Searching
+        ├── Dijkstra's
+        ├── A*
+        ├── Bidirectional A*
+        ├── Anytime Repairing A*
+        ├── Learning Real-time A* (LRTA*)
+        ├── Real-time Adaptive A* (RTAA*)
+        ├── Lifelong Planning A* (LPA*)
+        ├── Dynamic A* (D*)
+        ├── D* Lite
+        ├── Anytime D*
+        └── Potential Field
     └── Sampling-based Planning
-        └── rrt_2D
-            ├── rrt.py                                  # rrt : goal-biased rrt
-            └── rrt_star.py
-        └── rrt_3D
-            ├── rrt3D.py                                # rrt3D : goal-biased rrt3D
-            └── rrtstar3D.py
+        ├── RRT
+        ├── RRT-Connect
+        ├── Extended-RRT
+        ├── Dynamic-RRT
+        ├── RRT*
+        ├── Informed RRT*
+        ├── RRT* Smart
+        ├── Anytime RRT*
+        ├── Closed-Loop RRT*
+        ├── Spline-RRT*
+        ├── LQR-RRT*
+        ├── Fast Marching Trees (FMT*)
+        └── Batch Informed Trees (BIT*)
 
 ## Animations - Search-Based
 ### Best-First & Dijkstra

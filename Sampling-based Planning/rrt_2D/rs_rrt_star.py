@@ -65,9 +65,6 @@ class RrtStarSmart:
             node_nearest = self.Nearest(self.V, node_rand)
             node_new = self.Steer(node_nearest, node_rand)
 
-            if node_new:
-                node_near =
-
     def Steer(self, node_start, node_end):
         sx, sy, syaw = node_start.x, node_start.y, node_start.yaw
         gx, gy, gyaw = node_end.x, node_end.y, node_end.yaw

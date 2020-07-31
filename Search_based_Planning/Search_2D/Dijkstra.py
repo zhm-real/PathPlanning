@@ -10,9 +10,7 @@ import math
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Search_based_Planning/")
 
-from Search_2D import queue
-from Search_2D import plotting
-from Search_2D import env
+from Search_based_Planning.Search_2D import queue, plotting, env
 
 
 class Dijkstra:

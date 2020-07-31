@@ -186,9 +186,9 @@ class D_star_Lite(object):
 
     def path(self, s_start=None):
         '''After ComputeShortestPath()
-        returns, one can then follow a shortest path from x_start to
+        returns, one can then follow a shortest path from x_init to
         x_goal by always moving from the current vertex s, starting
-        at x_start. , to any successor s' that minimizes c(s,s') + g(s')
+        at x_init. , to any successor s' that minimizes c(s,s') + g(s')
         until x_goal is reached (ties can be broken arbitrarily).'''
         path = []
         s_goal = self.xt

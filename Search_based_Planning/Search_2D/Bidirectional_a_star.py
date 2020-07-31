@@ -25,7 +25,7 @@ class BidirectionalAstar:
         self.u_set = self.Env.motions                                       # feasible input set
         self.obs = self.Env.obs                                             # position of obstacles
 
-        self.g_fore = {self.s_start: 0, self.s_goal: float("inf")}          # Cost to come: from x_start
+        self.g_fore = {self.s_start: 0, self.s_goal: float("inf")}          # Cost to come: from x_init
         self.g_back = {self.s_goal: 0, self.s_start: float("inf")}          # Cost to come: form x_goal
 
         self.OPEN_fore = queue.QueuePrior()                                 # OPEN set for foreward searching

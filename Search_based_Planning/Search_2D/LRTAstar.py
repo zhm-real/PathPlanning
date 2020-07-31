@@ -50,7 +50,7 @@ class LrtAstarN:
             for x in h_value:
                 self.h_table[x] = h_value[x]
 
-            s_start, path_k = self.extract_path_in_CLOSE(s_start, h_value)      # x_start -> expected node in OPEN set
+            s_start, path_k = self.extract_path_in_CLOSE(s_start, h_value)      # x_init -> expected node in OPEN set
             self.path.append(path_k)
 
     def extract_path_in_CLOSE(self, s_start, h_value):

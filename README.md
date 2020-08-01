@@ -134,6 +134,7 @@ Directory Structure
 * [RRT*-Smart: ](http://save.seecs.nust.edu.pk/pubs/ICMA2012.pdf) Rapid convergence implementation of RRT* towards optimal solution
 * [Informed RRT*: ](https://arxiv.org/abs/1404.2334) Optimal Sampling-based Path Planning Focused via Direct Sampling of an Admissible Ellipsoidal Heuristic
 * [Fast Marching Trees (FMT*): ](https://arxiv.org/abs/1306.3532) a Fast Marching Sampling-Based Method for Optimal Motion Planning in Many Dimensions
+* [Motion Planning using Lower Bounds (MPLB): ](https://ieeexplore.ieee.org/document/7139773) Asymptotically-optimal Motion Planning using lower bounds on cost
 * [Batch Informed Trees (BIT*): ](https://arxiv.org/abs/1405.5848) Sampling-based Optimal Planning via the Heuristically Guided Search of Implicit Random Geometric Graphs
 * [Advanced Batch Informed Trees (ABIT*): ](https://arxiv.org/abs/2002.06589) Sampling-Based Planning with Advanced Graph-Search Techniques ((ICRA) 2020)
 * [Adaptively Informed Trees (AIT*): ](https://arxiv.org/abs/2002.06599) Fast Asymptotically Optimal Path Planning through Adaptive Heuristics ((ICRA) 2020)

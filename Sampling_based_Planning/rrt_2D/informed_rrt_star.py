@@ -123,11 +123,12 @@ class IRrtStar:
                  math.sqrt(c_max ** 2 - c_min ** 2) / 2.0,
                  math.sqrt(c_max ** 2 - c_min ** 2) / 2.0]
             L = np.diag(r)
-            x_ball = self.SampleUnitNBall()
 
             while True:
+                x_ball = self.SampleUnitNBall()
                 x_rand = C @ L @ x_ball + x_center
-                if self.x_range[0] + self.delta <= x_rand[0] <= self.x_range[1] + self.delta:
+                if self.x_range[0] + self.delta <= x_rand[0] <= self.x_range[1] - self.delta and \
+                        self.y_range[0] + self.delta <= x_rand[1] <= self.y_range[1] - self.delta:
                     break
             x_rand = Node((x_rand[0], x_rand[1]))
         else:

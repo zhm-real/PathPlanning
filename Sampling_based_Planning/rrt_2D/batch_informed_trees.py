@@ -6,11 +6,12 @@ Batch Informed Trees (BIT*)
 import os
 import sys
 import math
-import random
 import copy
+import random
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+from scipy.spatial.transform import Rotation as Rot
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Sampling_based_Planning/")
@@ -63,15 +64,14 @@ class BITStar:
         self.Tree = Tree(self.x_start, self.x_goal)
         self.X_sample = set()
         self.g_T = dict()
-        self.f_T = dict()
 
     def init(self):
+        print("init")
         self.Tree.V.add(self.x_start)
         self.X_sample.add(self.x_goal)
-        self.g_T[self.x_goal] = np.inf
-        self.f_T[self.x_goal] = 0.0
+
         self.g_T[self.x_start] = 0.0
-        self.f_T[self.x_start] = self.f_estimated(self.x_start)
+        self.g_T[self.x_goal] = np.inf
 
         cMin, theta = self.calc_dist_and_angle(self.x_start, self.x_goal)
         C = self.RotationToWorldFrame(self.x_start, self.x_goal, cMin)
@@ -81,12 +81,12 @@ class BITStar:
         return theta, cMin, xCenter, C
 
     def planning(self):
-        eTheta, cMin, xCenter, C = self.init()
+        m = 200
+        theta, cMin, xCenter, C = self.init()
 
         for k in range(self.iter_max):
             if not self.Tree.QE and not self.Tree.QV:
                 self.Prune(self.g_T[self.x_goal])
-                m = 200
                 self.X_sample.update(self.Sample(m, self.g_T[self.x_goal], cMin, xCenter, C))
                 self.Tree.V_old = copy.deepcopy(self.Tree.V)
                 self.Tree.QV = copy.deepcopy(self.Tree.V)
@@ -99,13 +99,14 @@ class BITStar:
             self.Tree.QE.remove((vm, xm))
 
             if self.g_T[vm] + self.calc_dist(vm, xm) + self.h_estimated(xm) < self.g_T[self.x_goal]:
-                if self.g_estimated(vm) + self.cost(vm, xm) + self.h_estimated(xm) < self.g_T[self.x_goal]:
-                    if self.g_T[vm] + self.cost(vm, xm) < self.g_T[xm]:
+                actual_cost = self.cost(vm, xm)
+                if self.g_estimated(vm) + actual_cost + self.h_estimated(xm) < self.g_T[self.x_goal]:
+                    if self.g_T[vm] + actual_cost < self.g_T[xm]:
                         if xm in self.Tree.V:
                             # remove edges
-                            for vl, vr in self.Tree.E:
-                                if vl == xm or vr == xm:
-                                    self.Tree.E.remove((vl, vr))
+                            for v, x in self.Tree.E:
+                                if x == xm:
+                                    self.Tree.E.remove((v, x))
                         else:
                             self.X_sample.remove(xm)
                             self.Tree.V.add(xm)
@@ -113,133 +114,20 @@ class BITStar:
 
                         self.Tree.E.add((vm, xm))
 
-    def ExpandVertex(self, v):
-        self.Tree.QV.remove(v)
-        X_near = {x for x in self.X_sample if self.calc_dist(x, v) <= self.Tree.r}
-
-        for x in X_near:
-            if self.g_estimated(v) + self.calc_dist(v, x) + self.h_estimated(x) < self.g_T[self.x_goal]:
-                self.Tree.QE.add((v, x))
-
-        if v not in self.Tree.V_old:
-            V_near = {w for w in self.Tree.V if self.calc_dist(w, v) <= self.Tree.r}
-
-            for w in V_near:
-                if (v, w) not in self.Tree.E and (w, v) not in self.Tree.E and \
-                        self.g_estimated(v) + self.calc_dist(v, w) + self.h_estimated(w) < self.g_T[self.x_goal] and \
-                        self.g_T[v] + self.calc_dist(v, w) < self.g_T[w]:
-                    self.Tree.QE.add((v, w))
-
-    def BestVertexQueueValue(self):
-        if not self.Tree.QV:
-            return np.inf
-
-        return min(self.g_T[v] + self.h_estimated(v) for v in self.Tree.QV)
-
-    def BestEdgeQueueValue(self):
-        if not self.Tree.QE:
-            return np.inf
-
-        return min(self.g_T[el] + self.calc_dist(el, er) + self.h_estimated(er)
-                   for el, er in self.Tree.QE)
-
-    def BestInVertexQueue(self):
-        v_value = {v: self.g_T[v] + self.h_estimated(v) for v in self.Tree.QV}
-
-        return min(v_value, key=v_value.get)
-
-    def BestInEdgeQueue(self):
-        e_value = {(el, er): self.g_T[el] + self.calc_dist(el, er) + self.h_estimated(er)
-                   for el, er in self.Tree.QE}
-
-        return min(e_value, key=e_value.get)
-
-    def radius(self, q):
-        lambda_X = 0
-        sigma = math.pi ** 2
-
-        for x in self.Tree.V:
-            if self.f_estimated(x) <= self.g_T[self.x_goal]:
-                lambda_X += 1
-
-        return 2 * self.eta * 1.5 ** 0.5 * (lambda_X / sigma * math.log(q) / q) ** 0.5
-
-    def Sample(self, m, cMax, cMin, xCenter, C):
-        if cMax < np.inf:
-            Sample = self.SampleEllipsoid(m, cMax, cMin, xCenter, C)
-        else:
-            Sample = self.SampleFreeSpace(m)
-
-        return Sample
-
-    def SampleEllipsoid(self, m, cMax, cMin, xCenter, C):
-        r = [cMax / 2.0,
-             math.sqrt(cMax ** 2 - cMin ** 2) / 2.0,
-             math.sqrt(cMax ** 2 - cMin ** 2) / 2.0]
-        L = np.diag(r)
-
-        ind = 0
-        delta = self.delta
-        Sample = set()
-
-        while ind < m:
-            xBall = self.SampleUnitNBall()
-            x_rand = C @ L @ xBall + xCenter
-            node = Node(x_rand[0], x_rand[1])
-            not_in_obs = ~self.utils.is_inside_obs(node)
-            in_x_range = self.x_range[0] + delta <= node.x <= self.x_range[1] - delta
-            in_y_range = self.y_range[0] + delta <= node.y <= self.y_range[1] - delta
-
-            if not_in_obs and in_x_range and in_y_range:
-                Sample.add(node)
-                ind += 1
-
-        return Sample
-
-    def SampleFreeSpace(self, m):
-        delta = self.utils.delta
-        Sample = set()
-
-        ind = 0
-        while ind < m:
-            node = Node((random.uniform(self.x_range[0] + delta, self.x_range[1] - delta),
-                         random.uniform(self.y_range[0] + delta, self.y_range[1] - delta)))
-            if self.utils.is_inside_obs(node):
-                continue
+                        for v, x in self.Tree.QE:
+                            if x == xm and self.g_T[v] + self.calc_dist(v, xm) >= self.g_T[xm]:
+                                self.Tree.QE.remove((v, xm))
             else:
-                Sample.add(node)
-                ind += 1
+                self.Tree.QE = set()
+                self.Tree.QV = set()
 
-        return Sample
-
-    @staticmethod
-    def SampleUnitNBall():
-        theta, r = random.uniform(0.0, 2 * math.pi), random.random()
-        x = r * math.cos(theta)
-        y = r * math.sin(theta)
-
-        return np.array([[x], [y], [0.0]])
-
-    def Prune(self, c):
-        for x in self.X_sample:
-            if self.f_estimated(x) >= c:
-                self.X_sample.remove(x)
-
-        for v in self.Tree.V:
-            if self.f_estimated(v) > c:
-                self.Tree.V.remove(v)
-
-        for v, w in self.Tree.E:
-            if self.f_estimated(v) > c or self.f_estimated(w) > c:
-                self.Tree.E.remove((v, w))
-
-        for v in self.Tree.V:
-            if v.g_T == np.inf:
-                self.X_sample.add(v)
-
-        for v in self.Tree.V:
-            if v.g_T == np.inf:
-                self.Tree.V.remove(v)
+    def Prune(self, cBest):
+        self.X_sample = {x for x in self.X_sample if self.f_estimated(x) < cBest}
+        self.Tree.V = {v for v in self.Tree.V if self.f_estimated(v) <= cBest}
+        self.Tree.E = {(v, w) for v, w in self.Tree.E
+                       if self.f_estimated(v) <= cBest and self.f_estimated(w) <= cBest}
+        self.X_sample.update({v for v in self.Tree.V if self.g_T[v] == np.inf})
+        self.Tree.V = {v for v in self.Tree.V if self.g_T[v] < np.inf}
 
     def cost(self, start, end):
         if self.utils.is_collision(start, end):
@@ -256,9 +144,107 @@ class BITStar:
     def h_estimated(self, node):
         return self.calc_dist(node, self.x_goal)
 
+    def Sample(self, m, cMax, cMin, xCenter, C):
+        if cMax < np.inf:
+            return self.SampleEllipsoid(m, cMax, cMin, xCenter, C)
+        else:
+            return self.SampleFreeSpace(m)
+
+    def SampleEllipsoid(self, m, cMax, cMin, xCenter, C):
+        r = [cMax / 2.0,
+             math.sqrt(cMax ** 2 - cMin ** 2) / 2.0,
+             math.sqrt(cMax ** 2 - cMin ** 2) / 2.0]
+        L = np.diag(r)
+
+        ind = 0
+        delta = self.delta
+        Sample = set()
+
+        while ind < m:
+            xBall = self.SampleUnitNBall()
+            x_rand = np.dot(np.dot(C, L), xBall) + xCenter
+            node = Node(x_rand[(0, 0)], x_rand[(1, 0)])
+            in_obs = self.utils.is_inside_obs(node)
+            in_x_range = self.x_range[0] + delta <= node.x <= self.x_range[1] - delta
+            in_y_range = self.y_range[0] + delta <= node.y <= self.y_range[1] - delta
+
+            if not in_obs and in_x_range and in_y_range:
+                Sample.add(node)
+                ind += 1
+
+        return Sample
+
+    def SampleFreeSpace(self, m):
+        delta = self.utils.delta
+        Sample = set()
+
+        ind = 0
+        while ind < m:
+            node = Node(random.uniform(self.x_range[0] + delta, self.x_range[1] - delta),
+                        random.uniform(self.y_range[0] + delta, self.y_range[1] - delta))
+            if self.utils.is_inside_obs(node):
+                continue
+            else:
+                Sample.add(node)
+                ind += 1
+
+        return Sample
+
+    def radius(self, q):
+        cBest = self.g_T[self.x_goal]
+        lambda_X = len([1 for v in self.Tree.V if self.f_estimated(v) <= cBest])
+        radius = 2 * self.eta * (1.5 * lambda_X / math.pi * math.log(q) / q) ** 0.5
+
+        return radius
+
+    def ExpandVertex(self, v):
+        self.Tree.QV.remove(v)
+        X_near = {x for x in self.X_sample if self.calc_dist(x, v) <= self.Tree.r}
+        edges_add = {(v, x) for x in X_near
+                     if self.g_estimated(v) + self.calc_dist(v, x) + self.h_estimated(x) < self.g_T[self.x_goal]}
+        self.Tree.QE.update(edges_add)
+
+        if v not in self.Tree.V_old:
+            V_near = {w for w in self.Tree.V if self.calc_dist(w, v) <= self.Tree.r}
+            edges_add = {(v, w) for w in V_near if (v, w) not in self.Tree.E and
+                         self.g_estimated(v) + self.calc_dist(v, w) + self.h_estimated(w) < self.g_T[self.x_goal] and
+                         self.g_T[v] + self.calc_dist(v, w) < self.g_T[w]}
+            self.Tree.QE.update(edges_add)
+
+    def BestVertexQueueValue(self):
+        if not self.Tree.QV:
+            return np.inf
+
+        return min(self.g_T[v] + self.h_estimated(v) for v in self.Tree.QV)
+
+    def BestEdgeQueueValue(self):
+        if not self.Tree.QE:
+            return np.inf
+
+        return min(self.g_T[v] + self.calc_dist(v, x) + self.h_estimated(x)
+                   for v, x in self.Tree.QE)
+
+    def BestInVertexQueue(self):
+        v_value = {v: self.g_T[v] + self.h_estimated(v) for v in self.Tree.QV}
+
+        return min(v_value, key=v_value.get)
+
+    def BestInEdgeQueue(self):
+        e_value = {(v, x): self.g_T[v] + self.calc_dist(v, x) + self.h_estimated(x)
+                   for v, x in self.Tree.QE}
+
+        return min(e_value, key=e_value.get)
+
+    @staticmethod
+    def SampleUnitNBall():
+        while True:
+            x, y = random.uniform(-1, 1), random.uniform(-1, 1)
+            if x ** 2 + y ** 2 < 1:
+                return np.array([[x], [y], [0.0]])
+
     @staticmethod
     def RotationToWorldFrame(x_start, x_goal, L):
-        a1 = np.array([[(x_start.x - x_start.x) / L],
+        a1 = np.array([[(x_goal.x - x_start.x) / L],
                        [(x_goal.y - x_start.y) / L], [0.0]])
         e1 = np.array([[1.0], [0.0], [0.0]])
         M = a1 @ e1.T
@@ -276,3 +262,83 @@ class BITStar:
         dx = node_end.x - node_start.x
         dy = node_end.y - node_start.y
         return math.hypot(dx, dy), math.atan2(dy, dx)
+
+    def animation(self, name):
+        theta, cMin, xCenter, C = self.init()
+        cBest = 30
+        self.plot_grid(name)
+        sample = self.Sample(300, cBest, cMin, xCenter, C)
+        for node in sample:
+            plt.plot(node.x, node.y, marker='.', color='lightgrey')
+        self.draw_ellipse(xCenter, cBest, cMin, theta)
+        plt.pause(0.001)
+        plt.show()
+
+    def plot_grid(self, name):
+        for (ox, oy, w, h) in self.obs_boundary:
+            self.ax.add_patch(
+                patches.Rectangle(
+                    (ox, oy), w, h,
+                    edgecolor='black',
+                    facecolor='black',
+                    fill=True
+                )
+            )
+
+        for (ox, oy, w, h) in self.obs_rectangle:
+            self.ax.add_patch(
+                patches.Rectangle(
+                    (ox, oy), w, h,
+                    edgecolor='black',
+                    facecolor='gray',
+                    fill=True
+                )
+            )
+
+        for (ox, oy, r) in self.obs_circle:
+            self.ax.add_patch(
+                patches.Circle(
+                    (ox, oy), r,
+                    edgecolor='black',
+                    facecolor='gray',
+                    fill=True
+                )
+            )
+
+        plt.plot(self.x_start.x, self.x_start.y, "bs", linewidth=3)
+        plt.plot(self.x_goal.x, self.x_goal.y, "rs", linewidth=3)
+
+        plt.title(name)
+        plt.axis("equal")
+
+    @staticmethod
+    def draw_ellipse(x_center, c_best, dist, theta):
+        a = math.sqrt(c_best ** 2 - dist ** 2) / 2.0
+        b = c_best / 2.0
+        angle = math.pi / 2.0 - theta
+        cx = x_center[0]
+        cy = x_center[1]
+        t = np.arange(0, 2 * math.pi + 0.1, 0.1)
+        x = [a * math.cos(it) for it in t]
+        y = [b * math.sin(it) for it in t]
+        rot = Rot.from_euler('z', -angle).as_dcm()[0:2, 0:2]
+        fx = rot @ np.array([x, y])
+        px = np.array(fx[0, :] + cx).flatten()
+        py = np.array(fx[1, :] + cy).flatten()
+        plt.plot(cx, cy, marker='.', color='darkorange')
+        plt.plot(px, py, linestyle='--', color='darkorange', linewidth=2)
+
+
+def main():
+    x_start = (18, 8)  # Starting node
+    x_goal = (37, 18)  # Goal node
+    eta = 2
+    iter_max = 200
+    print("start!!!")
+    bit = BITStar(x_start, x_goal, eta, iter_max)
+    # bit.planning()
+    bit.animation("Batch Informed Trees (BIT*)")
+
+
+if __name__ == '__main__':
+    main()

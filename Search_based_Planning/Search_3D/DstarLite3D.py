@@ -165,7 +165,7 @@ class D_star_Lite(object):
             self.env.start = self.x0
             # ---------------------------------- if any Cost changed, update km, reset slast,
             #                                    for all directed edgees (u,v) with  chaged edge costs, 
-            #                                    update the edge Cost c(u,v) and update vertex u. then replan
+            #                                    update the edge Cost cBest(u,v) and update vertex u. then replan
             if ischanged:
                 self.km += heuristic_fun(self, self.x0, s_last)
                 s_last = self.x0
@@ -188,7 +188,7 @@ class D_star_Lite(object):
         '''After ComputeShortestPath()
         returns, one can then follow a shortest path from x_init to
         x_goal by always moving from the current vertex s, starting
-        at x_init. , to any successor s' that minimizes c(s,s') + g(s')
+        at x_init. , to any successor s' that minimizes cBest(s,s') + g(s')
         until x_goal is reached (ties can be broken arbitrarily).'''
         path = []
         s_goal = self.xt

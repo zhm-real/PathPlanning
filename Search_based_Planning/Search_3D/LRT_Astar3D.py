@@ -36,7 +36,7 @@ class LRT_A_star2:
                 # update h values if they are smaller
                 Children = children(self.Astar,xi)
                 minfval = min([cost(self.Astar,xi, xj, settings=0) + self.Astar.h[xj] for xj in Children])
-                # h(s) = h(s') if h(s) > c(s,s') + h(s') 
+                # h(s) = h(s') if h(s) > cBest(s,s') + h(s') 
                 if self.Astar.h[xi] >= minfval:
                     self.Astar.h[xi] = minfval
                 hvals.append(self.Astar.h[xi])

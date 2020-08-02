@@ -164,7 +164,7 @@ class IRrtStar:
 
     @staticmethod
     def RotationToWorldFrame(x_start, x_goal, L):
-        a1 = np.array([[(x_start.x - x_start.x) / L],
+        a1 = np.array([[(x_goal.x - x_start.x) / L],
                        [(x_goal.y - x_start.y) / L], [0.0]])
         e1 = np.array([[1.0], [0.0], [0.0]])
         M = a1 @ e1.T
@@ -175,11 +175,11 @@ class IRrtStar:
 
     @staticmethod
     def SampleUnitNBall():
-        theta, r = random.uniform(0.0, 2 * math.pi), random.random()
-        x = r * math.cos(theta)
-        y = r * math.sin(theta)
+        while True:
+            x, y = random.uniform(-1, 1), random.uniform(-1, 1)
 
-        return np.array([[x], [y], [0.0]])
+            if x ** 2 + y ** 2 < 1:
+                return np.array([[x], [y], [0.0]])
 
     @staticmethod
     def Nearest(nodelist, n):
@@ -284,7 +284,7 @@ def main():
     x_start = (18, 8)  # Starting node
     x_goal = (37, 18)  # Goal node
 
-    rrt_star = IRrtStar(x_start, x_goal, 10, 0.10, 20, 10000)
+    rrt_star = IRrtStar(x_start, x_goal, 10, 0.10, 20, 1000)
     rrt_star.planning()
 
 

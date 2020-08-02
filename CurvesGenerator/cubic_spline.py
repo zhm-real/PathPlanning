@@ -28,10 +28,10 @@ class Spline:
         self.nx = len(x)  # dimension of x
         h = np.diff(x)
 
-        # calc coefficient c
+        # calc coefficient cBest
         self.a = [iy for iy in y]
 
-        # calc coefficient c
+        # calc coefficient cBest
         A = self.__calc_A(h)
         B = self.__calc_B(h)
         self.c = np.linalg.solve(A, B)
@@ -104,7 +104,7 @@ class Spline:
 
     def __calc_A(self, h):
         u"""
-        calc matrix A for spline coefficient c
+        calc matrix A for spline coefficient cBest
         """
         A = np.zeros((self.nx, self.nx))
         A[0, 0] = 1.0
@@ -122,7 +122,7 @@ class Spline:
 
     def __calc_B(self, h):
         u"""
-        calc matrix B for spline coefficient c
+        calc matrix B for spline coefficient cBest
         """
         B = np.zeros(self.nx)
         for i in range(self.nx - 2):

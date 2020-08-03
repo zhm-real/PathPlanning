@@ -94,7 +94,7 @@ Directory Structure
 <table>
   <tr>
     <td><img src="https://github.com/zhm-real/PathPlanning/blob/master/Sampling_based_Planning/gif/RRT_STAR2_2D.gif" alt="value iteration" width="400"/></a></td>
-    <td><img src="https://github.com/zhm-real/PathPlanning/blob/master/Sampling_based_Planning/gif/INFORMED_RRT_STAR_2D.gif" alt="value iteration" width="400"/></a></td>
+    <td><img src="https://github.com/zhm-real/PathPlanning/blob/master/Sampling_based_Planning/gif/INFORMED_RRT_STAR_2D3.gif" alt="value iteration" width="400"/></a></td>
   </tr>
 </table>
 <table>

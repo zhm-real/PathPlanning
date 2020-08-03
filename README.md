@@ -81,26 +81,32 @@ Directory Structure
 <div align=right>
 <table>
   <tr>
+    <td><img src="https://github.com/zhm-real/PathPlanning/blob/master/Sampling_based_Planning/gif/RRT_2D.gif" alt="value iteration" width="400"/></a></td>
     <td><img src="https://github.com/zhm-real/PathPlanning/blob/master/Sampling_based_Planning/gif/Goal_biasd_RRT_2D.gif" alt="value iteration" width="400"/></a></td>
+  </tr>
+</table>
+<table>
+  <tr>
     <td><img src="https://github.com/zhm-real/PathPlanning/blob/master/Sampling_based_Planning/gif/RRT_CONNECT_2D.gif" alt="value iteration" width="400"/></a></td>
-  </tr>
-</table>
-<table>
-  <tr>
     <td><img src="https://github.com/zhm-real/PathPlanning/blob/master/Sampling_based_Planning/gif/Extended_RRT_2D.gif" alt="value iteration" width="400"/></a></td>
-    <td><img src="https://github.com/zhm-real/PathPlanning/blob/master/Sampling_based_Planning/gif/Dynamic_RRT_2D.gif" alt="value iteration" width="400"/></a></td>
   </tr>
 </table>
 <table>
   <tr>
+    <td><img src="https://github.com/zhm-real/PathPlanning/blob/master/Sampling_based_Planning/gif/Dynamic_RRT_2D.gif" alt="value iteration" width="400"/></a></td>
     <td><img src="https://github.com/zhm-real/PathPlanning/blob/master/Sampling_based_Planning/gif/RRT_STAR2_2D.gif" alt="value iteration" width="400"/></a></td>
-    <td><img src="https://github.com/zhm-real/PathPlanning/blob/master/Sampling_based_Planning/gif/INFORMED_RRT_STAR_2D3.gif" alt="value iteration" width="400"/></a></td>
   </tr>
 </table>
 <table>
   <tr>
     <td><img src="https://github.com/zhm-real/PathPlanning/blob/master/Sampling_based_Planning/gif/RRT_STAR_SMART_2D.gif" alt="value iteration" width="400"/></a></td>
     <td><img src="https://github.com/zhm-real/PathPlanning/blob/master/Sampling_based_Planning/gif/FMT.gif" alt="value iteration" width="400"/></a></td>
+  </tr>
+</table>
+<table>
+  <tr>
+    <td><img src="https://github.com/zhm-real/PathPlanning/blob/master/Sampling_based_Planning/gif/INFORMED_RRT_STAR_2D3.gif" alt="value iteration" width="400"/></a></td>
+    <td><img src="https://github.com/zhm-real/PathPlanning/blob/master/Sampling_based_Planning/gif/BIT2.gif" alt="value iteration" width="400"/></a></td>
   </tr>
 </table>
 </div>

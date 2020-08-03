@@ -6,7 +6,6 @@ Batch Informed Trees (BIT*)
 import os
 import sys
 import math
-import copy
 import random
 import numpy as np
 import matplotlib.pyplot as plt
@@ -66,7 +65,6 @@ class BITStar:
         self.g_T = dict()
 
     def init(self):
-        print("init")
         self.Tree.V.add(self.x_start)
         self.X_sample.add(self.x_goal)
 
@@ -141,32 +139,12 @@ class BITStar:
                 self.Tree.QV = set()
 
             if k % 5 == 0:
-                self.draw(xCenter, self.g_T[self.x_goal], cMin, theta)
+                self.animation(xCenter, self.g_T[self.x_goal], cMin, theta)
 
         path_x, path_y = self.ExtractPath()
         plt.plot(path_x, path_y, linewidth=2, color='r')
         plt.pause(0.01)
-        # test
         plt.show()
-
-    def draw(self, xCenter, cMax, cMin, theta):
-        plt.cla()
-        self.plot_grid("Batch Informed Trees (BIT*)")
-
-        plt.gcf().canvas.mpl_connect(
-            'key_release_event',
-            lambda event: [exit(0) if event.key == 'escape' else None])
-
-        for v in self.X_sample:
-            plt.plot(v.x, v.y, marker='.', color='lightgrey', markersize='2')
-
-        if cMax < np.inf:
-            self.draw_ellipse(xCenter, cMax, cMin, theta)
-
-        for v, w in self.Tree.E:
-            plt.plot([v.x, w.x], [v.y, w.y], '-g')
-
-        plt.pause(0.01)
 
     def ExtractPath(self):
         node = self.x_goal
@@ -335,9 +313,23 @@ class BITStar:
         dy = node_end.y - node_start.y
         return math.hypot(dx, dy), math.atan2(dy, dx)
 
-    def animation(self, name, cBest):
-        theta, cMin, xCenter, C = self.init()
-        self.draw_ellipse(xCenter, cBest, cMin, theta)
+    def animation(self, xCenter, cMax, cMin, theta):
+        plt.cla()
+        self.plot_grid("Batch Informed Trees (BIT*)")
+
+        plt.gcf().canvas.mpl_connect(
+            'key_release_event',
+            lambda event: [exit(0) if event.key == 'escape' else None])
+
+        for v in self.X_sample:
+            plt.plot(v.x, v.y, marker='.', color='lightgrey', markersize='2')
+
+        if cMax < np.inf:
+            self.draw_ellipse(xCenter, cMax, cMin, theta)
+
+        for v, w in self.Tree.E:
+            plt.plot([v.x, w.x], [v.y, w.y], '-g')
+
         plt.pause(0.001)
 
     def plot_grid(self, name):

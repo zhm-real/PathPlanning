@@ -51,42 +51,55 @@ class IRrtStar:
         self.X_soln = set()
         self.path = None
 
-    def planning(self):
-        c_best = np.inf
-        dist, theta = self.get_distance_and_angle(self.x_start, self.x_goal)
-        C = self.RotationToWorldFrame(self.x_start, self.x_goal, dist)
-        x_center = np.array([[(self.x_start.x + self.x_goal.x) / 2.0],
-                             [(self.x_start.y + self.x_goal.y) / 2.0], [0.0]])
+    def init(self):
+        cMin, theta = self.get_distance_and_angle(self.x_start, self.x_goal)
+        C = self.RotationToWorldFrame(self.x_start, self.x_goal, cMin)
+        xCenter = np.array([[(self.x_start.x + self.x_goal.x) / 2.0],
+                            [(self.x_start.y + self.x_goal.y) / 2.0], [0.0]])
         x_best = self.x_start
 
+        return theta, cMin, xCenter, C, x_best
+
+    def planning(self):
+        theta, dist, x_center, C, x_best = self.init()
+        c_best = np.inf
+
         for k in range(self.iter_max):
-            x_rand = self.Sample(self.x_start, self.x_goal, c_best, x_center, C)
+            if self.X_soln:
+                cost = {node: self.Cost(node) for node in self.X_soln}
+                x_best = min(cost, key=cost.get)
+                c_best = cost[x_best]
+
+            x_rand = self.Sample(c_best, dist, x_center, C)
             x_nearest = self.Nearest(self.V, x_rand)
             x_new = self.Steer(x_nearest, x_rand)
 
             if x_new and not self.utils.is_collision(x_nearest, x_new):
                 X_near = self.Near(self.V, x_new)
-                c_min = self.Cost(x_new)
+                c_min = self.Cost(x_nearest) + self.Line(x_nearest, x_new)
                 self.V.append(x_new)
 
+                # choose parent
                 for x_near in X_near:
                     c_new = self.Cost(x_near) + self.Line(x_near, x_new)
                     if c_new < c_min:
                         x_new.parent = x_near
                         c_min = c_new
 
+                # rewire
                 for x_near in X_near:
                     c_near = self.Cost(x_near)
-                    c_new = c_min + self.Line(x_new, x_near)
+                    c_new = self.Cost(x_new) + self.Line(x_new, x_near)
                     if c_new < c_near:
                         x_near.parent = x_new
 
                 if self.InGoalRegion(x_new):
-                    self.X_soln.add(x_new)
-                    new_cost = self.Cost(x_new) + self.Line(x_new, self.x_goal)
-                    if new_cost < c_best:
-                        c_best = new_cost
-                        x_best = x_new
+                    if not self.utils.is_collision(x_new, self.x_goal):
+                        self.X_soln.add(x_new)
+                        # new_cost = self.Cost(x_new) + self.Line(x_new, self.x_goal)
+                        # if new_cost < c_best:
+                        #     c_best = new_cost
+                        #     x_best = x_new
 
             if k % 20 == 0:
                 self.animation(x_center=x_center, c_best=c_best, dist=dist, theta=theta)
@@ -108,33 +121,39 @@ class IRrtStar:
 
     def Near(self, nodelist, node):
         n = len(nodelist) + 1
-        r = min(self.search_radius * math.sqrt((math.log(n) / n)), self.step_len)
+        r = 50 * math.sqrt((math.log(n) / n))
 
         dist_table = [(nd.x - node.x) ** 2 + (nd.y - node.y) ** 2 for nd in nodelist]
         X_near = [nodelist[ind] for ind in range(len(dist_table)) if dist_table[ind] <= r ** 2 and
-                  not self.utils.is_collision(node, nodelist[ind])]
+                  not self.utils.is_collision(nodelist[ind], node)]
 
         return X_near
 
-    def Sample(self, x_start, x_goal, c_max, x_center, C):
+    def Sample(self, c_max, c_min, x_center, C):
         if c_max < np.inf:
-            c_min = self.Line(x_start, x_goal)
             r = [c_max / 2.0,
                  math.sqrt(c_max ** 2 - c_min ** 2) / 2.0,
                  math.sqrt(c_max ** 2 - c_min ** 2) / 2.0]
             L = np.diag(r)
 
             while True:
-                x_ball = self.SampleUnitNBall()
-                x_rand = C @ L @ x_ball + x_center
+                x_ball = self.SampleUnitBall()
+                x_rand = np.dot(np.dot(C, L), x_ball) + x_center
                 if self.x_range[0] + self.delta <= x_rand[0] <= self.x_range[1] - self.delta and \
                         self.y_range[0] + self.delta <= x_rand[1] <= self.y_range[1] - self.delta:
                     break
-            x_rand = Node((x_rand[0], x_rand[1]))
+            x_rand = Node((x_rand[(0, 0)], x_rand[(1, 0)]))
         else:
             x_rand = self.SampleFreeSpace()
 
         return x_rand
+
+    @staticmethod
+    def SampleUnitBall():
+        while True:
+            x, y = random.uniform(-1, 1), random.uniform(-1, 1)
+            if x ** 2 + y ** 2 < 1:
+                return np.array([[x], [y], [0.0]])
 
     def SampleFreeSpace(self):
         delta = self.delta
@@ -174,14 +193,6 @@ class IRrtStar:
         return C
 
     @staticmethod
-    def SampleUnitNBall():
-        while True:
-            x, y = random.uniform(-1, 1), random.uniform(-1, 1)
-
-            if x ** 2 + y ** 2 < 1:
-                return np.array([[x], [y], [0.0]])
-
-    @staticmethod
     def Nearest(nodelist, n):
         return nodelist[int(np.argmin([(nd.x - n.x) ** 2 + (nd.y - n.y) ** 2
                                        for nd in nodelist]))]
@@ -190,12 +201,14 @@ class IRrtStar:
     def Line(x_start, x_goal):
         return math.hypot(x_goal.x - x_start.x, x_goal.y - x_start.y)
 
-    @staticmethod
-    def Cost(node):
-        cost = 0.0
-        if node.parent is None:
-            return cost
+    def Cost(self, node):
+        if node == self.x_start:
+            return 0.0
 
+        if node.parent is None:
+            return np.inf
+
+        cost = 0.0
         while node.parent:
             cost += math.hypot(node.x - node.parent.x, node.y - node.parent.y)
             node = node.parent
@@ -215,12 +228,12 @@ class IRrtStar:
             'key_release_event',
             lambda event: [exit(0) if event.key == 'escape' else None])
 
-        if c_best != np.inf:
-            self.draw_ellipse(x_center, c_best, dist, theta)
-
         for node in self.V:
             if node.parent:
                 plt.plot([node.x, node.parent.x], [node.y, node.parent.y], "-g")
+
+        if c_best != np.inf:
+            self.draw_ellipse(x_center, c_best, dist, theta)
 
         plt.pause(0.01)
 
@@ -284,7 +297,7 @@ def main():
     x_start = (18, 8)  # Starting node
     x_goal = (37, 18)  # Goal node
 
-    rrt_star = IRrtStar(x_start, x_goal, 10, 0.10, 20, 1000)
+    rrt_star = IRrtStar(x_start, x_goal, 1, 0.10, 12, 1000)
     rrt_star.planning()
 
 

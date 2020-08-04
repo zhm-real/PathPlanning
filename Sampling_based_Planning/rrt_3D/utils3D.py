@@ -196,6 +196,7 @@ def steer(initparams, x, y, DIST=False):
     if np.equal(x, y).all():
         return x, 0.0
     dist, step = getDist(y, x), initparams.stepsize
+    step = min(dist, step)
     increment = ((y[0] - x[0]) / dist * step, (y[1] - x[1]) / dist * step, (y[2] - x[2]) / dist * step)
     xnew = (x[0] + increment[0], x[1] + increment[1], x[2] + increment[2])
     # direc = (y - x) / np.linalg.norm(y - x)

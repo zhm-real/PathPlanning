@@ -18,6 +18,23 @@ from rrt_3D.env3D import env
 from rrt_3D.utils3D import getDist, sampleFree, nearest, steer, isCollide, near, visualization, cost, path, edgeset
 from rrt_3D.plot_util3D import make_get_proj, draw_block_list, draw_Spheres, draw_obb, draw_line, make_transparent
 
+
+class Tree():
+    def __init__(self, node):
+        self.V = []
+        self.Parent = {}
+        self.V.append(node)
+        # self.Parent[node] = None
+
+    def add_vertex(self, node):
+        if node not in self.V:
+            self.V.append(node)
+        
+    def add_edge(self, parent, child):
+        # here edge is defined a tuple of (parent, child) (qnear, qnew)
+        self.Parent[child] = parent
+
+
 class rrt_connect():
     def __init__(self):
         self.env = env()
@@ -33,6 +50,7 @@ class rrt_connect():
         self.qgoal = tuple(self.env.goal)
         self.x0, self.xt = tuple(self.env.start), tuple(self.env.goal)
         self.qnew = None
+        self.done = False
         
         self.ind = 0
         self.fig = plt.figure(figsize=(10, 8))
@@ -78,7 +96,7 @@ class rrt_connect():
         collide, _ = isCollide(self, qnear, qnew, dist = dist)
         return not collide
 
-    #----------RRT connect algorithm
+#----------RRT connect algorithm
     def CONNECT(self, Tree, q):
         print('in connect')
         while True:
@@ -97,13 +115,14 @@ class rrt_connect():
                 qnew = self.qnew # get qnew from outside
                 if self.CONNECT(Tree_B, qnew) == 'Reached':
                     print('reached')
-                    # return self.PATH(Tree_A, Tree_B)
+                    self.done = True
+                    self.Path = self.PATH(Tree_A, Tree_B)
+                    self.visualization(Tree_A, Tree_B, k)
+                    plt.show()
                     return
-                else: 
-                    print('not reached')
+                    # return
             Tree_A, Tree_B = self.SWAP(Tree_A, Tree_B)
             self.visualization(Tree_A, Tree_B, k)
-        print('Failure')
         return 'Failure'
 
     # def PATH(self, tree_a, tree_b):
@@ -111,10 +130,29 @@ class rrt_connect():
         tree_a, tree_b = tree_b, tree_a
         return tree_a, tree_b
 
+    def PATH(self, tree_a, tree_b):
+        qnew = self.qnew
+        patha = []
+        pathb = []
+        while True:
+            patha.append((tree_a.Parent[qnew], qnew))
+            qnew = tree_a.Parent[qnew]
+            if qnew == self.qinit or qnew == self.qgoal:
+                break
+        qnew = self.qnew
+        while True:
+            pathb.append((tree_b.Parent[qnew], qnew))
+            qnew = tree_b.Parent[qnew]
+            if qnew == self.qinit or qnew == self.qgoal:
+                break
+        return patha + pathb
+
+#----------RRT connect algorithm        
     def visualization(self, tree_a, tree_b, index):
-        if (index % 10 == 0 and index != 0) or self.done:
+        if (index % 20 == 0 and index != 0) or self.done:
             # a_V = np.array(tree_a.V)
             # b_V = np.array(tree_b.V)
+            Path = self.Path
             start = self.env.start
             goal = self.env.goal
             a_edges, b_edges = [], []
@@ -132,32 +170,19 @@ class rrt_connect():
             draw_block_list(ax, np.array([self.env.boundary]), alpha=0)
             draw_line(ax, a_edges, visibility=0.75, color='g')
             draw_line(ax, b_edges, visibility=0.75, color='y')
-            # draw_line(ax, Path, color='r')
+            draw_line(ax, Path, color='r')
             ax.plot(start[0:1], start[1:2], start[2:], 'go', markersize=7, markeredgecolor='k')
             ax.plot(goal[0:1], goal[1:2], goal[2:], 'ro', markersize=7, markeredgecolor='k')
             xmin, xmax = self.env.boundary[0], self.env.boundary[3]
             ymin, ymax = self.env.boundary[1], self.env.boundary[4]
             zmin, zmax = self.env.boundary[2], self.env.boundary[5]
-            dx, dy, dz = xmax - xmin, ymax - ymin, zmax - zmin
+            dx, dy, _ = xmax - xmin, ymax - ymin, zmax - zmin
             ax.get_proj = make_get_proj(ax, 1 * dx, 1 * dy, 2 * dy)
             make_transparent(ax)
             ax.set_axis_off()
             plt.pause(0.0001)
 
-class Tree():
-    def __init__(self, node):
-        self.V = []
-        self.Parent = {}
-        self.V.append(node)
-        # self.Parent[node] = None
 
-    def add_vertex(self, node):
-        if node not in self.V:
-            self.V.append(node)
-        
-    def add_edge(self, parent, child):
-        # here edge is defined a tuple of (parent, child) (qnear, qnew)
-        self.Parent[child] = parent
 
 if __name__ == '__main__':
     p = rrt_connect()

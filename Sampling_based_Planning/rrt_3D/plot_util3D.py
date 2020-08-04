@@ -106,7 +106,7 @@ def visualization(initparams):
         
         # ax.view_init(elev=0.+ 0.03*initparams.ind/(2*np.pi), azim=90 + 0.03*initparams.ind/(2*np.pi))
         # ax.view_init(elev=0., azim=90.)
-        ax.view_init(elev=8., azim=120.)
+        ax.view_init(elev=8., azim=90.)
         # ax.view_init(elev=-8., azim=180)
         ax.clear()
         # drawing objects

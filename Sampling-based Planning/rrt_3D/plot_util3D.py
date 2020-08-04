@@ -86,14 +86,24 @@ def draw_line(ax, SET, visibility=1, color=None):
 
 def visualization(initparams):
     if initparams.ind % 100 == 0 or initparams.done:
-        V = np.array(list(initparams.V))
-        E = initparams.E
+        #----------- list structure
+        # V = np.array(list(initparams.V))
+        # E = initparams.E
+        #----------- end
+        V = np.array(initparams.V)
+        # edges = initparams.E
         Path = np.array(initparams.Path)
         start = initparams.env.start
         goal = initparams.env.goal
-        edges = E.get_edge()
+        # edges = E.get_edge()
+        #----------- list structure
+        edges = []
+        for i in initparams.Parent:
+            edges.append([i,initparams.Parent[i]])
+        #----------- end
         # generate axis objects
         ax = plt.subplot(111, projection='3d')
+        
         # ax.view_init(elev=0.+ 0.03*initparams.ind/(2*np.pi), azim=90 + 0.03*initparams.ind/(2*np.pi))
         # ax.view_init(elev=0., azim=90.)
         ax.view_init(elev=8., azim=120.)
@@ -105,10 +115,10 @@ def visualization(initparams):
         if initparams.env.OBB is not None:
             draw_obb(ax, initparams.env.OBB)
         draw_block_list(ax, np.array([initparams.env.boundary]), alpha=0)
-        draw_line(ax, edges, visibility=0.25)
+        draw_line(ax, edges, visibility=0.75, color='g')
         draw_line(ax, Path, color='r')
-        if len(V) > 0:
-            ax.scatter3D(V[:, 0], V[:, 1], V[:, 2], s=2, color='g', )
+        # if len(V) > 0:
+        #     ax.scatter3D(V[:, 0], V[:, 1], V[:, 2], s=2, color='g', )
         ax.plot(start[0:1], start[1:2], start[2:], 'go', markersize=7, markeredgecolor='k')
         ax.plot(goal[0:1], goal[1:2], goal[2:], 'ro', markersize=7, markeredgecolor='k')
         # adjust the aspect ratio
@@ -117,8 +127,10 @@ def visualization(initparams):
         zmin, zmax = initparams.env.boundary[2], initparams.env.boundary[5]
         dx, dy, dz = xmax - xmin, ymax - ymin, zmax - zmin
         ax.get_proj = make_get_proj(ax, 1 * dx, 1 * dy, 2 * dy)
-        plt.xlabel('x')
-        plt.ylabel('y')
+        make_transparent(ax)
+        #plt.xlabel('x')
+        #plt.ylabel('y')
+        ax.set_axis_off()
         plt.pause(0.0001)
 
 
@@ -179,6 +191,15 @@ def make_get_proj(self, rx, ry, rz):
 
     return get_proj
 
+def make_transparent(ax):
+    # make the panes transparent
+    ax.xaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
+    ax.yaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
+    ax.zaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
+    # make the grid lines transparent
+    ax.xaxis._axinfo["grid"]['color'] =  (1,1,1,0)
+    ax.yaxis._axinfo["grid"]['color'] =  (1,1,1,0)
+    ax.zaxis._axinfo["grid"]['color'] =  (1,1,1,0)
 
 if __name__ == '__main__':
     pass

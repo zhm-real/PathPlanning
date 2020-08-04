@@ -80,6 +80,7 @@ def add_block(block = [1.51e+01, 0.00e+00, 2.10e+00, 1.59e+01, 5.00e+00, 6.00e+0
 
 class env():
     def __init__(self, xmin=0, ymin=0, zmin=0, xmax=20, ymax=5, zmax=6, resolution=1):
+    # def __init__(self, xmin=-5, ymin=0, zmin=-5, xmax=10, ymax=5, zmax=10, resolution=1):  
         self.resolution = resolution
         self.boundary = np.array([xmin, ymin, zmin, xmax, ymax, zmax]) 
         self.blocks = getblocks()

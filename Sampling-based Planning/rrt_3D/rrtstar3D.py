@@ -13,20 +13,23 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Sampling-based Planning/")
 from rrt_3D.env3D import env
-from rrt_3D.utils3D import getDist, sampleFree, nearest, steer, isCollide, near, visualization, cost, path, edgeset
+from rrt_3D.utils3D import getDist, sampleFree, nearest, steer, isCollide, near, visualization, cost, path
 
 
 class rrtstar():
     def __init__(self):
         self.env = env()
+
         self.Parent = {}
-        self.E = edgeset()
         self.V = []
+        # self.E = edgeset()
+        self.COST = {}
+
         self.i = 0
-        self.maxiter = 5000 # at least 2000 in this env
+        self.maxiter = 12000 # at least 2000 in this env
         self.stepsize = 0.5
         self.gamma = 500
-        self.eta = 2*self.stepsize
+        self.eta = self.stepsize
         self.Path = []
         self.done = False
         self.x0 = tuple(self.env.start)
@@ -35,13 +38,13 @@ class rrtstar():
         self.V.append(self.x0)
         self.ind = 0
     def wireup(self,x,y):
-        self.E.add_edge([x,y]) # add edge
+        # self.E.add_edge([x,y]) # add edge
         self.Parent[x] = y
 
     def removewire(self,xnear):
         xparent = self.Parent[xnear]
         a = [xnear,xparent]
-        self.E.remove_edge(a) # remove and replace old the connection
+        # self.E.remove_edge(a) # remove and replace old the connection
 
     def reached(self):
         self.done = True
@@ -65,24 +68,26 @@ class rrtstar():
             if not collide:
                 Xnear = near(self,xnew)
                 self.V.append(xnew) # add point
-                # visualization(self)
+                visualization(self)
                 # minimal path and minimal cost
                 xmin, cmin = xnearest, cost(self, xnearest) + getDist(xnearest, xnew)
                 # connecting along minimal cost path
+                Collide = []
                 for xnear in Xnear:
                     xnear = tuple(xnear)
                     c1 = cost(self, xnear) + getDist(xnew, xnear)
                     collide, _ = isCollide(self, xnew, xnear)
+                    Collide.append(collide)
                     if not collide and c1 < cmin:
                         xmin, cmin = xnear, c1
                 self.wireup(xnew, xmin)
                 # rewire
-                for xnear in Xnear:
-                    xnear = tuple(xnear)
+                for i in range(len(Xnear)):
+                    collide = Collide[i]
+                    xnear = tuple(Xnear[i])
                     c2 = cost(self, xnew) + getDist(xnew, xnear)
-                    collide, _ = isCollide(self, xnew, xnear)
                     if not collide and c2 < cost(self, xnear):
-                        self.removewire(xnear)
+                        # self.removewire(xnear)
                         self.wireup(xnear, xnew)
                 self.i += 1
             self.ind += 1

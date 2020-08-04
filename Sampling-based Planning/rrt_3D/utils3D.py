@@ -1,6 +1,7 @@
 import numpy as np
 from numpy.matlib import repmat
 import pyrr as pyrr
+from collections import deque
 
 import os
 import sys
@@ -166,7 +167,7 @@ def isCollide(initparams, x, child, dist=None):
     return False, dist
 
 # ---------------------- leaf node extending algorithms
-def nearest(initparams, x):
+def nearest(initparams, x, isset=False):
     V = np.array(initparams.V)
     if initparams.i == 0:
         return initparams.V[0]
@@ -175,28 +176,33 @@ def nearest(initparams, x):
     return tuple(initparams.V[np.argmin(dists)])
 
 def near(initparams, x):
-    x = np.array(x)
+    # x = np.array(x)
     V = np.array(initparams.V)
+    if initparams.i == 0:
+        return [initparams.V[0]]
     cardV = len(initparams.V)
     eta = initparams.eta
     gamma = initparams.gamma
-    r = min(gamma * (np.log(cardV) / cardV), eta)
+    r = min(gamma * (np.log(cardV) / cardV ** (1/3)), eta)
     if initparams.done: 
         r = 1
-    if initparams.i == 0:
-        return [initparams.V[0]]
     xr = repmat(x, len(V), 1)
     inside = np.linalg.norm(xr - V, axis=1) < r
     nearpoints = V[inside]
     return np.array(nearpoints)
 
-def steer(initparams, x, y):
+def steer(initparams, x, y, DIST=False):
+    # steer from x to y
+    if np.equal(x, y).all():
+        return x, 0.0
     dist, step = getDist(y, x), initparams.stepsize
     increment = ((y[0] - x[0]) / dist * step, (y[1] - x[1]) / dist * step, (y[2] - x[2]) / dist * step)
     xnew = (x[0] + increment[0], x[1] + increment[1], x[2] + increment[2])
     # direc = (y - x) / np.linalg.norm(y - x)
     # xnew = x + initparams.stepsize * direc
-    return xnew
+    if DIST:
+        return xnew, dist
+    return xnew, dist
 
 def cost(initparams, x):
     '''here use the additive recursive cost function'''
@@ -204,6 +210,11 @@ def cost(initparams, x):
         return 0
     return cost(initparams, initparams.Parent[x]) + getDist(x, initparams.Parent[x])
 
+def cost_from_set(initparams, x):
+    '''here use a incremental cost set function'''
+    if x == initparams.x0:
+        return 0
+    return initparams.COST[initparams.Parent[x]] + getDist(x, initparams.Parent[x])
 
 def path(initparams, Path=[], dist=0):
     x = initparams.xt
@@ -246,22 +257,156 @@ class edgeset(object):
     def isEndNode(self, node):
         return node not in self.E
 
-
+#------------------------ use a linked list to express the tree 
 class Node:
     def __init__(self, data):
-        self.data = data
-        self.sibling = None
-        self.child = None
+        self.pos = data
+        self.Parent = None
+        self.child = set()
 
-class Tree:
-    def __init__(self, start):
-        self.root = Node(start)
-        self.ind = 0
-        self.index = {start:self.ind}
+def tree_add_edge(node_in_tree, x):
+    # add an edge at the specified parent
+    node_to_add = Node(x)
+    # node_in_tree = tree_bfs(head, xparent)
+    node_in_tree.child.add(node_to_add)
+    node_to_add.Parent = node_in_tree
+    return node_to_add
 
-    def add_edge(self, edge):
-        # y exists in the tree while x does not
-        x, y = edge[0], edge[1]
+def tree_bfs(head, x):
+    # searches x in order of bfs
+    node = head
+    Q = []
+    Q.append(node)
+    while Q:
+        curr = Q.pop()
+        if curr.pos == x:
+            return curr
+        for child_node in curr.child:
+            Q.append(child_node)
+
+def tree_nearest(head, x):
+    # find the node nearest to x
+    D = np.inf
+    min_node = None
+
+    Q = []
+    Q.append(head)
+    while Q:
+        curr = Q.pop()
+        dist = getDist(curr.pos, x)
+        # record the current best
+        if dist < D:
+            D, min_node = dist, curr
+        # bfs
+        for child_node in curr.child:
+            Q.append(child_node)
+    return min_node
+
+def tree_steer(initparams, node, x):
+    # steer from node to x
+    dist, step = getDist(node.pos, x), initparams.stepsize
+    increment = ((node.pos[0] - x[0]) / dist * step, (node.pos[1] - x[1]) / dist * step, (node.pos[2] - x[2]) / dist * step)
+    xnew = (x[0] + increment[0], x[1] + increment[1], x[2] + increment[2])
+    return xnew
+
+def tree_print(head):
+    Q = []
+    Q.append(head)
+    verts = []
+    edge = []
+    while Q:
+        curr = Q.pop()
+       # print(curr.pos)
+        verts.append(curr.pos)
+        if curr.Parent == None:
+            pass
+        else:
+            edge.append([curr.pos, curr.Parent.pos])
+        for child in curr.child:
+            Q.append(child)
+    return verts, edge
+
+def tree_path(initparams, end_node):
+    path = []
+    curr = end_node
+    while curr.pos != initparams.x0:
+        path.append([curr.pos, curr.Parent.pos])
+        curr = curr.Parent
+    return path
+
+
+#---------------KD tree, used for nearest neighbor search
+class kdTree:
+    def __init__(self):
+        pass
+
+    def R1_dist(self, q, p):
+        return abs(q-p)
+
+    def S1_dist(self, q, p):
+        return min(abs(q-p), 1- abs(q-p))
+
+    def P3_dist(self, q, p):
+        # cubes with antipodal points
+        q1, q2, q3 = q
+        p1, p2, p3 = p
+        d1 = np.sqrt((q1-p1)**2 + (q2-p2)**2 + (q3-p3)**2)
+        d2 = np.sqrt((1-abs(q1-p1))**2 + (1-abs(q2-p2))**2 + (1-abs(q3-p3))**2)
+        d3 = np.sqrt((-q1-p1)**2 + (-q2-p2)**2 + (q3+1-p3)**2)
+        d4 = np.sqrt((-q1-p1)**2 + (-q2-p2)**2 + (q3-1-p3)**2)
+        d5 = np.sqrt((-q1-p1)**2 + (q2+1-p2)**2 + (-q3-p3)**2)
+        d6 = np.sqrt((-q1-p1)**2 + (q2-1-p2)**2 + (-q3-p3)**2)
+        d7 = np.sqrt((q1+1-p1)**2 + (-q2-p2)**2 + (-q3-p3)**2)
+        d8 = np.sqrt((q1-1-p1)**2 + (-q2-p2)**2 + (-q3-p3)**2)
+        return min(d1,d2,d3,d4,d5,d6,d7,d8)
+
+
+
+if __name__ == '__main__':
+    from rrt_3D.env3D import env
+    import time
+    import matplotlib.pyplot as plt
+    class rrt_demo:
+        def __init__(self):
+            self.env = env()
+            self.x0, self.xt = tuple(self.env.start), tuple(self.env.goal)
+            self.stepsize = 0.5
+            self.maxiter = 10000
+            self.ind, self.i = 0, 0
+            self.done = False
+            self.Path = []
+            self.V = []
+
+            self.head = Node(self.x0)
+        
+        def run(self):
+            while self.ind < self.maxiter:
+                xrand = sampleFree(self) # O(1)
+                nearest_node = tree_nearest(self.head, xrand) # O(N)
+                xnew = tree_steer(self, nearest_node, xrand) # O(1)
+                collide, _ = isCollide(self, nearest_node.pos, xnew) # O(num obs)
+                if not collide:
+                    new_node = tree_add_edge(nearest_node, xnew) # O(1)
+                    # if the path is found
+                    if getDist(xnew, self.xt) <= self.stepsize:
+                        end_node = tree_add_edge(new_node, self.xt)
+                        self.Path = tree_path(self, end_node)
+                        break
+                    self.i += 1
+                self.ind += 1
+            
+            self.done = True
+            self.V, self.E = tree_print(self.head)
+            print(self.E)
+            visualization(self)
+            plt.show()
+            
+
+    
+    A = rrt_demo()
+    st = time.time()
+    A.run()
+    print(time.time() - st)
 
         
         

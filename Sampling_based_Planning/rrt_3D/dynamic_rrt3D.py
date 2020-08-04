@@ -139,7 +139,7 @@ class dynamic_rrt_3D():
         t = 0
         while True:
             # move the block while the robot is moving
-            new, old = self.env.move_block(a=[0, 0, -0.2], mode='translation')
+            new, _ = self.env.move_block(a=[0, 0, -0.2], mode='translation')
             self.InvalidateNodes(new)
             # if solution path contains invalid node
             self.done = True

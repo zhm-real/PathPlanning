@@ -16,6 +16,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Sampling_ba
 
 from rrt_3D.env3D import env
 from rrt_3D.utils3D import getDist, sampleFree, nearest, steer, isCollide, near, visualization, cost, path, edgeset
+from rrt_3D.plot_util3D import make_get_proj, draw_block_list, draw_Spheres, draw_obb, draw_line, make_transparent
 
 class rrt_connect():
     def __init__(self):
@@ -49,7 +50,7 @@ class rrt_connect():
         qnear = tuple(self.NEAREST_NEIGHBOR(q, tree))
         qnew, dist = steer(self, qnear, q)
         self.qnew = qnew # store qnew outside
-        if self.NEW_CONFIG(q, qnear, qnew, dist=dist):
+        if self.NEW_CONFIG(q, qnear, qnew, dist=None):
             tree.add_vertex(qnew)
             tree.add_edge(qnear, qnew)
             if qnew == q:
@@ -93,29 +94,62 @@ class rrt_connect():
             print(k)
             qrand = self.RANDOM_CONFIG()
             if self.EXTEND(Tree_A, qrand) != 'Trapped':
-                print('trapped')
                 qnew = self.qnew # get qnew from outside
                 if self.CONNECT(Tree_B, qnew) == 'Reached':
                     print('reached')
                     # return self.PATH(Tree_A, Tree_B)
                     return
+                else: 
+                    print('not reached')
             Tree_A, Tree_B = self.SWAP(Tree_A, Tree_B)
+            self.visualization(Tree_A, Tree_B, k)
         print('Failure')
         return 'Failure'
 
     # def PATH(self, tree_a, tree_b):
-
-
     def SWAP(self, tree_a, tree_b):
         tree_a, tree_b = tree_b, tree_a
         return tree_a, tree_b
+
+    def visualization(self, tree_a, tree_b, index):
+        if (index % 10 == 0 and index != 0) or self.done:
+            # a_V = np.array(tree_a.V)
+            # b_V = np.array(tree_b.V)
+            start = self.env.start
+            goal = self.env.goal
+            a_edges, b_edges = [], []
+            for i in tree_a.Parent:
+                a_edges.append([i,tree_a.Parent[i]])
+            for i in tree_b.Parent:
+                b_edges.append([i,tree_b.Parent[i]])
+            ax = plt.subplot(111, projection='3d')
+            ax.view_init(elev=8., azim=90.)
+            ax.clear()
+            draw_Spheres(ax, self.env.balls)
+            draw_block_list(ax, self.env.blocks)
+            if self.env.OBB is not None:
+                draw_obb(ax, self.env.OBB)
+            draw_block_list(ax, np.array([self.env.boundary]), alpha=0)
+            draw_line(ax, a_edges, visibility=0.75, color='g')
+            draw_line(ax, b_edges, visibility=0.75, color='y')
+            # draw_line(ax, Path, color='r')
+            ax.plot(start[0:1], start[1:2], start[2:], 'go', markersize=7, markeredgecolor='k')
+            ax.plot(goal[0:1], goal[1:2], goal[2:], 'ro', markersize=7, markeredgecolor='k')
+            xmin, xmax = self.env.boundary[0], self.env.boundary[3]
+            ymin, ymax = self.env.boundary[1], self.env.boundary[4]
+            zmin, zmax = self.env.boundary[2], self.env.boundary[5]
+            dx, dy, dz = xmax - xmin, ymax - ymin, zmax - zmin
+            ax.get_proj = make_get_proj(ax, 1 * dx, 1 * dy, 2 * dy)
+            make_transparent(ax)
+            ax.set_axis_off()
+            plt.pause(0.0001)
 
 class Tree():
     def __init__(self, node):
         self.V = []
         self.Parent = {}
         self.V.append(node)
-        self.Parent[node] = None
+        # self.Parent[node] = None
 
     def add_vertex(self, node):
         if node not in self.V:

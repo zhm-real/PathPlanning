@@ -3,9 +3,6 @@ This is dynamic rrt code for 3D
 @author: yue qi
 """
 import numpy as np
-from numpy.matlib import repmat
-from collections import defaultdict
-import copy
 import time
 import matplotlib.pyplot as plt
 
@@ -14,9 +11,7 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Sampling_based_Planning/")
 from rrt_3D.env3D import env
-from rrt_3D.utils3D import getDist, sampleFree, nearest, steer, isCollide, near, cost, path, edgeset, isinbound, \
-    isinside
-from rrt_3D.rrt3D import rrt
+from rrt_3D.utils3D import getDist, sampleFree, nearest, steer, isCollide
 from rrt_3D.plot_util3D import make_get_proj, draw_block_list, draw_Spheres, draw_obb, draw_line, make_transparent
 
 
@@ -60,7 +55,6 @@ class dynamic_rrt_3D:
                 S.append(qi)
             i += 1
         self.CreateTreeFromNodes(S)
-        print('trimming complete...')
 
     def InvalidateNodes(self, obstacle):
         Edges = self.FindAffectedEdges(obstacle)
@@ -74,7 +68,7 @@ class dynamic_rrt_3D:
         self.flag[self.x0] = 'Valid'
 
     def GrowRRT(self):
-        print('growing')
+        print('growing...')
         qnew = self.x0
         distance_threshold = self.stepsize
         self.ind = 0
@@ -91,7 +85,6 @@ class dynamic_rrt_3D:
                 self.i += 1
             self.ind += 1
             # self.visualization()
-        print('growing complete...')
 
     def ChooseTarget(self):
         # return the goal, or randomly choose a state in the waypoints based on probs
@@ -141,7 +134,7 @@ class dynamic_rrt_3D:
         t = 0
         while True:
             # move the block while the robot is moving
-            new, _ = self.env.move_block(a=[0, 0, -0.2], mode='translation')
+            new, _ = self.env.move_block(a=[0.2, 0, -0.2], mode='translation')
             self.InvalidateNodes(new)
             self.TrimRRT()
             # if solution path contains invalid node
@@ -164,7 +157,7 @@ class dynamic_rrt_3D:
     def FindAffectedEdges(self, obstacle):
         # scan the graph for the changed edges in the tree.
         # return the end point and the affected
-        print('finding affected edges')
+        print('finding affected edges...')
         Affectededges = []
         for e in self.Edge:
             child, parent = e
@@ -177,7 +170,7 @@ class dynamic_rrt_3D:
         return edge[0]
 
     def CreateTreeFromNodes(self, Nodes):
-        print('creating tree')
+        print('creating tree...')
         # self.Parent = {node: self.Parent[node] for node in Nodes}
         self.V = [node for node in Nodes]
         self.Edge = {(node, self.Parent[node]) for node in Nodes}

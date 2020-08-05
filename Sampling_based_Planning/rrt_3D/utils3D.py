@@ -121,7 +121,7 @@ def lineAABB(p0, p1, dist, aabb):
     if abs(T[0]) > (aabb.E[0] + hl * abs(I[0])): return False
     if abs(T[1]) > (aabb.E[1] + hl * abs(I[1])): return False
     if abs(T[2]) > (aabb.E[2] + hl * abs(I[2])): return False
-    # I.cross(x axis) ?
+    # I.cross(s axis) ?
     r = aabb.E[1] * abs(I[2]) + aabb.E[2] * abs(I[1])
     if abs(T[1] * I[2] - T[2] * I[1]) > r: return False
     # I.cross(y axis) ?
@@ -176,7 +176,7 @@ def nearest(initparams, x, isset=False):
     return tuple(initparams.V[np.argmin(dists)])
 
 def near(initparams, x):
-    # x = np.array(x)
+    # s = np.array(s)
     V = np.array(initparams.V)
     if initparams.i == 0:
         return [initparams.V[0]]
@@ -192,15 +192,15 @@ def near(initparams, x):
     return np.array(nearpoints)
 
 def steer(initparams, x, y, DIST=False):
-    # steer from x to y
+    # steer from s to y
     if np.equal(x, y).all():
         return x, 0.0
     dist, step = getDist(y, x), initparams.stepsize
     step = min(dist, step)
     increment = ((y[0] - x[0]) / dist * step, (y[1] - x[1]) / dist * step, (y[2] - x[2]) / dist * step)
     xnew = (x[0] + increment[0], x[1] + increment[1], x[2] + increment[2])
-    # direc = (y - x) / np.linalg.norm(y - x)
-    # xnew = x + initparams.stepsize * direc
+    # direc = (y - s) / np.linalg.norm(y - s)
+    # xnew = s + initparams.stepsize * direc
     if DIST:
         return xnew, dist
     return xnew, dist
@@ -274,7 +274,7 @@ def tree_add_edge(node_in_tree, x):
     return node_to_add
 
 def tree_bfs(head, x):
-    # searches x in order of bfs
+    # searches s in order of bfs
     node = head
     Q = []
     Q.append(node)
@@ -286,7 +286,7 @@ def tree_bfs(head, x):
             Q.append(child_node)
 
 def tree_nearest(head, x):
-    # find the node nearest to x
+    # find the node nearest to s
     D = np.inf
     min_node = None
 
@@ -304,7 +304,7 @@ def tree_nearest(head, x):
     return min_node
 
 def tree_steer(initparams, node, x):
-    # steer from node to x
+    # steer from node to s
     dist, step = getDist(node.pos, x), initparams.stepsize
     increment = ((node.pos[0] - x[0]) / dist * step, (node.pos[1] - x[1]) / dist * step, (node.pos[2] - x[2]) / dist * step)
     xnew = (x[0] + increment[0], x[1] + increment[1], x[2] + increment[2])

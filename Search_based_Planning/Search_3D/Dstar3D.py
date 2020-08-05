@@ -64,7 +64,7 @@ class D_star(object):
         return None, -1
 
     def insert(self, x, h_new):
-        # inserting a key and value into OPEN list (x, kx)
+        # inserting a key and value into OPEN list (s, kx)
         # depending on following situations
         if self.tag[x] == 'New':
             kx = h_new
@@ -83,7 +83,7 @@ class D_star(object):
         self.V.add(x)
         if x is None:
             return -1
-        # check if 1st timer x
+        # check if 1st timer s
         self.checkState(x)
         if kold < self.h[x]:  # raised states
             for y in children(self, x):

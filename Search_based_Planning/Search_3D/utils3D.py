@@ -72,7 +72,7 @@ def OBB2AABB(obb):
     P = obb.P
     a = obb.E
     A = obb.O
-    # a1(A1 dot x) + a2(A2 dot x) + a3(A3 dot x) 
+    # a1(A1 dot s) + a2(A2 dot s) + a3(A3 dot s)
     Ex = a[0]*abs(A[0][0]) + a[1]*abs(A[1][0]) + a[2]*abs(A[2][0])
     Ey = a[0]*abs(A[0][1]) + a[1]*abs(A[1][1]) + a[2]*abs(A[2][1])
     Ez = a[0]*abs(A[0][2]) + a[1]*abs(A[1][2]) + a[2]*abs(A[2][2])
@@ -111,7 +111,7 @@ def lineAABB(p0, p1, dist, aabb):
     if abs(T[0]) > (aabb.E[0] + hl * abs(I[0])): return False
     if abs(T[1]) > (aabb.E[1] + hl * abs(I[1])): return False
     if abs(T[2]) > (aabb.E[2] + hl * abs(I[2])): return False
-    # I.cross(x axis) ?
+    # I.cross(s axis) ?
     r = aabb.E[1] * abs(I[2]) + aabb.E[2] * abs(I[1])
     if abs(T[1] * I[2] - T[2] * I[1]) > r: return False
     # I.cross(y axis) ?
@@ -170,63 +170,63 @@ def OBBOBB(obb1, obb2):
                     return False
 
             #9 cross products
-            #L = A0 x B0
+            #L = A0 s B0
             ra = a[1]*abs(R[2][0]) + a[2]*abs(R[1][0])
             rb = b[1]*abs(R[0][2]) + b[2]*abs(R[0][1])
             t = abs(T[2]*R[1][0] - T[1]*R[2][0])
             if t > ra + rb:
                 return False
 
-            #L = A0 x B1
+            #L = A0 s B1
             ra = a[1]*abs(R[2][1]) + a[2]*abs(R[1][1])
             rb = b[0]*abs(R[0][2]) + b[2]*abs(R[0][0])
             t = abs(T[2]*R[1][1] - T[1]*R[2][1])
             if t > ra + rb:
                 return False
 
-            #L = A0 x B2
+            #L = A0 s B2
             ra = a[1]*abs(R[2][2]) + a[2]*abs(R[1][2])
             rb = b[0]*abs(R[0][1]) + b[1]*abs(R[0][0])
             t = abs(T[2]*R[1][2] - T[1]*R[2][2])
             if t > ra + rb:
                 return False
 
-            #L = A1 x B0
+            #L = A1 s B0
             ra = a[0]*abs(R[2][0]) + a[2]*abs(R[0][0])
             rb = b[1]*abs(R[1][2]) + b[2]*abs(R[1][1])
             t = abs( T[0]*R[2][0] - T[2]*R[0][0] )
             if t > ra + rb:
                 return False
 
-            # L = A1 x B1
+            # L = A1 s B1
             ra = a[0]*abs(R[2][1]) + a[2]*abs(R[0][1])
             rb = b[0]*abs(R[1][2]) + b[2]*abs(R[1][0])
             t = abs( T[0]*R[2][1] - T[2]*R[0][1] )
             if t > ra + rb:
                 return False
 
-            #L = A1 x B2
+            #L = A1 s B2
             ra = a[0]*abs(R[2][2]) + a[2]*abs(R[0][2])
             rb = b[0]*abs(R[1][1]) + b[1]*abs(R[1][0])
             t = abs( T[0]*R[2][2] - T[2]*R[0][2] )
             if t > ra + rb:
                 return False
 
-            #L = A2 x B0
+            #L = A2 s B0
             ra = a[0]*abs(R[1][0]) + a[1]*abs(R[0][0])
             rb = b[1]*abs(R[2][2]) + b[2]*abs(R[2][1])
             t = abs( T[1]*R[0][0] - T[0]*R[1][0] )
             if t > ra + rb:
                 return False
 
-            # L = A2 x B1
+            # L = A2 s B1
             ra = a[0]*abs(R[1][1]) + a[1]*abs(R[0][1])
             rb = b[0] *abs(R[2][2]) + b[2]*abs(R[2][0])
             t = abs( T[1]*R[0][1] - T[0]*R[1][1] )
             if t > ra + rb:
                 return False
 
-            #L = A2 x B2
+            #L = A2 s B2
             ra = a[0]*abs(R[1][2]) + a[1]*abs(R[0][2])
             rb = b[0]*abs(R[2][1]) + b[1]*abs(R[2][0])
             t = abs( T[1]*R[0][2] - T[0]*R[1][2] )
@@ -255,7 +255,7 @@ def StateSpace(env, factor=0):
 
 def g_Space(initparams):
     '''This function is used to get nodes and discretize the space.
-       State space is by x*y*z,3 where each 3 is a point in 3D.'''
+       State space is by s*y*z,3 where each 3 is a point in 3D.'''
     g = {}
     Space = StateSpace(initparams.env)
     for v in Space:

@@ -5,18 +5,18 @@ Depth-first Searching_2D (DFS)
 
 import os
 import sys
+from collections import deque
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Search_based_Planning/")
 
-from Search_2D import queue
-from Search_2D import plotting
-from Search_2D import env
+from Search_based_Planning.Search_2D import plotting, env
 
 
 class DFS:
     def __init__(self, s_start, s_goal):
-        self.s_start, self.s_goal = s_start, s_goal
+        self.s_start = s_start
+        self.s_goal = s_goal
 
         self.Env = env.Env()
         self.plotting = plotting.Plotting(self.s_start, self.s_goal)
@@ -24,10 +24,9 @@ class DFS:
         self.u_set = self.Env.motions                           # feasible input set
         self.obs = self.Env.obs                                 # position of obstacles
 
-        self.OPEN = queue.QueueLIFO()                           # OPEN set
-        self.OPEN.put(self.s_start)
+        self.OPEN = deque()                                     # OPEN set: visited nodes
+        self.PARENT = dict()                                    # recorded parent
         self.CLOSED = []                                        # CLOSED set / visited order
-        self.PARENT = {self.s_start: self.s_start}
 
     def searching(self):
         """
@@ -35,16 +34,21 @@ class DFS:
         :return: planning path, visited order
         """
 
+        self.PARENT[self.s_start] = self.s_start
+        self.OPEN.append(self.s_start)
+
         while self.OPEN:
-            s = self.OPEN.get()
+            s = self.OPEN.pop()
 
             if s == self.s_goal:
                 break
             self.CLOSED.append(s)
 
             for s_n in self.get_neighbor(s):
+                if self.is_collision(s, s_n):
+                    continue
                 if s_n not in self.PARENT:                      # node not explored
-                    self.OPEN.put(s_n)
+                    self.OPEN.append(s_n)
                     self.PARENT[s_n] = s
 
         return self.extract_path(), self.CLOSED
@@ -53,19 +57,19 @@ class DFS:
         """
         find neighbors of state s that not in obstacles.
         :param s: state
-        :return: neighbors
+        :return: neighbors : [nodes]
         """
 
-        s_list = []
-
-        for u in self.u_set:
-            s_next = tuple([s[i] + u[i] for i in range(2)])
-            if not self.is_collision(s, s_next):
-                s_list.append(s_next)
-
-        return s_list
+        return [(s[0] + u[0], s[1] + u[1]) for u in self.u_set]
 
     def is_collision(self, s_start, s_end):
+        """
+        check if the line segment (s_start, s_end) is collision.
+        :param s_start: start node
+        :param s_end: end node
+        :return: True: is collision / False: not collision
+        """
+
         if s_start in self.obs or s_end in self.obs:
             return True
 

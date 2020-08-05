@@ -128,7 +128,7 @@ def visualization(initparams):
         dx, dy, dz = xmax - xmin, ymax - ymin, zmax - zmin
         ax.get_proj = make_get_proj(ax, 1 * dx, 1 * dy, 2 * dy)
         make_transparent(ax)
-        #plt.xlabel('x')
+        #plt.xlabel('s')
         #plt.ylabel('y')
         ax.set_axis_off()
         plt.pause(0.0001)

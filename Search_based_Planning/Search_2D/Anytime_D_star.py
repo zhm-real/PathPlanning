@@ -79,7 +79,7 @@ class ADStar:
         else:
             self.count_env_change += 1
             x, y = int(x), int(y)
-            print("Change position: x =", x, ",", "y =", y)
+            print("Change position: s =", x, ",", "y =", y)
 
             # for small changes
             if self.title == "Anytime D*: Small changes":

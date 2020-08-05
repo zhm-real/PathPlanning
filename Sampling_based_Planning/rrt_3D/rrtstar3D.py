@@ -38,7 +38,7 @@ class rrtstar():
         self.V.append(self.x0)
         self.ind = 0
     def wireup(self,x,y):
-        # self.E.add_edge([x,y]) # add edge
+        # self.E.add_edge([s,y]) # add edge
         self.Parent[x] = y
 
     def removewire(self,xnear):

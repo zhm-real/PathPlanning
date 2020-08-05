@@ -16,7 +16,7 @@ class PATH:
         self.lengths = lengths  # lengths of each part of path (+: forward, -: backward) [float]
         self.ctypes = ctypes  # type of each part of the path [string]
         self.L = L  # total path length [float]
-        self.x = x  # final x positions [m]
+        self.x = x  # final s positions [m]
         self.y = y  # final y positions [m]
         self.yaw = yaw  # final yaw angles [rad]
         self.directions = directions  # forward: 1, backward:-1
@@ -573,7 +573,7 @@ def pi_2_pi(theta):
 
 def R(x, y):
     """
-    Return the polar coordinates (r, theta) of the point (x, y)
+    Return the polar coordinates (r, theta) of the point (s, y)
     """
     r = math.hypot(x, y)
     theta = math.atan2(y, x)
@@ -667,7 +667,7 @@ def check_path(sx, sy, syaw, gx, gy, gyaw, maxc):
 
 
 def main():
-    # choose states pairs: (x, y, yaw)
+    # choose states pairs: (s, y, yaw)
     # simulation-1
     # states = [(0, 0, 0), (10, 10, -90), (20, 5, 60), (30, 10, 120),
     #           (35, -5, 30), (25, -10, -120), (15, -15, 100), (0, -10, -90)]

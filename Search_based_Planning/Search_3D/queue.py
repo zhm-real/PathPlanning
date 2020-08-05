@@ -53,7 +53,7 @@ class QueuePrior:
         return len(self.queue) == 0
 
     def put(self, item, priority):
-        heapq.heappush(self.queue, (priority, item))  # reorder x using priority
+        heapq.heappush(self.queue, (priority, item))  # reorder s using priority
 
     def get(self):
         return heapq.heappop(self.queue)[1]  # pop out the smallest item
@@ -131,13 +131,13 @@ class MinheapPQ:
 
 #     def put(self, item, priority):
 #         count = 0
-#         for (p, x) in self.queue:
-#             if x == item:
+#         for (p, s) in self.queue:
+#             if s == item:
 #                 self.queue[count] = (priority, item)
 #                 break
 #             count += 1
 #         if count == len(self.queue):
-#             heapq.heappush(self.queue, (priority, item))  # reorder x using priority
+#             heapq.heappush(self.queue, (priority, item))  # reorder s using priority
 
 #     def get(self):
 #         return heapq.heappop(self.queue)[1]  # pop out the smallest item
@@ -146,9 +146,9 @@ class MinheapPQ:
 #         return self.queue
 
 #     def check_remove(self, item):
-#         for (p, x) in self.queue:
-#             if item == x:
-#                 self.queue.remove((p, x))
+#         for (p, s) in self.queue:
+#             if item == s:
+#                 self.queue.remove((p, s))
 
 #     def top_key(self):
 #         return self.queue[0][0]

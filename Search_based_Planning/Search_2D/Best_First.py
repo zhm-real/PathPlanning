@@ -6,18 +6,18 @@ Best-First Searching
 import os
 import sys
 import math
+import heapq
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Search_based_Planning/")
 
-from Search_2D import queue
-from Search_2D import plotting
-from Search_2D import env
+from Search_based_Planning.Search_2D import plotting, env
 
 
 class BestFirst:
     def __init__(self, s_start, s_goal):
-        self.s_start, self.s_goal = s_start, s_goal
+        self.s_start = s_start
+        self.s_goal = s_goal
 
         self.Env = env.Env()
         self.plotting = plotting.Plotting(self.s_start, self.s_goal)
@@ -25,10 +25,9 @@ class BestFirst:
         self.u_set = self.Env.motions                           # feasible input set
         self.obs = self.Env.obs                                 # position of obstacles
 
-        self.OPEN = queue.QueuePrior()                          # OPEN set
-        self.OPEN.put(self.s_start, self.Heuristic(self.s_start))
+        self.OPEN = []                                          # OPEN set: visited nodes
         self.CLOSED = []                                        # CLOSED set / visited order
-        self.PARENT = {self.s_start: self.s_start}
+        self.PARENT = dict()                                    # recorded parent
 
     def searching(self):
         """
@@ -36,30 +35,35 @@ class BestFirst:
         :return: planning path, visited order
         """
 
+        self.PARENT[self.s_start] = self.s_start
+        heapq.heappush(self.OPEN,
+                       (self.heuristic(self.s_start), self.s_start))
+
         while self.OPEN:
-            s = self.OPEN.get()
+            _, s = heapq.heappop(self.OPEN)
 
             if s == self.s_goal:
                 break
             self.CLOSED.append(s)
 
             for s_n in self.get_neighbor(s):
+                if self.is_collision(s, s_n):
+                    continue
+
                 if s_n not in self.PARENT:                      # node not explored
-                    self.OPEN.put(s_n, self.Heuristic(s_n))
+                    heapq.heappush(self.OPEN, (self.heuristic(s_n), s_n))
                     self.PARENT[s_n] = s
 
         return self.extract_path(), self.CLOSED
 
-    def Heuristic(self, s):
+    def heuristic(self, s):
         """
         estimated distance between current state and goal state.
         :param s: current state
-        :return: estimated distance
+        :return: Euclidean distance
         """
 
-        h = math.hypot(s[0] - self.s_goal[0], s[1] - self.s_goal[1])
-
-        return h
+        return math.hypot(s[0] - self.s_goal[0], s[1] - self.s_goal[1])
 
     def get_neighbor(self, s):
         """
@@ -68,16 +72,16 @@ class BestFirst:
         :return: neighbors
         """
 
-        s_list = []
-
-        for u in self.u_set:
-            s_next = tuple([s[i] + u[i] for i in range(2)])
-            if not self.is_collision(s, s_next):
-                s_list.append(s_next)
-
-        return s_list
+        return [(s[0] + u[0], s[1] + u[1]) for u in self.u_set]
 
     def is_collision(self, s_start, s_end):
+        """
+        check if the line segment (s_start, s_end) is collision.
+        :param s_start: start node
+        :param s_end: end node
+        :return: True: is collision / False: not collision
+        """
+
         if s_start in self.obs or s_end in self.obs:
             return True
 

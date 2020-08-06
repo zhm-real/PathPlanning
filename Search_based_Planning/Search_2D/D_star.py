@@ -64,7 +64,7 @@ class Dstar:
             print("Please choose right area!")
         else:
             x, y = int(x), int(y)
-            print("Add obstacle at: x =", x, ",", "y =", y)
+            print("Add obstacle at: s =", x, ",", "y =", y)
             self.obs.add((x, y))
             plt.plot(x, y, 'sk')
             s = self.s_start

@@ -117,7 +117,7 @@ Directory Structure
 
 ## Papers
 ### Search-base Planning
-* [A*: ](https://ieeexplore.ieee.org/document/4082128) A Formal Basis for the Heuristic Determination of Minimum Cost Paths
+* [A*: ](https://ieeexplore.ieee.org/document/4082128) A Formal Basis for the heuristic Determination of Minimum Cost Paths
 * [Learning Real-Time A*: ](https://arxiv.org/pdf/1110.4076.pdf) Learning in Real-Time Search: A Unifying Framework
 * [Real-Time Adaptive A*: ](http://idm-lab.org/bib/abstracts/papers/aamas06.pdf) Real-Time Adaptive A*
 * [Lifelong Planning A*: ](https://www.cs.cmu.edu/~maxim/files/aij04.pdf) Lifelong Planning A*
@@ -142,7 +142,7 @@ Directory Structure
 * [LQR-RRT*: ](https://lis.csail.mit.edu/pubs/perez-icra12.pdf) Optimal Sampling-Based Motion Planning with Automatically Derived Extension Heuristics
 * [RRT#: ](http://dcsl.gatech.edu/papers/icra13.pdf) Use of Relaxation Methods in Sampling-Based Algorithms for Optimal Motion Planning
 * [RRT*-Smart: ](http://save.seecs.nust.edu.pk/pubs/ICMA2012.pdf) Rapid convergence implementation of RRT* towards optimal solution
-* [Informed RRT*: ](https://arxiv.org/abs/1404.2334) Optimal Sampling-based Path Planning Focused via Direct Sampling of an Admissible Ellipsoidal Heuristic
+* [Informed RRT*: ](https://arxiv.org/abs/1404.2334) Optimal Sampling-based Path Planning Focused via Direct Sampling of an Admissible Ellipsoidal heuristic
 * [Fast Marching Trees (FMT*): ](https://arxiv.org/abs/1306.3532) a Fast Marching Sampling-Based Method for Optimal Motion Planning in Many Dimensions
 * [Motion Planning using Lower Bounds (MPLB): ](https://ieeexplore.ieee.org/document/7139773) Asymptotically-optimal Motion Planning using lower bounds on cost
 * [Batch Informed Trees (BIT*): ](https://arxiv.org/abs/1405.5848) Sampling-based Optimal Planning via the Heuristically Guided Search of Implicit Random Geometric Graphs

@@ -25,7 +25,7 @@ class Spline:
         self.x = x
         self.y = y
 
-        self.nx = len(x)  # dimension of x
+        self.nx = len(x)  # dimension of s
         h = np.diff(x)
 
         # calc coefficient cBest
@@ -48,7 +48,7 @@ class Spline:
         u"""
         Calc position
 
-        if t is outside of the input x, return None
+        if t is outside of the input s, return None
 
         """
 
@@ -68,7 +68,7 @@ class Spline:
         u"""
         Calc first derivative
 
-        if t is outside of the input x, return None
+        if t is outside of the input s, return None
         """
 
         if t < self.x[0]:
@@ -219,7 +219,7 @@ def test_spline2d():
     plt.plot(rx, ry, "-r", label="spline")
     plt.grid(True)
     plt.axis("equal")
-    plt.xlabel("x[m]")
+    plt.xlabel("s[m]")
     plt.ylabel("y[m]")
     plt.legend()
 

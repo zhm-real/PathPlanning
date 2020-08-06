@@ -14,7 +14,7 @@ class PATH:
     def __init__(self, L, mode, x, y, yaw):
         self.L = L  # total path length [float]
         self.mode = mode  # type of each part of the path [string]
-        self.x = x  # final x positions [m]
+        self.x = x  # final s positions [m]
         self.y = y  # final y positions [m]
         self.yaw = yaw  # final yaw angles [rad]
 
@@ -298,7 +298,7 @@ def calc_dubins_path(sx, sy, syaw, gx, gy, gyaw, curv, step_size=0.1):
 
 
 def main():
-    # choose states pairs: (x, y, yaw)
+    # choose states pairs: (s, y, yaw)
     # simulation-1
     states = [(0, 0, 0), (10, 10, -90), (20, 5, 60), (30, 10, 120),
               (35, -5, 30), (25, -10, -120), (15, -15, 100), (0, -10, -90)]

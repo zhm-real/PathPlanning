@@ -6,18 +6,18 @@ Bidirectional_a_star 2D
 import os
 import sys
 import math
+import heapq
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Search_based_Planning/")
 
-from Search_2D import queue
-from Search_2D import plotting
-from Search_2D import env
+from Search_based_Planning.Search_2D import plotting, env
 
 
-class BidirectionalAstar:
+class BidirectionalAStar:
     def __init__(self, s_start, s_goal, heuristic_type):
-        self.s_start, self.s_goal = s_start, s_goal
+        self.s_start = s_start
+        self.s_goal = s_goal
         self.heuristic_type = heuristic_type
 
         self.Env = env.Env()                                                # class Env
@@ -25,58 +25,82 @@ class BidirectionalAstar:
         self.u_set = self.Env.motions                                       # feasible input set
         self.obs = self.Env.obs                                             # position of obstacles
 
-        self.g_fore = {self.s_start: 0, self.s_goal: float("inf")}          # Cost to come: from x_init
-        self.g_back = {self.s_goal: 0, self.s_start: float("inf")}          # Cost to come: form x_goal
-
-        self.OPEN_fore = queue.QueuePrior()                                 # OPEN set for foreward searching
-        self.OPEN_fore.put(self.s_start,
-                           self.g_fore[self.s_start] + self.h(self.s_start, self.s_goal))
-        self.OPEN_back = queue.QueuePrior()                                 # OPEN set for backward searching
-        self.OPEN_back.put(self.s_goal,
-                           self.g_back[self.s_goal] + self.h(self.s_goal, self.s_start))
-
-        self.CLOSED_fore = []                                               # CLOSED set for foreward
+        self.OPEN_fore = []                                                 # OPEN set for forward searching
+        self.OPEN_back = []                                                 # OPEN set for backward searching
+        self.CLOSED_fore = []                                               # CLOSED set for forward
         self.CLOSED_back = []                                               # CLOSED set for backward
+        self.PARENT_fore = dict()                                           # recorded parent for forward
+        self.PARENT_back = dict()                                           # recorded parent for backward
+        self.g_fore = dict()                                                # cost to come for forward
+        self.g_back = dict()                                                # cost to come for backward
 
-        self.PARENT_fore = {self.s_start: self.s_start}
-        self.PARENT_back = {self.s_goal: self.s_goal}
+    def init(self):
+        """
+        initialize parameters
+        """
+
+        self.g_fore[self.s_start] = 0.0
+        self.g_fore[self.s_goal] = math.inf
+        self.g_back[self.s_goal] = 0.0
+        self.g_back[self.s_start] = math.inf
+        self.PARENT_fore[self.s_start] = self.s_start
+        self.PARENT_back[self.s_goal] = self.s_goal
+        heapq.heappush(self.OPEN_fore,
+                       (self.f_value_fore(self.s_start), self.s_start))
+        heapq.heappush(self.OPEN_back,
+                       (self.f_value_back(self.s_goal), self.s_goal))
 
     def searching(self):
+        """
+        Bidirectional A*
+        :return: connected path, visited order of forward, visited order of backward
+        """
+
+        self.init()
         s_meet = self.s_start
 
         while self.OPEN_fore and self.OPEN_back:
             # solve foreward-search
-            s_fore = self.OPEN_fore.get()
+            _, s_fore = heapq.heappop(self.OPEN_fore)
 
             if s_fore in self.PARENT_back:
                 s_meet = s_fore
                 break
+
             self.CLOSED_fore.append(s_fore)
 
             for s_n in self.get_neighbor(s_fore):
                 new_cost = self.g_fore[s_fore] + self.cost(s_fore, s_n)
+
                 if s_n not in self.g_fore:
-                    self.g_fore[s_n] = float("inf")
+                    self.g_fore[s_n] = math.inf
+
                 if new_cost < self.g_fore[s_n]:
                     self.g_fore[s_n] = new_cost
                     self.PARENT_fore[s_n] = s_fore
-                    self.OPEN_fore.put(s_n, new_cost + self.h(s_n, self.s_goal))
+                    heapq.heappush(self.OPEN_fore,
+                                   (self.f_value_fore(s_n), s_n))
 
             # solve backward-search
-            s_back = self.OPEN_back.get()
+            _, s_back = heapq.heappop(self.OPEN_back)
+
             if s_back in self.PARENT_fore:
                 s_meet = s_back
                 break
+
             self.CLOSED_back.append(s_back)
 
             for s_n in self.get_neighbor(s_back):
                 new_cost = self.g_back[s_back] + self.cost(s_back, s_n)
+
                 if s_n not in self.g_back:
-                    self.g_back[s_n] = float("inf")
+                    self.g_back[s_n] = math.inf
+
                 if new_cost < self.g_back[s_n]:
                     self.g_back[s_n] = new_cost
                     self.PARENT_back[s_n] = s_back
-                    self.OPEN_back.put(s_n, new_cost + self.h(s_n, self.s_start))
+                    heapq.heappush(self.OPEN_back,
+                                   (self.f_value_back(s_n), s_n))
 
         return self.extract_path(s_meet), self.CLOSED_fore, self.CLOSED_back
 
@@ -87,14 +111,7 @@ class BidirectionalAstar:
         :return: neighbors
         """
 
-        s_list = set()
-
-        for u in self.u_set:
-            s_next = tuple([s[i] + u[i] for i in range(2)])
-            if s_next not in self.obs:
-                s_list.add(s_next)
-
-        return s_list
+        return [(s[0] + u[0], s[1] + u[1]) for u in self.u_set]
 
     def extract_path(self, s_meet):
         """
@@ -125,6 +142,24 @@ class BidirectionalAstar:
 
         return list(reversed(path_fore)) + list(path_back)
 
+    def f_value_fore(self, s):
+        """
+        forward searching: f = g + h. (g: Cost to come, h: heuristic value)
+        :param s: current state
+        :return: f
+        """
+
+        return self.g_fore[s] + self.h(s, self.s_goal)
+
+    def f_value_back(self, s):
+        """
+        backward searching: f = g + h. (g: Cost to come, h: heuristic value)
+        :param s: current state
+        :return: f
+        """
+
+        return self.g_back[s] + self.h(s, self.s_start)
+
     def h(self, s, goal):
         """
         Calculate heuristic value.
@@ -150,11 +185,18 @@ class BidirectionalAstar:
         """
 
         if self.is_collision(s_start, s_goal):
-            return float("inf")
+            return math.inf
 
         return math.hypot(s_goal[0] - s_start[0], s_goal[1] - s_start[1])
 
     def is_collision(self, s_start, s_end):
+        """
+        check if the line segment (s_start, s_end) is collision.
+        :param s_start: start node
+        :param s_end: end node
+        :return: True: is collision / False: not collision
+        """
+
         if s_start in self.obs or s_end in self.obs:
             return True
 
@@ -176,7 +218,7 @@ def main():
     x_start = (5, 5)
     x_goal = (45, 25)
 
-    bastar = BidirectionalAstar(x_start, x_goal, "euclidean")
+    bastar = BidirectionalAStar(x_start, x_goal, "euclidean")
     plot = plotting.Plotting(x_start, x_goal)
     
     path, visited_fore, visited_back = bastar.searching()

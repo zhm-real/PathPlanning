@@ -36,7 +36,7 @@ class rrt():
         self.fig = plt.figure(figsize=(10, 8))
 
     def wireup(self, x, y):
-        # self.E.add_edge([x, y])  # add edge
+        # self.E.add_edge([s, y])  # add edge
         self.Parent[x] = y
 
     def run(self):

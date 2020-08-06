@@ -57,7 +57,7 @@ class LpaStar:
             print("Please choose right area!")
         else:
             x, y = int(x), int(y)
-            print("Change position: x =", x, ",", "y =", y)
+            print("Change position: s =", x, ",", "y =", y)
             self.visited = set()
             self.count += 1
             if (x, y) not in self.obs:

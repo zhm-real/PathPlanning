@@ -10,7 +10,7 @@ import numpy as np
 # from utils3D import OBB2AABB
 
 def R_matrix(z_angle, y_angle, x_angle):
-    # x angle: row; y angle: pitch; z angle: yaw
+    # s angle: row; y angle: pitch; z angle: yaw
     # generate rotation matrix in SO3
     # RzRyRx = R, ZYX intrinsic rotation
     # also (r1,r2,r3) in R3*3 in {W} frame
@@ -120,7 +120,7 @@ class env():
                    mode='uniform'):
         # t is time , v is velocity in R3, a is acceleration in R3, s is increment ini time, 
         # R is an orthorgonal transform in R3*3, is the rotation matrix
-        # (x',t') = (x + tv, t) is uniform transformation
+        # (s',t') = (s + tv, t) is uniform transformation
         if mode == 'uniform':
             ori = np.array(self.blocks[block_to_move])
             self.blocks[block_to_move] = \
@@ -142,7 +142,7 @@ class env():
             # np.array([ori[0] - self.resolution, ori[1] - self.resolution, ori[2] - self.resolution, \
             #         ori[3] + self.resolution, ori[4] + self.resolution, ori[5] + self.resolution])
             return a, ori
-        # (x',t') = (x + a, t + s) is a translation
+        # (s',t') = (s + a, t + s) is a translation
         if mode == 'translation':
             ori = np.array(self.blocks[block_to_move])
             self.blocks[block_to_move] = \
@@ -165,7 +165,7 @@ class env():
                    np.array([ori[0] - self.resolution, ori[1] - self.resolution, ori[2] - self.resolution,
                              ori[3] + self.resolution, ori[4] + self.resolution, ori[5] + self.resolution])
             # return a,ori
-        # (x',t') = (Rx, t)
+        # (s',t') = (Rx, t)
         if mode == 'rotation':  # this makes an OBB rotate
             ori = [self.OBB[obb_to_move]]
             self.OBB[obb_to_move].O = R_matrix(z_angle=theta[0], y_angle=theta[1], x_angle=theta[2])

@@ -79,7 +79,7 @@ class ExtendedRrt:
             print("Please choose right area!")
         else:
             x, y = int(x), int(y)
-            print("Add circle obstacle at: x =", x, ",", "y =", y)
+            print("Add circle obstacle at: s =", x, ",", "y =", y)
             self.obs_circle.append([x, y, 2])
             self.utils.update_obs(self.obs_circle, self.obs_boundary, self.obs_rectangle)
             path, waypoint = self.replanning()

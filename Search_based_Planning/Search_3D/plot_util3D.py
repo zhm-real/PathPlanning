@@ -112,7 +112,7 @@ def visualization(initparams):
         zmin, zmax = initparams.env.boundary[2], initparams.env.boundary[5]
         dx, dy, dz = xmax-xmin, ymax-ymin, zmax-zmin
         ax.get_proj = make_get_proj(ax,1*dx, 1*dy, 2*dy)
-        plt.xlabel('x')
+        plt.xlabel('s')
         plt.ylabel('y')
         plt.pause(0.0001)
 

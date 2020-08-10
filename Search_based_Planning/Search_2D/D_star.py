@@ -14,7 +14,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
 from Search_based_Planning.Search_2D import plotting, env
 
 
-class Dstar:
+class DStar:
     def __init__(self, s_start, s_goal):
         self.s_start, self.s_goal = s_start, s_goal
 
@@ -27,15 +27,17 @@ class Dstar:
         self.y = self.Env.y_range
 
         self.fig = plt.figure()
+
         self.OPEN = set()
-        self.t = {}
-        self.PARENT = {}
-        self.h = {}
-        self.k = {}
+        self.t = dict()
+        self.PARENT = dict()
+        self.h = dict()
+        self.k = dict()
         self.path = []
         self.visited = set()
         self.count = 0
 
+    def init(self):
         for i in range(self.Env.x_range):
             for j in range(self.Env.y_range):
                 self.t[(i, j)] = 'NEW'
@@ -46,6 +48,7 @@ class Dstar:
         self.h[self.s_goal] = 0.0
 
     def run(self, s_start, s_end):
+        self.init()
         self.insert(s_end, 0)
         while True:
             self.process_state()
@@ -93,8 +96,10 @@ class Dstar:
     def process_state(self):
         s = self.min_state()
         self.visited.add(s)
+
         if s is None:
             return -1
+
         k_old = self.get_k_min()
         self.delete(s)
 
@@ -128,13 +133,25 @@ class Dstar:
         return self.get_k_min()
 
     def min_state(self):
+        """
+        choose the node with the minimum k value in OPEN set.
+        :return: state
+        """
+
         if not self.OPEN:
             return None
+
         return min(self.OPEN, key=lambda x: self.k[x])
 
     def get_k_min(self):
+        """
+        calc the min k value for nodes in OPEN set.
+        :return: k value
+        """
+
         if not self.OPEN:
             return -1
+
         return min([self.k[x] for x in self.OPEN])
 
     def insert(self, s, h_new):
@@ -144,13 +161,20 @@ class Dstar:
             self.k[s] = min(self.k[s], h_new)
         elif self.t[s] == 'CLOSED':
             self.k[s] = min(self.h[s], h_new)
+
         self.h[s] = h_new
         self.t[s] = 'OPEN'
         self.OPEN.add(s)
 
     def delete(self, s):
+        """
+        delete: move state s from OPEN set to CLOSED set.
+        :param s: state should be deleted
+        """
+
         if self.t[s] == 'OPEN':
             self.t[s] = 'CLOSED'
+
         self.OPEN.remove(s)
 
     def modify(self, s):
@@ -227,7 +251,7 @@ class Dstar:
 def main():
     s_start = (5, 5)
     s_goal = (45, 25)
-    dstar = Dstar(s_start, s_goal)
+    dstar = DStar(s_start, s_goal)
     dstar.run(s_start, s_goal)
 
 

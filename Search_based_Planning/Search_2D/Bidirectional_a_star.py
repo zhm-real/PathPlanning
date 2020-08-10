@@ -20,19 +20,19 @@ class BidirectionalAStar:
         self.s_goal = s_goal
         self.heuristic_type = heuristic_type
 
-        self.Env = env.Env()                                                # class Env
+        self.Env = env.Env()  # class Env
 
-        self.u_set = self.Env.motions                                       # feasible input set
-        self.obs = self.Env.obs                                             # position of obstacles
+        self.u_set = self.Env.motions  # feasible input set
+        self.obs = self.Env.obs  # position of obstacles
 
-        self.OPEN_fore = []                                                 # OPEN set for forward searching
-        self.OPEN_back = []                                                 # OPEN set for backward searching
-        self.CLOSED_fore = []                                               # CLOSED set for forward
-        self.CLOSED_back = []                                               # CLOSED set for backward
-        self.PARENT_fore = dict()                                           # recorded parent for forward
-        self.PARENT_back = dict()                                           # recorded parent for backward
-        self.g_fore = dict()                                                # cost to come for forward
-        self.g_back = dict()                                                # cost to come for backward
+        self.OPEN_fore = []  # OPEN set for forward searching
+        self.OPEN_back = []  # OPEN set for backward searching
+        self.CLOSED_fore = []  # CLOSED set for forward
+        self.CLOSED_back = []  # CLOSED set for backward
+        self.PARENT_fore = dict()  # recorded parent for forward
+        self.PARENT_back = dict()  # recorded parent for backward
+        self.g_fore = dict()  # cost to come for forward
+        self.g_back = dict()  # cost to come for backward
 
     def init(self):
         """
@@ -220,7 +220,7 @@ def main():
 
     bastar = BidirectionalAStar(x_start, x_goal, "euclidean")
     plot = plotting.Plotting(x_start, x_goal)
-    
+
     path, visited_fore, visited_back = bastar.searching()
     plot.animation_bi_astar(path, visited_fore, visited_back, "Bidirectional-A*")  # animation
 

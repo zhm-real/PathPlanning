@@ -11,38 +11,43 @@ import math
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Search_based_Planning/")
 
-from Search_2D import queue
-from Search_2D import plotting
-from Search_2D import env
+from Search_based_Planning.Search_2D import queue, plotting, env
 
 
-class RtaAstar:
+class RTAAStar:
     def __init__(self, s_start, s_goal, N, heuristic_type):
         self.s_start, self.s_goal = s_start, s_goal
         self.heuristic_type = heuristic_type
 
         self.Env = env.Env()
 
-        self.u_set = self.Env.motions                   # feasible input set
-        self.obs = self.Env.obs                         # position of obstacles
+        self.u_set = self.Env.motions  # feasible input set
+        self.obs = self.Env.obs  # position of obstacles
 
-        self.N = N                                      # number of expand nodes each iteration
-        self.visited = []                               # order of visited nodes in planning
-        self.path = []                                  # path of each iteration
-        self.h_table = {}
+        self.N = N  # number of expand nodes each iteration
+        self.visited = []  # order of visited nodes in planning
+        self.path = []  # path of each iteration
+        self.h_table = {}  # h_value table
+
+    def init(self):
+        """
+        initialize the h_value of all nodes in the environment.
+        it is a global table.
+        """
 
         for i in range(self.Env.x_range):
             for j in range(self.Env.y_range):
-                self.h_table[(i, j)] = self.h((i, j))   # initialize h_value
+                self.h_table[(i, j)] = self.h((i, j))
 
     def searching(self):
-        s_start = self.s_start                               # initialize start node
+        self.init()
+        s_start = self.s_start  # initialize start node
 
         while True:
             OPEN, CLOSED, g_table, PARENT = \
                 self.Astar(s_start, self.N)
 
-            if OPEN == "FOUND":                         # reach the goal node
+            if OPEN == "FOUND":  # reach the goal node
                 self.path.append(CLOSED)
                 break
 
@@ -70,7 +75,7 @@ class RtaAstar:
         h_value = {}
 
         for s in CLOSED:
-            h_value[s] = float("inf")                           # initialize h_value of CLOSED nodes
+            h_value[s] = float("inf")  # initialize h_value of CLOSED nodes
 
         while True:
             h_value_rec = copy.deepcopy(h_value)
@@ -81,25 +86,25 @@ class RtaAstar:
                         h_list.append(self.cost(s, s_n) + self.h_table[s_n])
                     else:
                         h_list.append(self.cost(s, s_n) + h_value[s_n])
-                h_value[s] = min(h_list)                        # update h_value of current node
+                h_value[s] = min(h_list)  # update h_value of current node
 
-            if h_value == h_value_rec:                          # h_value table converged
+            if h_value == h_value_rec:  # h_value table converged
                 return h_value
 
     def Astar(self, x_start, N):
-        OPEN = queue.QueuePrior()                               # OPEN set
+        OPEN = queue.QueuePrior()  # OPEN set
         OPEN.put(x_start, self.h_table[x_start])
-        CLOSED = []                                             # CLOSED set
-        g_table = {x_start: 0, self.s_goal: float("inf")}       # Cost to come
-        PARENT = {x_start: x_start}                             # relations
-        count = 0                                               # counter
+        CLOSED = []  # CLOSED set
+        g_table = {x_start: 0, self.s_goal: float("inf")}  # Cost to come
+        PARENT = {x_start: x_start}  # relations
+        count = 0  # counter
 
         while not OPEN.empty():
             count += 1
             s = OPEN.get()
             CLOSED.append(s)
 
-            if s == self.s_goal:                                                # reach the goal node
+            if s == self.s_goal:  # reach the goal node
                 self.visited.append(CLOSED)
                 return "FOUND", self.extract_path(x_start, PARENT), [], []
 
@@ -108,15 +113,15 @@ class RtaAstar:
                     new_cost = g_table[s] + self.cost(s, s_n)
                     if s_n not in g_table:
                         g_table[s_n] = float("inf")
-                    if new_cost < g_table[s_n]:                           # conditions for updating Cost
+                    if new_cost < g_table[s_n]:  # conditions for updating Cost
                         g_table[s_n] = new_cost
                         PARENT[s_n] = s
                         OPEN.put(s_n, g_table[s_n] + self.h_table[s_n])
 
-            if count == N:                                                   # expand needed CLOSED nodes
+            if count == N:  # expand needed CLOSED nodes
                 break
 
-        self.visited.append(CLOSED)                                         # visited nodes in each iteration
+        self.visited.append(CLOSED)  # visited nodes in each iteration
 
         return OPEN, CLOSED, g_table, PARENT
 
@@ -145,11 +150,11 @@ class RtaAstar:
             for s_n in self.get_neighbor(s):
                 if s_n in h_value:
                     h_list[s_n] = h_value[s_n]
-            s_key = max(h_list, key=h_list.get)                 # move to the smallest node with min h_value
-            path.append(s_key)                                  # generate path
-            s = s_key                                           # use end of this iteration as the start of next
+            s_key = max(h_list, key=h_list.get)  # move to the smallest node with min h_value
+            path.append(s_key)  # generate path
+            s = s_key  # use end of this iteration as the start of next
 
-            if s_key == s_end:                            # reach the expected node in OPEN set
+            if s_key == s_end:  # reach the expected node in OPEN set
                 return s_start, list(reversed(path))
 
     def extract_path(self, x_start, parent):
@@ -176,8 +181,8 @@ class RtaAstar:
         :return: heuristic function value
         """
 
-        heuristic_type = self.heuristic_type                    # heuristic type
-        goal = self.s_goal                                      # goal node
+        heuristic_type = self.heuristic_type  # heuristic type
+        goal = self.s_goal  # goal node
 
         if heuristic_type == "manhattan":
             return abs(goal[0] - s[0]) + abs(goal[1] - s[1])
@@ -220,7 +225,7 @@ def main():
     s_start = (10, 5)
     s_goal = (45, 25)
 
-    rtaa = RtaAstar(s_start, s_goal, 240, "euclidean")
+    rtaa = RTAAStar(s_start, s_goal, 240, "euclidean")
     plot = plotting.Plotting(s_start, s_goal)
 
     rtaa.searching()

@@ -22,12 +22,12 @@ class BestFirst:
         self.Env = env.Env()
         self.plotting = plotting.Plotting(self.s_start, self.s_goal)
 
-        self.u_set = self.Env.motions                           # feasible input set
-        self.obs = self.Env.obs                                 # position of obstacles
+        self.u_set = self.Env.motions  # feasible input set
+        self.obs = self.Env.obs  # position of obstacles
 
-        self.OPEN = []                                          # OPEN set: visited nodes
-        self.CLOSED = []                                        # CLOSED set / visited order
-        self.PARENT = dict()                                    # recorded parent
+        self.OPEN = []  # OPEN set: visited nodes
+        self.CLOSED = []  # CLOSED set / visited order
+        self.PARENT = dict()  # recorded parent
 
     def searching(self):
         """
@@ -50,7 +50,7 @@ class BestFirst:
                 if self.is_collision(s, s_n):
                     continue
 
-                if s_n not in self.PARENT:                      # node not explored
+                if s_n not in self.PARENT:  # node not explored
                     heapq.heappush(self.OPEN, (self.heuristic(s_n), s_n))
                     self.PARENT[s_n] = s
 

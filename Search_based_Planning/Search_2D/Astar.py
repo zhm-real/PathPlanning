@@ -20,15 +20,15 @@ class AStar:
         self.s_goal = s_goal
         self.heuristic_type = heuristic_type
 
-        self.Env = env.Env()                                        # class Env
+        self.Env = env.Env()  # class Env
 
-        self.u_set = self.Env.motions                               # feasible input set
-        self.obs = self.Env.obs                                     # position of obstacles
+        self.u_set = self.Env.motions  # feasible input set
+        self.obs = self.Env.obs  # position of obstacles
 
-        self.OPEN = []                                              # priority queue / OPEN set
-        self.CLOSED = []                                            # CLOSED set / VISITED order
-        self.PARENT = dict()                                        # recorded parent
-        self.g = dict()                                             # cost to come
+        self.OPEN = []  # priority queue / OPEN set
+        self.CLOSED = []  # CLOSED set / VISITED order
+        self.PARENT = dict()  # recorded parent
+        self.g = dict()  # cost to come
 
     def searching(self):
         """
@@ -46,7 +46,7 @@ class AStar:
             _, s = heapq.heappop(self.OPEN)
             self.CLOSED.append(s)
 
-            if s == self.s_goal:                                    # stop condition
+            if s == self.s_goal:  # stop condition
                 break
 
             for s_n in self.get_neighbor(s):
@@ -55,7 +55,7 @@ class AStar:
                 if s_n not in self.g:
                     self.g[s_n] = math.inf
 
-                if new_cost < self.g[s_n]:                          # conditions for updating Cost
+                if new_cost < self.g[s_n]:  # conditions for updating Cost
                     self.g[s_n] = new_cost
                     self.PARENT[s_n] = s
                     heapq.heappush(self.OPEN, (self.f_value(s_n), s_n))
@@ -108,7 +108,7 @@ class AStar:
                 if s_n not in g:
                     g[s_n] = math.inf
 
-                if new_cost < g[s_n]:               # conditions for updating Cost
+                if new_cost < g[s_n]:  # conditions for updating Cost
                     g[s_n] = new_cost
                     PARENT[s_n] = s
                     heapq.heappush(OPEN, (g[s_n] + e * self.heuristic(s_n), s_n))
@@ -196,8 +196,8 @@ class AStar:
         :return: heuristic function value
         """
 
-        heuristic_type = self.heuristic_type                    # heuristic type
-        goal = self.s_goal                                      # goal node
+        heuristic_type = self.heuristic_type  # heuristic type
+        goal = self.s_goal  # goal node
 
         if heuristic_type == "manhattan":
             return abs(goal[0] - s[0]) + abs(goal[1] - s[1])
@@ -213,7 +213,7 @@ def main():
     plot = plotting.Plotting(s_start, s_goal)
 
     path, visited = astar.searching()
-    plot.animation(path, visited, "A*")                         # animation
+    plot.animation(path, visited, "A*")  # animation
 
     # path, visited = astar.searching_repeated_astar(2.5)               # initial weight e = 2.5
     # plot.animation_ara_star(path, visited, "Repeated A*")

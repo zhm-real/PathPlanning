@@ -22,13 +22,13 @@ class Dijkstra:
         self.Env = env.Env()
         self.plotting = plotting.Plotting(self.s_start, self.s_goal)
 
-        self.u_set = self.Env.motions                               # feasible input set
-        self.obs = self.Env.obs                                     # position of obstacles
+        self.u_set = self.Env.motions  # feasible input set
+        self.obs = self.Env.obs  # position of obstacles
 
-        self.OPEN = []                                              # priority queue / OPEN set
-        self.CLOSED = []                                            # closed set & visited
-        self.PARENT = dict()                                        # record parent
-        self.g = dict()                                             # Cost to come
+        self.OPEN = []  # priority queue / OPEN set
+        self.CLOSED = []  # closed set & visited
+        self.PARENT = dict()  # record parent
+        self.g = dict()  # Cost to come
 
     def searching(self):
         """
@@ -132,7 +132,7 @@ def main():
     plot = plotting.Plotting(s_start, s_goal)
 
     path, visited = dijkstra.searching()
-    plot.animation(path, visited, "Dijkstra's")                         # animation generate
+    plot.animation(path, visited, "Dijkstra's")  # animation generate
 
 
 if __name__ == '__main__':

@@ -19,6 +19,9 @@ class Plotting:
         self.env = env.Env()
         self.obs = self.env.obs_map()
 
+    def update_obs(self, obs):
+        self.obs = obs
+
     def animation(self, path, visited, name):
         self.plot_grid(name)
         self.plot_visited(visited)

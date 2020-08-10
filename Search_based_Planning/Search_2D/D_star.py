@@ -50,10 +50,12 @@ class DStar:
     def run(self, s_start, s_end):
         self.init()
         self.insert(s_end, 0)
+
         while True:
             self.process_state()
             if self.t[s_start] == 'CLOSED':
                 break
+
         self.path = self.extract_path(s_start, s_end)
         self.Plot.plot_grid("Dynamic A* (D*)")
         self.plot_path(self.path)
@@ -66,22 +68,28 @@ class DStar:
             print("Please choose right area!")
         else:
             x, y = int(x), int(y)
-            print("Add obstacle at: s =", x, ",", "y =", y)
-            self.obs.add((x, y))
-            plt.plot(x, y, 'sk')
-            s = self.s_start
-            self.visited = set()
-            self.count += 1
+            if (x, y) not in self.obs:
+                print("Add obstacle at: s =", x, ",", "y =", y)
+                self.obs.add((x, y))
+                self.Plot.update_obs(self.obs)
 
-            while s != self.s_goal:
-                if self.is_collision(s, self.PARENT[s]):
-                    self.modify(s)
-                    continue
-                s = self.PARENT[s]
+                s = self.s_start
+                self.visited = set()
+                self.count += 1
 
-            self.path = self.extract_path(self.s_start, self.s_goal)
-            self.plot_visited(self.visited)
-            self.plot_path(self.path)
+                while s != self.s_goal:
+                    if self.is_collision(s, self.PARENT[s]):
+                        self.modify(s)
+                        continue
+                    s = self.PARENT[s]
+
+                self.path = self.extract_path(self.s_start, self.s_goal)
+
+                plt.cla()
+                self.Plot.plot_grid("Dynamic A* (D*)")
+                self.plot_visited(self.visited)
+                self.plot_path(self.path)
+
             self.fig.canvas.draw_idle()
 
     def extract_path(self, s_start, s_end):
@@ -94,42 +102,63 @@ class DStar:
                 return path
 
     def process_state(self):
-        s = self.min_state()
+        s = self.min_state()  # get node in OPEN set with min k value
         self.visited.add(s)
 
         if s is None:
-            return -1
+            return -1  # OPEN set is empty
 
-        k_old = self.get_k_min()
-        self.delete(s)
+        k_old = self.get_k_min()  # record the min k value of this iteration (min path cost)
+        self.delete(s)  # move state s from OPEN set to CLOSED set
 
+        # k_min < h[s] --> s: RAISE state (increased cost)
         if k_old < self.h[s]:
             for s_n in self.get_neighbor(s):
-                if self.h[s_n] <= k_old and self.h[s] > self.h[s_n] + self.cost(s_n, s):
+                if self.h[s_n] <= k_old and \
+                        self.h[s] > self.h[s_n] + self.cost(s_n, s):
+
+                    # update h_value and choose parent
                     self.PARENT[s] = s_n
                     self.h[s] = self.h[s_n] + self.cost(s_n, s)
+
+        # s: k_min >= h[s] -- > s: LOWER state (cost reductions)
         if k_old == self.h[s]:
             for s_n in self.get_neighbor(s):
                 if self.t[s_n] == 'NEW' or \
                         (self.PARENT[s_n] == s and self.h[s_n] != self.h[s] + self.cost(s, s_n)) or \
                         (self.PARENT[s_n] != s and self.h[s_n] > self.h[s] + self.cost(s, s_n)):
+
+                    # Condition:
+                    # 1) t[s_n] == 'NEW': not visited
+                    # 2) s_n's parent: cost reduction
+                    # 3) s_n find a better parent
                     self.PARENT[s_n] = s
                     self.insert(s_n, self.h[s] + self.cost(s, s_n))
         else:
             for s_n in self.get_neighbor(s):
                 if self.t[s_n] == 'NEW' or \
                         (self.PARENT[s_n] == s and self.h[s_n] != self.h[s] + self.cost(s, s_n)):
+
+                    # Condition:
+                    # 1) t[s_n] == 'NEW': not visited
+                    # 2) s_n's parent: cost reduction
                     self.PARENT[s_n] = s
                     self.insert(s_n, self.h[s] + self.cost(s, s_n))
                 else:
-                    if self.PARENT[s_n] != s and self.h[s_n] > self.h[s] + self.cost(s, s_n):
+                    if self.PARENT[s_n] != s and \
+                            self.h[s_n] > self.h[s] + self.cost(s, s_n):
+
+                        # Condition: LOWER happened in OPEN set (s), s should be explored again
                         self.insert(s, self.h[s])
                     else:
                         if self.PARENT[s_n] != s and \
                                 self.h[s] > self.h[s_n] + self.cost(s_n, s) and \
                                 self.t[s_n] == 'CLOSED' and \
                                 self.h[s_n] > k_old:
+
+                            # Condition: LOWER happened in CLOSED set (s_n), s_n should be explored again
                             self.insert(s_n, self.h[s_n])
+
         return self.get_k_min()
 
     def min_state(self):
@@ -155,6 +184,12 @@ class DStar:
         return min([self.k[x] for x in self.OPEN])
 
     def insert(self, s, h_new):
+        """
+        insert node into OPEN set.
+        :param s: node
+        :param h_new: new or better cost to come value
+        """
+
         if self.t[s] == 'NEW':
             self.k[s] = h_new
         elif self.t[s] == 'OPEN':
@@ -178,13 +213,23 @@ class DStar:
         self.OPEN.remove(s)
 
     def modify(self, s):
+        """
+        start processing from state s.
+        :param s: is a node whose status is RAISE or LOWER.
+        """
+
         self.modify_cost(s)
+
         while True:
             k_min = self.process_state()
+
             if k_min >= self.h[s]:
                 break
 
     def modify_cost(self, s):
+        # if node in CLOSED set, put it into OPEN set.
+        # Since cost may be changed between s - s.parent, calc cost(s, s.p) again
+
         if self.t[s] == 'CLOSED':
             self.insert(s, self.h[self.PARENT[s]] + self.cost(s, self.PARENT[s]))
 

@@ -12,6 +12,9 @@ class Env:
                         (1, 0), (1, -1), (0, -1), (-1, -1)]
         self.obs = self.obs_map()
 
+    def update_obs(self, obs):
+        self.obs = obs
+
     def obs_map(self):
         """
         Initialize obstacles' positions

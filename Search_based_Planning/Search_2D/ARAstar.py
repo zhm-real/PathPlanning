@@ -1,6 +1,10 @@
 """
 ARA_star 2D (Anytime Repairing A*)
 @author: huiming zhou
+
+@description: local inconsistency: g-value decreased.
+g(s) decreased introduces a local inconsistency between s and its successors.
+
 """
 
 import os
@@ -10,8 +14,7 @@ import math
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Search_based_Planning/")
 
-from Search_2D import plotting
-from Search_2D import env
+from Search_based_Planning.Search_2D import plotting, env
 
 
 class AraStar:
@@ -23,27 +26,37 @@ class AraStar:
 
         self.u_set = self.Env.motions                                       # feasible input set
         self.obs = self.Env.obs                                             # position of obstacles
-        self.e = e                                                          # initial weight
-        self.g = {self.s_start: 0, self.s_goal: float("inf")}               # Cost to come
+        self.e = e                                                          # weight
 
-        self.OPEN = {self.s_start: self.fvalue(self.s_start)}               # priority queue / OPEN set
+        self.g = dict()                                                     # Cost to come
+        self.OPEN = dict()                                                  # priority queue / OPEN set
         self.CLOSED = set()                                                 # CLOSED set
-        self.INCONS = {}                                                    # INCONS set
-        self.PARENT = {self.s_start: self.s_start}                          # relations
+        self.INCONS = {}                                                    # INCONSISTENT set
+        self.PARENT = dict()                                                # relations
         self.path = []                                                      # planning path
         self.visited = []                                                   # order of visited nodes
 
+    def init(self):
+        """
+        initialize each set.
+        """
+        
+        self.g[self.s_start] = 0.0
+        self.g[self.s_goal] = math.inf
+        self.OPEN[self.s_start] = self.f_value(self.s_start)
+        self.PARENT[self.s_start] = self.s_start
+
     def searching(self):
+        self.init()
         self.ImprovePath()
         self.path.append(self.extract_path())
 
         while self.update_e() > 1:                                          # continue condition
-            self.e -= 0.5                                                   # increase weight
+            self.e -= 0.4                                                   # increase weight
             self.OPEN.update(self.INCONS)
-            for s in self.OPEN:
-                self.OPEN[s] = self.fvalue(s)
+            self.OPEN = {s: self.f_value(s) for s in self.OPEN}             # update f_value of OPEN set
 
-            self.INCONS = {}
+            self.INCONS = dict()
             self.CLOSED = set()
             self.ImprovePath()                                              # improve path
             self.path.append(self.extract_path())
@@ -58,38 +71,40 @@ class AraStar:
         visited_each = []
 
         while True:
-            s, f_small = self.get_smallest_f()
-            if self.fvalue(self.s_goal) <= f_small:
+            s, f_small = self.calc_smallest_f()
+
+            if self.f_value(self.s_goal) <= f_small:
                 break
+
+            self.OPEN.pop(s)
             self.CLOSED.add(s)
 
             for s_n in self.get_neighbor(s):
+                if s_n in self.obs:
+                    continue
+
                 new_cost = self.g[s] + self.cost(s, s_n)
+
                 if s_n not in self.g or new_cost < self.g[s_n]:
                     self.g[s_n] = new_cost
                     self.PARENT[s_n] = s
                     visited_each.append(s_n)
 
                     if s_n not in self.CLOSED:
-                        self.OPEN[s_n] = self.fvalue(s_n)
+                        self.OPEN[s_n] = self.f_value(s_n)
                     else:
-                        self.INCONS[s_n] = 0
+                        self.INCONS[s_n] = 0.0
 
         self.visited.append(visited_each)
 
-    def get_smallest_f(self):
+    def calc_smallest_f(self):
         """
         :return: node with smallest f_value in OPEN set.
         """
-        s_list = {}
 
-        for s in self.OPEN:
-            s_list[s] = self.fvalue(s)
-        s_small = min(s_list, key=s_list.get)
+        s_small = min(self.OPEN, key=self.OPEN.get)
 
-        self.OPEN.pop(s_small)
-
-        return s_small, s_list[s_small]
+        return s_small, self.OPEN[s_small]
 
     def get_neighbor(self, s):
         """
@@ -98,14 +113,7 @@ class AraStar:
         :return: neighbors
         """
 
-        s_list = set()
-
-        for u in self.u_set:
-            s_next = tuple([s[i] + u[i] for i in range(2)])
-            if s_next not in self.obs:
-                s_list.add(s_next)
-
-        return s_list
+        return {(s[0] + u[0], s[1] + u[1]) for u in self.u_set}
 
     def update_e(self):
         v = float("inf")
@@ -117,7 +125,14 @@ class AraStar:
 
         return min(self.e, self.g[self.s_goal] / v)
 
-    def fvalue(self, x):
+    def f_value(self, x):
+        """
+        f = g + e * h
+        f = cost-to-come + weight * cost-to-go
+        :param x: current state
+        :return: f_value
+        """
+
         return self.g[x] + self.e * self.h(x)
 
     def extract_path(self):
@@ -163,11 +178,18 @@ class AraStar:
         """
 
         if self.is_collision(s_start, s_goal):
-            return float("inf")
+            return math.inf
 
         return math.hypot(s_goal[0] - s_start[0], s_goal[1] - s_start[1])
 
     def is_collision(self, s_start, s_end):
+        """
+        check if the line segment (s_start, s_end) is collision.
+        :param s_start: start node
+        :param s_end: end node
+        :return: True: is collision / False: not collision
+        """
+
         if s_start in self.obs or s_end in self.obs:
             return True
 

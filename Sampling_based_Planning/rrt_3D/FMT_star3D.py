@@ -30,6 +30,7 @@ class FMT_star:
         self.x0, self.xt = tuple(self.env.start), tuple(self.env.goal) # used for sample free
         self.n = 1000 # number of samples
         self.radius = 2.5 # radius of the ball
+        # self.radius = 40 * np.sqrt((np.log(self.n) / self.n))
         # sets
         self.Vopen, self.Vopen_queue, self.Vclosed, self.V, self.Vunvisited, self.c = self.initNodeSets()
         # make space for save 
@@ -37,6 +38,7 @@ class FMT_star:
         # additional
         self.done = True
         self.Path = []
+        self.Parent = {}
 
     def generateSampleSet(self, n):
         V = set()
@@ -72,9 +74,16 @@ class FMT_star:
     def Save(self, V_associated, node):
         self.neighbors[node] = V_associated
 
-    def path(self, z, T):
-        V, E = T
+    def path(self, z, initT):
         path = []
+        s = self.xgoal
+        i = 0
+        while s != self.xinit:
+            path.append((s, self.Parent[s]))
+            s = self.Parent[s]
+            if i > self.n:
+                break
+            i += 1
         return path
 
     def Cost(self, x, y):
@@ -93,34 +102,44 @@ class FMT_star:
         ind = 0
         while z != self.xgoal:
             Vopen_new = set()
-            Nz = self.Near(self.Vunvisited, z, rn)
-            Xnear = Nz.intersection(self.Vunvisited)
+            #Nz = self.Near(self.Vunvisited, z, rn)
+            #self.Save(Nz, z)
+            #Xnear = Nz.intersection(self.Vunvisited)
+            Xnear = self.Near(self.Vunvisited, z ,rn)
+            self.Save(Xnear, z)
             for x in Xnear:
-                Nx = self.Near(self.V.difference({x}), x, rn)
-                self.Save(Nx, x)
-                Ynear = list(Nx.intersection(self.Vopen))
+                #Nx = self.Near(self.V.difference({x}), x, rn)
+                #self.Save(Nx, x)
+                #Ynear = list(Nx.intersection(self.Vopen))
+                Ynear = list(self.Near(self.Vopen, x, rn))
+                # self.Save(set(Ynear), x)
                 ymin = Ynear[np.argmin([self.c[y] + self.Cost(y,x) for y in Ynear])] # DP programming equation
                 collide, _ = isCollide(self, ymin, x)
                 if not collide:
                     E.add((ymin, x)) # straight line joining ymin and x is collision free
                     Vopen_new.add(x)
+                    self.Parent[x] = z
                     self.Vunvisited = self.Vunvisited.difference({x})
                     self.c[x] = self.c[ymin] + self.Cost(ymin, x) # estimated cost-to-arrive from xinit in tree T = (VopenUVclosed, E)
             # update open set
-            print(len(self.Vopen))
             self.Vopen = self.Vopen.union(Vopen_new).difference({z})
             self.Vclosed.add(z)
             if len(self.Vopen) == 0:
                 print('Failure')
                 return 
             ind += 1
-            self.visualization(ind, E)
+            print(str(ind) + ' node expanded')
+            # self.visualization(ind, E)
             # update current node
             Vopenlist = list(self.Vopen)
             z = Vopenlist[np.argmin([self.c[y] for y in self.Vopen])]
         # creating the tree
         T = (self.Vopen.union(self.Vclosed), E)
-        return self.path(z, T)
+        self.done = True
+        self.Path = self.path(z, T)
+        self.visualization(ind, E)
+        plt.show()
+        # return self.path(z, T)
 
     def visualization(self, ind, E):
         if ind % 100 == 0 or self.done:

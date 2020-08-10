@@ -22,14 +22,14 @@ from rrt_3D.queue import MinheapPQ
 
 class FMT_star:
 
-    def __init__(self):
+    def __init__(self, radius = 1, n = 1000):
         self.env = env()
         # init start and goal
             # note that the xgoal could be a region since this algorithm is a multiquery method
         self.xinit, self.xgoal = tuple(self.env.start), tuple(self.env.goal)
         self.x0, self.xt = tuple(self.env.start), tuple(self.env.goal) # used for sample free
-        self.n = 1000 # number of samples
-        self.radius = 2.5 # radius of the ball
+        self.n = n # number of samples
+        self.radius = radius # radius of the ball
         # self.radius = 40 * np.sqrt((np.log(self.n) / self.n))
         # sets
         self.Vopen, self.Vopen_queue, self.Vclosed, self.V, self.Vunvisited, self.c = self.initNodeSets()
@@ -188,7 +188,7 @@ class FMT_star:
             plt.pause(0.0001)
 
 if __name__ == '__main__':
-    A = FMT_star()
+    A = FMT_star(radius = 1, n = 3000)
     A.FMTrun()
 
 

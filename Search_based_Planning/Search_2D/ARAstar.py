@@ -40,7 +40,7 @@ class AraStar:
         """
         initialize each set.
         """
-        
+
         self.g[self.s_start] = 0.0
         self.g[self.s_goal] = math.inf
         self.OPEN[self.s_start] = self.f_value(self.s_start)

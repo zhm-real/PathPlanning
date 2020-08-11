@@ -45,7 +45,7 @@ class ADStar:
         self.count_env_change = 0
         self.obs_add = set()
         self.obs_remove = set()
-        self.title = "Anytime D*: Small changes"  # significant changes
+        self.title = "Anytime D*: Small changes"  # Significant changes
         self.fig = plt.figure()
 
     def run(self):
@@ -85,16 +85,19 @@ class ADStar:
             if self.title == "Anytime D*: Small changes":
                 if (x, y) not in self.obs:
                     self.obs.add((x, y))
-                    plt.plot(x, y, 'sk')
                     self.g[(x, y)] = float("inf")
                     self.rhs[(x, y)] = float("inf")
                 else:
                     self.obs.remove((x, y))
-                    plt.plot(x, y, marker='s', color='white')
                     self.UpdateState((x, y))
+
+                self.Plot.update_obs(self.obs)
 
                 for sn in self.get_neighbor((x, y)):
                     self.UpdateState(sn)
+
+                plt.cla()
+                self.Plot.plot_grid(self.title)
 
                 while True:
                     if len(self.INCONS) == 0:
@@ -126,6 +129,8 @@ class ADStar:
                     if (x, y) in self.obs_add:
                         self.obs_add.remove((x, y))
 
+                self.Plot.update_obs(self.obs)
+
                 if self.count_env_change >= 15:
                     self.count_env_change = 0
                     self.eps += 2.0
@@ -140,6 +145,9 @@ class ADStar:
                         for sn in self.get_neighbor(s):
                             self.UpdateState(sn)
                         self.UpdateState(s)
+
+                    plt.cla()
+                    self.Plot.plot_grid(self.title)
 
                     while True:
                         if self.eps <= 1.0:

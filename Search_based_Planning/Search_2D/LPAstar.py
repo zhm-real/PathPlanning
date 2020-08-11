@@ -11,11 +11,10 @@ import matplotlib.pyplot as plt
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Search_based_Planning/")
 
-from Search_2D import plotting
-from Search_2D import env
+from Search_based_Planning.Search_2D import plotting, env
 
 
-class LpaStar:
+class LPAStar:
     def __init__(self, s_start, s_goal, heuristic_type):
         self.s_start, self.s_goal = s_start, s_goal
         self.heuristic_type = heuristic_type
@@ -58,20 +57,25 @@ class LpaStar:
         else:
             x, y = int(x), int(y)
             print("Change position: s =", x, ",", "y =", y)
+
             self.visited = set()
             self.count += 1
+
             if (x, y) not in self.obs:
                 self.obs.add((x, y))
-                plt.plot(x, y, 'sk')
             else:
                 self.obs.remove((x, y))
-                plt.plot(x, y, marker='s', color='white')
                 self.UpdateVertex((x, y))
+
+            self.Plot.update_obs(self.obs)
 
             for s_n in self.get_neighbor((x, y)):
                 self.UpdateVertex(s_n)
 
             self.ComputeShortestPath()
+
+            plt.cla()
+            self.Plot.plot_grid("Lifelong Planning A*")
             self.plot_visited(self.visited)
             self.plot_path(self.extract_path())
             self.fig.canvas.draw_idle()
@@ -83,25 +87,45 @@ class LpaStar:
             if v >= self.CalculateKey(self.s_goal) and \
                     self.rhs[self.s_goal] == self.g[self.s_goal]:
                 break
+
             self.U.pop(s)
             self.visited.add(s)
 
-            if self.g[s] > self.rhs[s]:                         # over-consistent: deleted obstacles
+            if self.g[s] > self.rhs[s]:
+
+                # Condition: over-consistent (eg: deleted obstacles)
+                # So, rhs[s] decreased -- > rhs[s] < g[s]
                 self.g[s] = self.rhs[s]
-            else:                                               # under-consistent: added obstacles
+            else:
+
+                # Condition: # under-consistent (eg: added obstacles)
+                # So, rhs[s] increased --> rhs[s] > g[s]
                 self.g[s] = float("inf")
                 self.UpdateVertex(s)
+
             for s_n in self.get_neighbor(s):
                 self.UpdateVertex(s_n)
 
     def UpdateVertex(self, s):
+        """
+        update the status and the current cost to come of state s.
+        :param s: state s
+        """
+
         if s != self.s_start:
+
+            # Condition: cost of parent of s changed
+            # Since we do not record the children of a state, we need to enumerate its neighbors
             self.rhs[s] = min(self.g[s_n] + self.cost(s_n, s)
                               for s_n in self.get_neighbor(s))
+
         if s in self.U:
             self.U.pop(s)
 
         if self.g[s] != self.rhs[s]:
+
+            # Condition: current cost to come is different to that of last time
+            # state s should be added into OPEN set (set U)
             self.U[s] = self.CalculateKey(s)
 
     def TopKey(self):
@@ -110,9 +134,11 @@ class LpaStar:
         """
 
         s = min(self.U, key=self.U.get)
+
         return s, self.U[s]
 
     def CalculateKey(self, s):
+
         return [min(self.g[s], self.rhs[s]) + self.h(s),
                 min(self.g[s], self.rhs[s])]
 
@@ -222,7 +248,7 @@ def main():
     x_start = (5, 5)
     x_goal = (45, 25)
 
-    lpastar = LpaStar(x_start, x_goal, "Euclidean")
+    lpastar = LPAStar(x_start, x_goal, "Euclidean")
     lpastar.run()
 
 

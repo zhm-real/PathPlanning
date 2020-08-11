@@ -72,9 +72,9 @@ class RrtConnect:
                     return self.extract_path(node_new, node_new_prim)
 
             if len(self.V2) < len(self.V1):
-                list_mid = copy.deepcopy(self.V1)
-                self.V1 = copy.deepcopy(self.V2)
-                self.V2 = copy.deepcopy(list_mid)
+                list_mid = self.V2
+                self.V2 = self.V1
+                self.V1 = list_mid
 
         return None
 

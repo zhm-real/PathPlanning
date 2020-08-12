@@ -93,6 +93,7 @@ class env():
         # self.OBB = []
         self.start = np.array([0.5, 2.5, 5.5])
         self.goal = np.array([19.0, 2.5, 5.5])
+        # self.goal = np.array([5.0, 2.5, 5.5])
         self.t = 0 # time 
 
     def New_block(self):

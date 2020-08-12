@@ -26,7 +26,7 @@ class rrtstar():
         self.COST = {}
 
         self.i = 0
-        self.maxiter = 12000 # at least 2000 in this env
+        self.maxiter = 4000 # at least 2000 in this env
         self.stepsize = 0.5
         self.gamma = 500
         self.eta = self.stepsize
@@ -63,12 +63,12 @@ class rrtstar():
         while self.ind < self.maxiter:
             xrand    = sampleFree(self)
             xnearest = nearest(self,xrand)
-            xnew     = steer(self,xnearest,xrand)
-            collide, _ = isCollide(self,xnearest,xnew)
+            xnew, dist  = steer(self,xnearest,xrand)
+            collide, _ = isCollide(self,xnearest,xnew,dist=dist)
             if not collide:
                 Xnear = near(self,xnew)
                 self.V.append(xnew) # add point
-                visualization(self)
+                # visualization(self)
                 # minimal path and minimal cost
                 xmin, cmin = xnearest, cost(self, xnearest) + getDist(xnearest, xnew)
                 # connecting along minimal cost path

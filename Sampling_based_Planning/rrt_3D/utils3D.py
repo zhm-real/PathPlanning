@@ -183,7 +183,8 @@ def near(initparams, x):
     cardV = len(initparams.V)
     eta = initparams.eta
     gamma = initparams.gamma
-    r = min(gamma * (np.log(cardV) / cardV ** (1/3)), eta)
+    # min{γRRT∗ (log(card (V ))/ card (V ))1/d, η}
+    r = min(gamma * ((np.log(cardV) / cardV) ** (1/3)), eta)
     if initparams.done: 
         r = 1
     xr = repmat(x, len(V), 1)

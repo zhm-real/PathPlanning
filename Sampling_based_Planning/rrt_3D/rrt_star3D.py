@@ -27,8 +27,8 @@ class rrtstar():
 
         self.i = 0
         self.maxiter = 4000 # at least 2000 in this env
-        self.stepsize = 0.5
-        self.gamma = 500
+        self.stepsize = 2
+        self.gamma = 7
         self.eta = self.stepsize
         self.Path = []
         self.done = False

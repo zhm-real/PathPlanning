@@ -83,6 +83,7 @@ class BIT_star:
         self.QV = set() # nodes in queue
         self.r = np.inf # radius for evaluation
         self.ind = 0
+        num_resample = 0
         while True:
             # for the first round
             print('round '+str(self.ind))
@@ -96,9 +97,10 @@ class BIT_star:
                 self.QV = {v for v in self.V}
                 # setting the radius 
                 if self.done:
-                    self.r = 1
+                    self.r = 1 # sometimes the original radius criteria makes the radius too small to improve existing tree
+                    num_resample += 1
                 else:
-                    self.r = self.radius(len(self.V) + len(self.Xsamples))
+                    self.r = self.radius(len(self.V) + len(self.Xsamples)) # radius determined with the sample size and dimension of conf space
             while self.BestQueueValue(self.QV, mode = 'QV') <= self.BestQueueValue(self.QE, mode = 'QE'):
                 self.ExpandVertex(self.BestInQueue(self.QV, mode = 'QV'))
             (vm, xm) = self.BestInQueue(self.QE, mode = 'QE')
@@ -133,7 +135,9 @@ class BIT_star:
             # if the iteration is bigger
             if self.ind > self.maxiter:
                 break
-        return self.T
+
+        print('complete')
+        print('number of times resampling ' + str(num_resample))
 
 # ---------IRRT utils
     def Sample(self, m, cmax, bias = 0.05, xrand = set()):

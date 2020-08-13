@@ -17,7 +17,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Sampling_based_Planning/")
 from rrt_3D.env3D import env
 from rrt_3D.utils3D import getDist, sampleFree, nearest, steer, isCollide
-from rrt_3D.plot_util3D import make_get_proj, draw_block_list, draw_Spheres, draw_obb, draw_line, make_transparent
+from rrt_3D.plot_util3D import set_axes_equal, draw_block_list, draw_Spheres, draw_obb, draw_line, make_transparent
 from rrt_3D.queue import MinheapPQ
 
 class FMT_star:
@@ -160,7 +160,7 @@ class FMT_star:
             
             # ax.view_init(elev=0.+ 0.03*initparams.ind/(2*np.pi), azim=90 + 0.03*initparams.ind/(2*np.pi))
             # ax.view_init(elev=0., azim=90.)
-            ax.view_init(elev=8., azim=90.)
+            ax.view_init(elev=90., azim=0.)
             # ax.view_init(elev=-8., azim=180)
             ax.clear()
             # drawing objects
@@ -176,11 +176,7 @@ class FMT_star:
             ax.plot(start[0:1], start[1:2], start[2:], 'go', markersize=7, markeredgecolor='k')
             ax.plot(goal[0:1], goal[1:2], goal[2:], 'ro', markersize=7, markeredgecolor='k')
             # adjust the aspect ratio
-            xmin, xmax = self.env.boundary[0], self.env.boundary[3]
-            ymin, ymax = self.env.boundary[1], self.env.boundary[4]
-            zmin, zmax = self.env.boundary[2], self.env.boundary[5]
-            dx, dy, dz = xmax - xmin, ymax - ymin, zmax - zmin
-            ax.get_proj = make_get_proj(ax, 1 * dx, 1 * dy, 2 * dy)
+            set_axes_equal(ax)
             make_transparent(ax)
             #plt.xlabel('x')
             #plt.ylabel('y')

@@ -16,7 +16,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Sampling_ba
 
 from rrt_3D.env3D import env
 from rrt_3D.utils3D import getDist, sampleFree, nearest, steer, isCollide, near, visualization, cost, path, edgeset
-from rrt_3D.plot_util3D import make_get_proj, draw_block_list, draw_Spheres, draw_obb, draw_line, make_transparent
+from rrt_3D.plot_util3D import set_axes_equal, draw_block_list, draw_Spheres, draw_obb, draw_line, make_transparent
 
 
 class Tree():
@@ -161,7 +161,7 @@ class rrt_connect():
             for i in tree_b.Parent:
                 b_edges.append([i,tree_b.Parent[i]])
             ax = plt.subplot(111, projection='3d')
-            ax.view_init(elev=8., azim=90.)
+            ax.view_init(elev=90., azim=0.)
             ax.clear()
             draw_Spheres(ax, self.env.balls)
             draw_block_list(ax, self.env.blocks)
@@ -173,11 +173,7 @@ class rrt_connect():
             draw_line(ax, Path, color='r')
             ax.plot(start[0:1], start[1:2], start[2:], 'go', markersize=7, markeredgecolor='k')
             ax.plot(goal[0:1], goal[1:2], goal[2:], 'ro', markersize=7, markeredgecolor='k')
-            xmin, xmax = self.env.boundary[0], self.env.boundary[3]
-            ymin, ymax = self.env.boundary[1], self.env.boundary[4]
-            zmin, zmax = self.env.boundary[2], self.env.boundary[5]
-            dx, dy, _ = xmax - xmin, ymax - ymin, zmax - zmin
-            ax.get_proj = make_get_proj(ax, 1 * dx, 1 * dy, 2 * dy)
+            set_axes_equal(ax)
             make_transparent(ax)
             ax.set_axis_off()
             plt.pause(0.0001)

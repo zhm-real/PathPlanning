@@ -106,7 +106,7 @@ def visualization(initparams):
         
         # ax.view_init(elev=0.+ 0.03*initparams.ind/(2*np.pi), azim=90 + 0.03*initparams.ind/(2*np.pi))
         # ax.view_init(elev=0., azim=90.)
-        ax.view_init(elev=8., azim=90.)
+        ax.view_init(elev=90., azim=0.)
         # ax.view_init(elev=-8., azim=180)
         ax.clear()
         # drawing objects
@@ -122,74 +122,40 @@ def visualization(initparams):
         ax.plot(start[0:1], start[1:2], start[2:], 'go', markersize=7, markeredgecolor='k')
         ax.plot(goal[0:1], goal[1:2], goal[2:], 'ro', markersize=7, markeredgecolor='k')
         # adjust the aspect ratio
-        xmin, xmax = initparams.env.boundary[0], initparams.env.boundary[3]
-        ymin, ymax = initparams.env.boundary[1], initparams.env.boundary[4]
-        zmin, zmax = initparams.env.boundary[2], initparams.env.boundary[5]
-        dx, dy, dz = xmax - xmin, ymax - ymin, zmax - zmin
-        ax.get_proj = make_get_proj(ax, 1 * dx, 1 * dy, 2 * dy)
+        set_axes_equal(ax)
         make_transparent(ax)
         #plt.xlabel('s')
         #plt.ylabel('y')
         ax.set_axis_off()
         plt.pause(0.0001)
 
-
-def make_get_proj(self, rx, ry, rz):
+def set_axes_equal(ax):
+    '''Make axes of 3D plot have equal scale so that spheres appear as spheres,
+    cubes as cubes, etc..  This is one possible solution to Matplotlib's
+    ax.set_aspect('equal') and ax.axis('equal') not working for 3D.
+    https://stackoverflow.com/questions/13685386/matplotlib-equal-unit-length-with-equal-aspect-ratio-z-axis-is-not-equal-to
+    Input
+      ax: a matplotlib axis, e.g., as output from plt.gca().
     '''
-    Return a variation on :func:`~mpl_toolkit.mplot2d.axes3d.Axes3D.getproj` that
-    makes the box aspect ratio equal to *rx:ry:rz*, using an axes object *self*.
-    '''
 
-    rm = max(rx, ry, rz)
-    kx = rm / rx;
-    ky = rm / ry;
-    kz = rm / rz
+    x_limits = ax.get_xlim3d()
+    y_limits = ax.get_ylim3d()
+    z_limits = ax.get_zlim3d()
 
-    # Copied directly from mpl_toolkit/mplot3d/axes3d.py. New or modified lines are
-    # marked by ##
-    def get_proj():
-        relev, razim = np.pi * self.elev / 180, np.pi * self.azim / 180
+    x_range = abs(x_limits[1] - x_limits[0])
+    x_middle = np.mean(x_limits)
+    y_range = abs(y_limits[1] - y_limits[0])
+    y_middle = np.mean(y_limits)
+    z_range = abs(z_limits[1] - z_limits[0])
+    z_middle = np.mean(z_limits)
 
-        xmin, xmax = self.get_xlim3d()
-        ymin, ymax = self.get_ylim3d()
-        zmin, zmax = self.get_zlim3d()
+    # The plot bounding box is a sphere in the sense of the infinity
+    # norm, hence I call half the max range the plot radius.
+    plot_radius = 0.5*max([x_range, y_range, z_range])
 
-        # transform to uniform world coordinates 0-1.0,0-1.0,0-1.0
-        worldM = proj3d.world_transformation(xmin, xmax,
-                                             ymin, ymax,
-                                             zmin, zmax)
-        ratio = 0.5
-        # adjust the aspect ratio                          ##
-        aspectM = proj3d.world_transformation(-kx + 1, kx,  ##
-                                              -ky + 1, ky,  ##
-                                              -kz + 1, kz)  ##
-
-        # look into the middle of the new coordinates
-        R = np.array([0.5, 0.5, 0.5])
-
-        xp = R[0] + np.cos(razim) * np.cos(relev) * self.dist * ratio
-        yp = R[1] + np.sin(razim) * np.cos(relev) * self.dist * ratio
-        zp = R[2] + np.sin(relev) * self.dist * ratio
-        E = np.array((xp, yp, zp))
-
-        self.eye = E
-        self.vvec = R - E
-        self.vvec = self.vvec / np.linalg.norm(self.vvec)
-
-        if abs(relev) > np.pi / 2:
-            # upside down
-            V = np.array((0, 0, -1))
-        else:
-            V = np.array((0, 0, 1))
-        zfront, zback = -self.dist * ratio, self.dist * ratio
-
-        viewM = proj3d.view_transformation(E, R, V)
-        perspM = proj3d.persp_transformation(zfront, zback)
-        M0 = np.dot(viewM, np.dot(aspectM, worldM))  ##
-        M = np.dot(perspM, M0)
-        return M
-
-    return get_proj
+    ax.set_xlim3d([x_middle - plot_radius, x_middle + plot_radius])
+    ax.set_ylim3d([y_middle - plot_radius, y_middle + plot_radius])
+    ax.set_zlim3d([z_middle - plot_radius, z_middle + plot_radius])
 
 def make_transparent(ax):
     # make the panes transparent

@@ -44,8 +44,8 @@ class rrt():
         while self.ind < self.maxiter:
             xrand = sampleFree(self)
             xnearest = nearest(self, xrand)
-            xnew = steer(self, xnearest, xrand)
-            collide, _ = isCollide(self, xnearest, xnew)
+            xnew, dist = steer(self, xnearest, xrand)
+            collide, _ = isCollide(self, xnearest, xnew, dist=dist)
             if not collide:
                 self.V.append(xnew)  # add point
                 self.wireup(xnew, xnearest)

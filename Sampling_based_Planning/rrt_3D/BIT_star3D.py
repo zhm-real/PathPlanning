@@ -53,14 +53,14 @@ class BIT_star:
         self.env = env()
         self.xstart, self.xgoal = tuple(self.env.start), tuple(self.env.goal)
         self.x0, self.xt = tuple(self.env.start), tuple(self.env.goal)
-        self.maxiter = 5000 # used for determining how many batches needed
+        self.maxiter = 1000 # used for determining how many batches needed
         
         # radius calc parameter:
         # larger value makes better 1-time-performance, but longer time trade off
         self.eta = 7 # bigger or equal to 1
 
         # sampling 
-        self.m = 1000 # number of samples for one time sample
+        self.m = 400 # number of samples for one time sample
         self.d = 3 # dimension we work with
         
         # instance of the cost to come gT

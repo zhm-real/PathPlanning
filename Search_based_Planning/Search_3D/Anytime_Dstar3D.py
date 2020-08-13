@@ -9,7 +9,7 @@ from collections import defaultdict
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Search_based_Planning/")
 from Search_3D.env3D import env
-from Search_3D.utils3D import getDist, heuristic_fun, getNearest, isinbound, \
+from Search_3D.utils3D import getDist, heuristic_fun, getNearest, isinbound, isinobb, \
     cost, children, StateSpace
 from Search_3D.plot_util3D import visualization
 from Search_3D import queue
@@ -91,13 +91,22 @@ class Anytime_Dstar(object):
         # scan graph for changed Cost, if Cost is changed update it
         CHANGED = set()
         for xi in self.CLOSED:
-            if isinbound(old, xi, mode) or isinbound(new, xi, mode):
+            if self.isinobs(old, xi, mode) or self.isinobs(new, xi, mode):
+                # if self.isinobs(new, xi, mode):
+                self.V.remove(xi)
+                # self.V.difference_update({i for i in children(self, xi)})
                 newchildren = set(children(self, xi))  # B
                 self.CHILDREN[xi] = newchildren
                 for xj in newchildren:
                     self.COST[xi][xj] = cost(self, xi, xj)
                 CHANGED.add(xi)
         return CHANGED
+
+    def isinobs(self, obs, x, mode):
+        if mode == 'obb':
+            return isinobb(obs, x)
+        elif mode == 'aabb':
+            return isinbound(obs, x, mode)
 
     # def updateGraphCost(self, range_changed=None, new=None, old=None, mode=False):
     #     # TODO scan graph for changed Cost, if Cost is changed update it
@@ -172,7 +181,9 @@ class Anytime_Dstar(object):
                 break
             # change environment
             # new2,old2 = self.env.move_block(theta = [0,0,0.1*t], mode='rotation')
-            new2, old2 = self.env.move_block(a=[0, 0, -0.2], mode='translation')
+            # new2, old2 = self.env.move_block(a=[0, 0, -0.2], mode='translation')
+            new2, old2 = self.env.move_OBB(theta=[10*t, 0, 0], translation=[0, 0.1*t, 0])
+            mmode = 'obb' # obb or aabb
             ischanged = True
             # islargelychanged = True
             self.Path = []
@@ -180,7 +191,7 @@ class Anytime_Dstar(object):
             # update Cost with changed environment
             if ischanged:
                 # CHANGED = self.updatecost(True, new2, old2, mode='obb')
-                CHANGED = self.updatecost(True, new2, old2)
+                CHANGED = self.updatecost(True, new2, old2, mode=mmode)
                 for u in CHANGED:
                     self.UpdateState(u)
                 self.ComputeorImprovePath()

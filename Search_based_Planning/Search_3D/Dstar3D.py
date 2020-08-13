@@ -24,6 +24,7 @@ class D_star(object):
                         (1, 1, 1): np.sqrt(3), (-1, -1, -1) : np.sqrt(3), \
                         (1, -1, -1): np.sqrt(3), (-1, 1, -1): np.sqrt(3), (-1, -1, 1): np.sqrt(3), \
                         (1, 1, -1): np.sqrt(3), (1, -1, 1): np.sqrt(3), (-1, 1, 1): np.sqrt(3)}
+        self.settings = 'CollisionChecking'
         self.env = env(resolution=resolution)
         self.X = StateSpace(self.env)
         self.x0, self.xt = getNearest(self.X, self.env.start), getNearest(self.X, self.env.goal)
@@ -165,8 +166,8 @@ class D_star(object):
         # when the environemnt changes over time
 
         for i in range(5):
-            self.env.move_block(a=[0.1, 0, 0], s=0.5, block_to_move=1, mode='translation')
-            self.env.move_block(a=[0, 0, -0.25], s=0.5, block_to_move=0, mode='translation')
+            self.env.move_block(a=[0, -0.50, 0], s=0.5, block_to_move=1, mode='translation')
+            self.env.move_block(a=[-0.25, 0, 0], s=0.5, block_to_move=0, mode='translation')
             # travel from end to start
             s = tuple(self.env.start)
             # self.V = set()

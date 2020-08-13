@@ -262,7 +262,7 @@ def g_Space(initparams):
         g[v] = np.inf  # this hashmap initialize all g values at inf
     return g
 
-def isCollide(initparams, x, child, dist):
+def isCollide(initparams, x, child, dist=None):
     '''see if line intersects obstacle'''
     '''specified for expansion in A* 3D lookup table'''
     if dist==None:

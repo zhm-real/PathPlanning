@@ -29,7 +29,7 @@ class Weighted_A_star(object):
                         (1, 1, 1): np.sqrt(3), (-1, -1, -1) : np.sqrt(3), \
                         (1, -1, -1): np.sqrt(3), (-1, 1, -1): np.sqrt(3), (-1, -1, 1): np.sqrt(3), \
                         (1, 1, -1): np.sqrt(3), (1, -1, 1): np.sqrt(3), (-1, 1, 1): np.sqrt(3)}
-        self.settings = 'CollisionChecking'                
+        self.settings = 'NonCollisionChecking' # 'NonCollisionChecking' or 'CollisionChecking'                
         self.env = env(resolution=resolution)
         self.start, self.goal = tuple(self.env.start), tuple(self.env.goal)
         self.g = {self.start:0,self.goal:np.inf}
@@ -65,12 +65,8 @@ class Weighted_A_star(object):
                 if a < self.g[xj]:
                     self.g[xj] = a
                     self.Parent[xj] = xi
-                    # if (a, xj) in self.OPEN.enumerate():
-                        # update priority of xj
+                    # assign or update the priority in the open
                     self.OPEN.put(xj, a + 1 * heuristic_fun(self, xj))
-                    # else:
-                        # add xj in to OPEN set
-                    # self.OPEN.put(xj, a + 1 * heuristic_fun(self, xj))
             # For specified expanded nodes, used primarily in LRTA*
             if N:
                 if len(self.CLOSED) % N == 0:
@@ -84,7 +80,7 @@ class Weighted_A_star(object):
             self.done = True
             self.Path = self.path()
             if N is None:
-                #visualization(self)
+                visualization(self)
                 plt.show()
             return True
 

@@ -151,7 +151,7 @@ class D_star_Lite(object):
             if t % 2 == 0: 
                 new0,old0 = self.env.move_block(a=[-0.1, 0, -0.2], s=0.5, block_to_move=1, mode='translation')
                 new1,old1 = self.env.move_block(a=[0, 0, -0.2], s=0.5, block_to_move=0, mode='translation')
-                new2,old2 = self.env.move_block(theta = [0,0,0.1*t], mode='rotation')
+                new2,old2 = self.env.move_OBB(theta = [0,0.1*t,0])
                 #new2,old2 = self.env.move_block(a=[-0.3, 0, -0.1], s=0.5, block_to_move=1, mode='translation')
                 ischanged = True
                 self.Path = []

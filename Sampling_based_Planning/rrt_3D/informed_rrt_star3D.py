@@ -47,11 +47,11 @@ class IRRT:
         self.x0, self.xt = tuple(self.env.start), tuple(self.env.goal)
         self.Parent = {}
         self.Path = []
-        self.N = 5000 # used for determining how many batches needed
+        self.N = 10000 # used for determining how many batches needed
         self.ind = 0
         self.i = 0
         # rrt* near and other utils
-        self.stepsize = 0.5
+        self.stepsize = 1
         self.gamma = 500
         self.eta = self.stepsize
         self.rgoal = self.stepsize
@@ -186,7 +186,7 @@ class IRRT:
         return getDist(x, y)
 
     def visualization(self):
-        if self.ind % 100 == 0:
+        if self.ind % 500 == 0:
             V = np.array(self.V)
             edges = list(map(list, self.E))
             Path = np.array(self.Path)
@@ -221,6 +221,7 @@ class IRRT:
             ax.plot(start[0:1], start[1:2], start[2:], 'go', markersize=7, markeredgecolor='k')
             ax.plot(goal[0:1], goal[1:2], goal[2:], 'ro', markersize=7, markeredgecolor='k')
             # adjust the aspect ratio
+            ax.dist = 5
             set_axes_equal(ax)
             make_transparent(ax)
             #plt.xlabel('s')

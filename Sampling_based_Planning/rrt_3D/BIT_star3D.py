@@ -72,6 +72,12 @@ class BIT_star:
         # denote if the path is found 
         self.done = False
         self.Path = []
+        
+        # for drawing the ellipse
+        self.C = np.zeros([3,3])
+        self.L = np.zeros([3,3])
+        self.xcenter = np.zeros(3)
+        self.show_ellipse = show_ellipse
 
     def run(self):
         self.V = {self.xstart} # node expanded
@@ -97,7 +103,7 @@ class BIT_star:
                 self.QV = {v for v in self.V}
                 # setting the radius 
                 if self.done:
-                    self.r = 1 # sometimes the original radius criteria makes the radius too small to improve existing tree
+                    self.r = 2 # sometimes the original radius criteria makes the radius too small to improve existing tree
                     num_resample += 1
                 else:
                     self.r = self.radius(len(self.V) + len(self.Xsamples)) # radius determined with the sample size and dimension of conf space
@@ -333,6 +339,7 @@ class BIT_star:
             ax.plot(start[0:1], start[1:2], start[2:], 'go', markersize=7, markeredgecolor='k')
             ax.plot(goal[0:1], goal[1:2], goal[2:], 'ro', markersize=7, markeredgecolor='k')
             # adjust the aspect ratio
+            ax.dist = 5
             set_axes_equal(ax)
             make_transparent(ax)
             #plt.xlabel('s')
@@ -342,7 +349,5 @@ class BIT_star:
 
 
 if __name__ == '__main__':
-    Newprocess = BIT_star()
+    Newprocess = BIT_star(show_ellipse=False)
     Newprocess.run()
-    # Xsamples = Newprocess.Sample(1000, 140)
-    # print(len(Xsamples))

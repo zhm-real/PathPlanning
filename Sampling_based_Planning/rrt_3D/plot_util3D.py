@@ -122,6 +122,7 @@ def visualization(initparams):
         ax.plot(start[0:1], start[1:2], start[2:], 'go', markersize=7, markeredgecolor='k')
         ax.plot(goal[0:1], goal[1:2], goal[2:], 'ro', markersize=7, markeredgecolor='k')
         # adjust the aspect ratio
+        ax.dist = 5
         set_axes_equal(ax)
         make_transparent(ax)
         #plt.xlabel('s')

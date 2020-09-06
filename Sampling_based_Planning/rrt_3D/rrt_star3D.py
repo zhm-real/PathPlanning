@@ -68,7 +68,8 @@ class rrtstar():
             if not collide:
                 Xnear = near(self,xnew)
                 self.V.append(xnew) # add point
-                # visualization(self)
+                visualization(self)
+                plt.title('rrt*')
                 # minimal path and minimal cost
                 xmin, cmin = xnearest, cost(self, xnearest) + getDist(xnearest, xnew)
                 # connecting along minimal cost path

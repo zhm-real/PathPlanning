@@ -106,7 +106,7 @@ def visualization(initparams):
         
         # ax.view_init(elev=0.+ 0.03*initparams.ind/(2*np.pi), azim=90 + 0.03*initparams.ind/(2*np.pi))
         # ax.view_init(elev=0., azim=90.)
-        ax.view_init(elev=90., azim=0.)
+        ax.view_init(elev=65., azim=60.)
         # ax.view_init(elev=-8., azim=180)
         ax.clear()
         # drawing objects
@@ -122,7 +122,7 @@ def visualization(initparams):
         ax.plot(start[0:1], start[1:2], start[2:], 'go', markersize=7, markeredgecolor='k')
         ax.plot(goal[0:1], goal[1:2], goal[2:], 'ro', markersize=7, markeredgecolor='k')
         # adjust the aspect ratio
-        ax.dist = 5
+        ax.dist = 15
         set_axes_equal(ax)
         make_transparent(ax)
         #plt.xlabel('s')

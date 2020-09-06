@@ -319,7 +319,7 @@ class BIT_star:
             
             # ax.view_init(elev=0.+ 0.03*self.ind/(2*np.pi), azim=90 + 0.03*self.ind/(2*np.pi))
             # ax.view_init(elev=0., azim=90.)
-            ax.view_init(elev=90., azim=0.)
+            ax.view_init(elev=90., azim=60.)
             # ax.view_init(elev=-8., azim=180)
             ax.clear()
             # drawing objects
@@ -335,11 +335,11 @@ class BIT_star:
             if len(V) > 0:
                 ax.scatter3D(V[:, 0], V[:, 1], V[:, 2], s=2, color='g', )
             if len(Xsample) > 0: # plot the sampled points
-                ax.scatter3D(Xsample[:, 0], Xsample[:, 1], Xsample[:, 2], s=2, color='b', )
+                ax.scatter3D(Xsample[:, 0], Xsample[:, 1], Xsample[:, 2], s=1, color='b',)
             ax.plot(start[0:1], start[1:2], start[2:], 'go', markersize=7, markeredgecolor='k')
             ax.plot(goal[0:1], goal[1:2], goal[2:], 'ro', markersize=7, markeredgecolor='k')
             # adjust the aspect ratio
-            ax.dist = 5
+            ax.dist = 11
             set_axes_equal(ax)
             make_transparent(ax)
             #plt.xlabel('s')

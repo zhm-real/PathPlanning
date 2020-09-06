@@ -33,7 +33,7 @@ class rrt():
 
         
         self.ind = 0
-        self.fig = plt.figure(figsize=(10, 8))
+        # self.fig = plt.figure(figsize=(10, 8))
 
     def wireup(self, x, y):
         # self.E.add_edge([s, y])  # add edge
@@ -55,7 +55,7 @@ class rrt():
                     self.Path, D = path(self)
                     print('Total distance = ' + str(D))
                     break
-                # visualization(self)
+                visualization(self)
                 self.i += 1
             self.ind += 1
             # if the goal is really reached

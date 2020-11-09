@@ -54,7 +54,7 @@ class RrtConnect:
                 node_near_prim = self.nearest_neighbor(self.V2, node_new)
                 node_new_prim = self.new_state(node_near_prim, node_new)
 
-                if node_new_prim and not self.utils.is_collision(node_new_prim, node_new_prim):
+                if node_new_prim and not self.utils.is_collision(node_new_prim, node_near_prim):
                     self.V2.append(node_new_prim)
 
                     while True:

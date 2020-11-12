@@ -1,5 +1,5 @@
 """
-Plotting tools for RRT_2D
+Plotting tools for Sampling-based algorithms
 @author: huiming zhou
 """
 

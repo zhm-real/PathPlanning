@@ -58,7 +58,7 @@ class extend_rrt(object):
             
         # return rrt_tree
         self.done = True
-        self.Path, D = path(self)
+        self.Path, _ = path(self)
         visualization(self)
         plt.show()
         

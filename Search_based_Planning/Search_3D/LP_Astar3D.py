@@ -8,7 +8,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Search_base
 from Search_3D.env3D import env
 from Search_3D import Astar3D
 from Search_3D.utils3D import getDist, getRay, g_Space, Heuristic, getNearest, isinbound, isinball, \
-    cost, obstacleFree
+    cost, obstacleFree, isCollide
 from Search_3D.plot_util3D import visualization
 import queue
 import pyrr
@@ -110,7 +110,7 @@ class Lifelong_Astar(object):
         return False, dist
 
     def cost(self, x, y):
-        collide, dist = self.isCollide(x, y)
+        collide, dist = isCollide(self, x, y)
         if collide: return np.inf
         else: return dist
             
@@ -128,7 +128,7 @@ class Lifelong_Astar(object):
             gset = [self.g[xi] for xi in nei]
             # collision check and make g Cost inf
             for i in range(len(nei)):
-                if self.isCollide(nei[i],j)[0]:
+                if isCollide(self, nei[i],j)[0]:
                     gset[i] = np.inf
             parent = nei[np.argmin(gset)]
             path.append([x, parent])
@@ -168,10 +168,10 @@ class Lifelong_Astar(object):
         self.Path = self.path()
         self.done = True
         visualization(self)
-        plt.pause(2)
+        plt.pause(1)
 
     def change_env(self):
-        self.env.New_block()
+        _, _ = self.env.move_block(block_to_move=1,a = [0,2,0])
         self.done = False
         self.Path = []
         self.CLOSED = set()
@@ -182,10 +182,10 @@ class Lifelong_Astar(object):
 if __name__ == '__main__':
     sta = time.time()
     Astar = Lifelong_Astar(1)
-    
     Astar.ComputePath()
-    Astar.change_env()
-    Astar.ComputePath()
-    plt.show()
+    for i in range(5):
+        Astar.change_env()
+        Astar.ComputePath()
+        plt.pause(1)
     
     print(time.time() - sta)

@@ -90,7 +90,6 @@ def visualization(initparams):
         # V = np.array(list(initparams.V))
         # E = initparams.E
         #----------- end
-        V = np.array(initparams.V)
         # edges = initparams.E
         Path = np.array(initparams.Path)
         start = initparams.env.start

@@ -30,6 +30,7 @@ class Weighted_A_star(object):
                         (1, -1, -1): np.sqrt(3), (-1, 1, -1): np.sqrt(3), (-1, -1, 1): np.sqrt(3), \
                         (1, 1, -1): np.sqrt(3), (1, -1, 1): np.sqrt(3), (-1, 1, 1): np.sqrt(3)}
         self.env = env(resolution = resolution)
+        self.settings = 'NonCollisionChecking'
         self.start, self.goal = tuple(self.env.start), tuple(self.env.goal)
         self.g = {self.start:0,self.goal:0}
         self.OPEN1 = queue.MinheapPQ() # store [point,priority]

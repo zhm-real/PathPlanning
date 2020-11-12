@@ -132,6 +132,11 @@ class env():
     # theta stands for rotational angles around three principle axis in world frame
     # translation stands for translation in the world frame
         ori = [self.OBB[obb_to_move]]
+        # move obb position
+        self.OBB[obb_to_move].P = \
+            [self.OBB[obb_to_move].P[0] + translation[0], 
+            self.OBB[obb_to_move].P[1] + translation[1], 
+            self.OBB[obb_to_move].P[2] + translation[2]]
         # Calculate orientation
         self.OBB[obb_to_move].O = R_matrix(z_angle=theta[0],y_angle=theta[1],x_angle=theta[2])
         # generating transformation matrix

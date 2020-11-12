@@ -11,10 +11,12 @@ import heapq
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Search_based_Planning/")
 
-from Search_based_Planning.Search_2D import plotting, env
+from Search_2D import plotting, env
 
 
 class AStar:
+    """AStar set the cost + heuristics as the priority
+    """
     def __init__(self, s_start, s_goal, heuristic_type):
         self.s_start = s_start
         self.s_goal = s_goal

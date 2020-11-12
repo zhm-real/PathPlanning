@@ -40,9 +40,7 @@ def draw_block_list(ax, blocks, color=None, alpha=0.15):
     if type(ax) is Poly3DCollection:
         ax.set_verts(vl[fl])
     else:
-        pc = Poly3DCollection(vl[fl], alpha=alpha, linewidths=1, edgecolors='k')
-        pc.set_facecolor(color)
-        h = ax.add_collection3d(pc)
+        h = ax.add_collection3d(Poly3DCollection(vl[fl], facecolors='black', alpha=alpha, linewidths=1, edgecolors='k'))
         return h
 
 
@@ -68,9 +66,7 @@ def draw_obb(ax, OBB, color=None, alpha=0.15):
     if type(ax) is Poly3DCollection:
         ax.set_verts(vl[fl])
     else:
-        pc = Poly3DCollection(vl[fl], alpha=alpha, linewidths=1, edgecolors='k')
-        pc.set_facecolor(color)
-        h = ax.add_collection3d(pc)
+        h = ax.add_collection3d(Poly3DCollection(vl[fl], facecolors='black', alpha=alpha, linewidths=1, edgecolors='k'))
         return h
 
 

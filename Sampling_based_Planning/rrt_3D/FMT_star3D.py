@@ -129,7 +129,7 @@ class FMT_star:
                 return 
             ind += 1
             print(str(ind) + ' node expanded')
-            # self.visualization(ind, E)
+            self.visualization(ind, E)
             # update current node
             Vopenlist = list(self.Vopen)
             z = Vopenlist[np.argmin([self.c[y] for y in self.Vopen])]
@@ -160,7 +160,8 @@ class FMT_star:
             
             # ax.view_init(elev=0.+ 0.03*initparams.ind/(2*np.pi), azim=90 + 0.03*initparams.ind/(2*np.pi))
             # ax.view_init(elev=0., azim=90.)
-            ax.view_init(elev=90., azim=0.)
+            ax.view_init(elev=65., azim=60.)
+            ax.dist = 15
             # ax.view_init(elev=-8., azim=180)
             ax.clear()
             # drawing objects

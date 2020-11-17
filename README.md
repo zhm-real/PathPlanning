@@ -18,8 +18,7 @@ Directory Structure
         ├── Lifelong Planning A* (LPA*)
         ├── Dynamic A* (D*)
         ├── D* Lite
-        ├── Anytime D*
-        └── Potential Field
+        └── Anytime D*
     └── Sampling-based Planning
         ├── RRT
         ├── RRT-Connect
@@ -31,7 +30,6 @@ Directory Structure
         ├── Anytime RRT*
         ├── Closed-Loop RRT*
         ├── Spline-RRT*
-        ├── LQR-RRT*
         ├── Fast Marching Trees (FMT*)
         └── Batch Informed Trees (BIT*)
 

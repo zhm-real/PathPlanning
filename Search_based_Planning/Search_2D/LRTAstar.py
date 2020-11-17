@@ -11,7 +11,7 @@ import math
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Search_based_Planning/")
 
-from Search_based_Planning.Search_2D import queue, plotting, env
+from Search_2D import queue, plotting, env
 
 
 class LrtAStarN:

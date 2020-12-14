@@ -41,7 +41,6 @@ class Rrt:
         self.obs_boundary = self.env.obs_boundary
 
     def planning(self):
-        print("z")
         for i in range(self.iter_max):
             node_rand = self.generate_random_node(self.goal_sample_rate)
             node_near = self.nearest_neighbor(self.vertex, node_rand)
@@ -51,9 +50,8 @@ class Rrt:
                 self.vertex.append(node_new)
                 dist, _ = self.get_distance_and_angle(node_new, self.s_goal)
 
-                if dist <= self.step_len:
+                if dist <= self.step_len and not self.utils.is_collision(node_new, self.s_goal):
                     self.new_state(node_new, self.s_goal)
-                    print(i)
                     return self.extract_path(node_new)
 
         return None

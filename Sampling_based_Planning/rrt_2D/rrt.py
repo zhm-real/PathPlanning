@@ -11,7 +11,8 @@ import numpy as np
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Sampling_based_Planning/")
 
-from Sampling_based_Planning.rrt_2D import env, plotting, utils
+#from rrt_2D import env, plotting, utils
+from rrt_2D import env, plotting, utils
 
 
 class Node:

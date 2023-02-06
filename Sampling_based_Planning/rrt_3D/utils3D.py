@@ -6,7 +6,7 @@ from collections import deque
 import os
 import sys
 
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../Sampling_based_Planning/")
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname((os.path.abspath(__file__))))) +'/Sampling_based_Planning')
 from rrt_3D.plot_util3D import visualization
 
 

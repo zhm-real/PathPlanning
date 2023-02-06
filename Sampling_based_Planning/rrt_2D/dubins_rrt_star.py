@@ -12,8 +12,11 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from scipy.spatial.transform import Rotation as Rot
 
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
-                "/../../Sampling_based_Planning/")
+
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname((os.path.abspath(__file__))))) )
+# sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
+#                 "/../../Sampling_based_Planning/")
 
 from Sampling_based_Planning.rrt_2D import env, plotting, utils
 import CurvesGenerator.dubins_path as dubins
